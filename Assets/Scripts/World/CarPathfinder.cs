@@ -7,9 +7,15 @@ namespace WaifuTaxi
     {
         private World _world;
 
-        public CarPathfinder(World world, Vector2Int start, Vector2Int end) : base(world.size, start, end)
+        private Vector2Int _startCoord;
+
+        private Vector2Int _startDir;
+
+        public CarPathfinder(World world, Vector2Int start, Vector2Int end, Vector2Int startingDir) : base(world.size, start, end)
         {
             this._world = world;
+            this._startCoord = start;
+            this._startDir = startingDir;
         }
 
         protected override float _HeuristicDistance(Vector2Int start, Vector2Int end)
@@ -23,6 +29,16 @@ namespace WaifuTaxi
             if (! this._world.HasRoad(toCoord)) {
                 return float.PositiveInfinity;
             }
+
+            // Detect U turns at the start of the path
+            if (fromCoord == this._startCoord) {
+                var dir = toCoord - fromCoord;
+                Debug.Log(dir + " " + this._startDir);
+                if (this._startDir == -dir) {
+                    return 10000f;
+                }
+            }
+
             return 1f;
         }
     }

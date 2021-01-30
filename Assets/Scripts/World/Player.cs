@@ -16,10 +16,12 @@ namespace WaifuTaxi
         public float requiredRotationSpeed = 0.2f;
 
         private World _world;
+        private RoutePlanner _planner;
 
         public void SetWorld(World world)
         {
             this._world = world;
+            this._planner = new RoutePlanner(world);
         }
 
         void Update()
@@ -46,11 +48,26 @@ namespace WaifuTaxi
                 this._speed -= this.friction * Time.deltaTime;
             }
 
+            this._direction %= 360f;
+
             var rot = Quaternion.AngleAxis(this._direction, Vector3.forward);
             this.transform.rotation = rot;
             this.transform.position += rot * Vector3.up * this._speed / this.globalMultiplier;
 
             //Debug.Log(this._world.PositionToTileCoord(this.transform.position));
+
+            var dir = this._planner._GetDirVector(this._direction);
+
+            string s = "none";
+            if (dir == Vector2Int.up) {
+                s = "UP";
+            } else if (dir == Vector2Int.down) {
+                s = "DOWN";
+            } else if (dir == Vector2Int.right) {
+                s = "RiGHT";
+            } else if (dir == Vector2Int.left) {
+                s = "LEFT";
+            }
         }
     }
 }
