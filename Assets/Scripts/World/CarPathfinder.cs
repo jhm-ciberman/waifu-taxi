@@ -33,7 +33,6 @@ namespace WaifuTaxi
             // Detect U turns at the start of the path
             if (fromCoord == this._startCoord) {
                 var dir = toCoord - fromCoord;
-                Debug.Log(dir + " " + this._startDir);
                 if (this._startDir == -dir) {
                     return 10000f;
                 }

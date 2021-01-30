@@ -6,54 +6,122 @@ namespace WaifuTaxi
     public class RoutePlanner
     {
         private World _world;
+        
+        private Entity _entity;
 
-        public RoutePlanner(World world)
+        private List<Vector2Int> _path;
+
+        private int _pathIndex = 0;
+
+        private Vector2Int _nextGoal;
+
+        private Vector2Int _currentCoord;
+
+        private Vector2Int _finalDestination;
+
+        private Indication _currentIndication = Indication.None;
+
+        public RoutePlanner(World world, Entity entity)
         {
             this._world = world;
+            this._entity = entity;
         }
 
-
-        public Queue<Vector2Int> CalculatePath(Vector2 pos, float currentAngle)
+        public void UpdatePath()
         {
-            var start = this._PositionToTileCoord(pos);
-            var end = this._world.RandomRoad();
-            var startingDir = this._GetDirVector(currentAngle);
-            CarPathfinder pathfinder = new CarPathfinder(this._world, start, end, startingDir);
-            var path = pathfinder.Pathfind();
+            var coord = this._entity.currentCoord;
 
-            if (path == null) {
-                Debug.Log("PATH NOT FOUND start=" + start + " end = " + end);
-                return null;
+            if (this._path == null) {
+                this.StartNewPath();
+            }
+
+            if (coord == this._nextGoal) {
+                this.AdvanceToNextGoal(); // Goal reached
+            } else if (coord != this._currentCoord) {
+                this.RecalculatePath(); // Wrong path
             } else {
-                //Debug.Log("PATH FOUND start=" + start + " end =" + end);
-                //foreach (var p in path) Debug.Log(p);
-
-                var queue = new Queue<Vector2Int>(path);
-                return queue;
+                this.CalculateIndications();
             }
         }
 
-        public Vector2Int _GetDirVector(float angle)
+        public void CalculateIndications()
         {
-            angle += 90f;
-            angle %= 360f;
-            int dir = Mathf.CeilToInt((angle - 45f) / 90f);
+            var dirVector = this._nextGoal - this._currentCoord;
 
-            switch (dir) {
-                case 0: return new Vector2Int(1, 0);
-                case 1: return new Vector2Int(0, 1);
-                case 2: return new Vector2Int(-1, 0);
-                case 3: return new Vector2Int(0, -1);
+            var goalAngle = Vector2.SignedAngle(Vector2.up, dirVector);
+            var angleDelta = Mathf.DeltaAngle(this._entity.angle, goalAngle);
+            var sign = Mathf.Sign(angleDelta);
+            var abs = Mathf.Abs(angleDelta);
+
+            Indication indication;
+            if (abs < 45f) {
+                indication = Indication.Continue;
+            } else if (abs < 135f) {
+                indication = (sign > 0) ? Indication.TurnLeft : Indication.TurnRight;
+            } else {
+                indication = Indication.TurnU;
             }
-            return Vector2Int.zero; // error!
+
+            this._SetNewIndication(indication);
         }
 
-        private Vector2Int _PositionToTileCoord(Vector2 pos)
+        private void _SetNewIndication(Indication indication)
         {
-            int x = Mathf.RoundToInt(pos.x);
-            int y = Mathf.RoundToInt(pos.y);
-            return new Vector2Int(x, y);
+            if (indication == this._currentIndication) return;
+            if (this._currentIndication == Indication.TurnU) {
+                if (indication == Indication.TurnLeft || indication == Indication.TurnRight) {
+                    return;
+                }
+            }
+            this._currentIndication = indication;
+            Debug.Log("Indication: " + indication);
         }
 
+        public void StartNewPath()
+        {
+            this._finalDestination = this._GetRandomDestination();
+            this.RecalculatePath(); // No destination
+        }
+
+        private void AdvanceToNextGoal()
+        {
+            this._pathIndex++; // Goal reached!
+            if (this._pathIndex < this._path.Count) {
+                this._currentCoord = this._path[this._pathIndex - 1];
+                this._nextGoal = this._path[this._pathIndex];
+            } else {
+                Debug.Log("GOAL REACHED!!! ");
+            }
+
+
+        }
+
+        private Vector2Int _GetRandomDestination()
+        {
+            var start = this._entity.currentCoord;
+            Vector2Int end;
+            int tries = 0;
+            do {
+                end = this._world.RandomRoad();
+                tries++;
+                if (tries > 1000) return end;
+            } while (end == start);
+            return end;
+        }
+
+        public void RecalculatePath()
+        {
+            Debug.Log("Recalculate");
+
+            var pathfinder = new CarPathfinder(this._world, this._entity.currentCoord, this._finalDestination, this._entity.currentDirVector);
+            this._path = pathfinder.Pathfind();
+            this._pathIndex = 0;
+            if (this._path.Count > 1) {
+                this.AdvanceToNextGoal();
+            } else {
+                this._path = null; 
+                Debug.Log("Invalid goal");
+            }
+        }
     }
 }

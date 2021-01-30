@@ -31,12 +31,13 @@ namespace WaifuTaxi
                 this.SpawnCar(world, pos);
             }
 
-            this.SpawnPlayer(world);
+            var playerPos = world.RandomRoad();
+            this.SpawnPlayer(world, playerPos);
         }
 
-        public void SpawnPlayer(World world)
+        public void SpawnPlayer(World world, Vector2Int coords)
         {
-            var playerPos = new Vector3((int) (world.size.x / 2f), (int) (world.size.y / 2f), 0f);
+            var playerPos = new Vector3(coords.x, coords.y, 0f);
             var player = Object.Instantiate(this.player, playerPos, Quaternion.identity);
             player.SetWorld(world);
         }

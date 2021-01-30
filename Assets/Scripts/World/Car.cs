@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace WaifuTaxi
 {
-    public class Car : MonoBehaviour
+    public class Car : Entity
     {
         private Queue<Vector2Int> _path = null;
         
@@ -11,21 +11,21 @@ namespace WaifuTaxi
 
         public float speed = 0.5f;
 
-        private RoutePlanner _planner;
-
-        private float _currentAngle;
+        private World _world;
 
         public void SetWorld(World world)
         {
-            this._planner = new RoutePlanner(world);
+            this._world = world;
             this.StartNewRandomPath();
         }
 
         public void StartNewRandomPath()
         {
-            if (this._planner == null) return;
+            if (this._world == null) return;
 
-            var path = this._planner.CalculatePath(this.transform.position, this._currentAngle);
+            var end = this._world.RandomRoad();
+            CarPathfinder pathfinder = new CarPathfinder(this._world, this.currentCoord, end, this.currentDirVector);
+            var path = pathfinder.Pathfind();
             if (path != null) {
                 this.SetPath(path);
             }
@@ -38,7 +38,7 @@ namespace WaifuTaxi
             var dest = new Vector3(this._currentPoint.x, this._currentPoint.y, 0f);
             var pos = this.transform.position;
             var dir = dest - pos;
-            this._currentAngle = Vector2.SignedAngle(Vector2.up, dir);
+            this._angle = Vector2.SignedAngle(Vector2.up, dir);
 
             if (dir.magnitude >= 0.1f) {
                 // Stear torwards current point
@@ -52,15 +52,14 @@ namespace WaifuTaxi
                 this.StartNewRandomPath();
             }
 
-            var dirVec = this._planner._GetDirVector(this._currentAngle);
-            this.transform.rotation = Quaternion.AngleAxis(this._currentAngle, Vector3.forward);
+            var dirVec = this.currentDirVector;
+            this.transform.rotation = Quaternion.AngleAxis(this._angle, Vector3.forward);
         }
 
-        public void SetPath(Queue<Vector2Int> path) 
+        public void SetPath(IEnumerable<Vector2Int> path) 
         {
-            this._path = path;
-            Debug.Log("STARTING PATH LENGTH = " + path.Count);
-            this._currentPoint = path.Dequeue();
+            this._path = new Queue<Vector2Int>(path);
+            this._currentPoint = this._path.Dequeue();
         }
 
     }

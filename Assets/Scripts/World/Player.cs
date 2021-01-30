@@ -2,10 +2,9 @@ using UnityEngine;
 
 namespace WaifuTaxi
 {
-    public class Player : MonoBehaviour
+    public class Player : Entity
     {
-        private float _speed;
-        private float _direction;
+        private float _speed = 0f;
 
         public float globalMultiplier = 200f;
         public float maxSpeed = 0.6f;
@@ -21,7 +20,7 @@ namespace WaifuTaxi
         public void SetWorld(World world)
         {
             this._world = world;
-            this._planner = new RoutePlanner(world);
+            this._planner = new RoutePlanner(world, this);
         }
 
         void Update()
@@ -37,37 +36,30 @@ namespace WaifuTaxi
 
             var rotationSpeed = (this._speed / this.requiredRotationSpeed);
             if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) {
-                this._direction += this.turnSpeed * Time.deltaTime * rotationSpeed;
+                this._angle += this.turnSpeed * Time.deltaTime * rotationSpeed;
             }
 
             if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) {
-                this._direction -= this.turnSpeed * Time.deltaTime * rotationSpeed;
+                this._angle -= this.turnSpeed * Time.deltaTime * rotationSpeed;
             }
 
             if (this._speed > 0f) {
                 this._speed -= this.friction * Time.deltaTime;
             }
 
-            this._direction %= 360f;
+            this._angle %= 360f;
 
-            var rot = Quaternion.AngleAxis(this._direction, Vector3.forward);
+            var rot = Quaternion.AngleAxis(this._angle, Vector3.forward);
             this.transform.rotation = rot;
             this.transform.position += rot * Vector3.up * this._speed / this.globalMultiplier;
 
             //Debug.Log(this._world.PositionToTileCoord(this.transform.position));
 
-            var dir = this._planner._GetDirVector(this._direction);
+            this._planner.UpdatePath();
 
-            string s = "none";
-            if (dir == Vector2Int.up) {
-                s = "UP";
-            } else if (dir == Vector2Int.down) {
-                s = "DOWN";
-            } else if (dir == Vector2Int.right) {
-                s = "RiGHT";
-            } else if (dir == Vector2Int.left) {
-                s = "LEFT";
-            }
+            var dir = this.currentDirVector;
+
+
         }
     }
 }
