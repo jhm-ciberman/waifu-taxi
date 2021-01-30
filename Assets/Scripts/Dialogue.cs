@@ -10,8 +10,8 @@ public class Dialogue
         angry,
         embarrased
     }
-    private string text{get;set;}
-    private emotions emotion{get;set;}
+    protected string text;
+    private emotions emotion;
 
     public string Text{get{return text;}}
     public emotions Emotion{get{return emotion;}}
@@ -21,8 +21,6 @@ public class Dialogue
         this.text=text;
         this.emotion=emotion;
     }
-
-
 
 
 

@@ -20,7 +20,7 @@ public class PasajeroSprite : MonoBehaviour
 
     public void Start()
     {
-        DialogueManager.I.newDialogueEvent.AddListener(changeExpression);
+        ///DialogueManager.I.newDialogueEvent.AddListener(changeExpression);
     }
 
 
