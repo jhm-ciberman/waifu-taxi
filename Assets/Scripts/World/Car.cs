@@ -22,17 +22,23 @@ namespace WaifuTaxi
         public void StartNewRandomPath()
         {
             if (this._world == null) return;
-            var start = new Vector2Int((int) this.transform.position.x, (int) this.transform.position.y);
+            var start = this._world.PositionToTileCoord(this.transform.position);
             var end = this._world.RandomRoad();
             CarPathfinder pathfinder = new CarPathfinder(this._world, start, end);
             var path = pathfinder.Pathfind();
+
             if (path == null) {
-                Debug.Log("PATH NOT FOUND start=" + start + " " + end);
-                return;
+                Debug.Log("PATH NOT FOUND start=" + start + " end = " + end);
+            } else {
+                //Debug.Log("PATH FOUND start=" + start + " end =" + end);
+                //foreach (var p in path) Debug.Log(p);
+
+                var queue = new Queue<Vector2Int>(path);
+                this.SetPath(queue);
             }
-            var queue = new Queue<Vector2Int>(path);
-            this.SetPath(queue);
         }
+
+
 
         public void Update()
         {
@@ -43,11 +49,15 @@ namespace WaifuTaxi
             var dir = dest - pos;
 
             if (dir.magnitude >= 0.1f) {
+                // Stear torwards current point
                 this.transform.position += dir.normalized * Time.deltaTime * this.speed;
             } else if (this._path.Count > 0) {
+                // Next point in path
                 this._currentPoint = this._path.Dequeue();
             } else {
+                // Path finished!
                 this._path = null;
+                this.StartNewRandomPath();
             }
 
             var angle = Vector3.Angle(Vector3.right, dir);

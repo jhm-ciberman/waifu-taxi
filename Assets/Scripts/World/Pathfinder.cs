@@ -67,6 +67,8 @@ namespace WaifuTaxi
                 path.Add(current);
             } while (current != this._start);
 
+            path.Reverse();
+
             return path;
         }
 

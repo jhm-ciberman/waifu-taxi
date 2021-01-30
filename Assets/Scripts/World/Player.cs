@@ -15,9 +15,11 @@ namespace WaifuTaxi
         public float turnSpeed = 30f;
         public float requiredRotationSpeed = 0.2f;
 
-        void Start()
-        {
+        private World _world;
 
+        public void SetWorld(World world)
+        {
+            this._world = world;
         }
 
         void Update()
@@ -47,6 +49,8 @@ namespace WaifuTaxi
             var rot = Quaternion.AngleAxis(this._direction, Vector3.forward);
             this.transform.rotation = rot;
             this.transform.position += rot * Vector3.up * this._speed / this.globalMultiplier;
+
+            //Debug.Log(this._world.PositionToTileCoord(this.transform.position));
         }
     }
 }

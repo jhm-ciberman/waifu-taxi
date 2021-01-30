@@ -20,7 +20,6 @@ namespace WaifuTaxi
 
         protected override float _WeightFunction(Vector2Int fromCoord, Vector2Int toCoord, Vector2Int cameFromCoord)
         {
-            Debug.Log(toCoord + ": " + this._world.HasRoad(toCoord));
             if (! this._world.HasRoad(toCoord)) {
                 return float.PositiveInfinity;
             }

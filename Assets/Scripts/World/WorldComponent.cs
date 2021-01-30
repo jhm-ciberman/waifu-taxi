@@ -26,7 +26,7 @@ namespace WaifuTaxi
                 }
             }
 
-            for (int i = 0; i < 20; i++) {
+            for (int i = 0; i < 1; i++) {
                 var pos = world.RandomRoad();
                 this.SpawnCar(world, pos);
             }
@@ -37,12 +37,13 @@ namespace WaifuTaxi
         public void SpawnPlayer(World world)
         {
             var playerPos = new Vector3((int) (world.size.x / 2f), (int) (world.size.y / 2f), 0f);
-            Object.Instantiate(this.player, playerPos, Quaternion.identity);
+            var player = Object.Instantiate(this.player, playerPos, Quaternion.identity);
+            player.SetWorld(world);
         }
 
-        public void SpawnCar(World world, Vector2Int pos)
+        public void SpawnCar(World world, Vector2Int coords)
         {
-            var playerPos = new Vector3(pos.x, pos.y, 0f);
+            var playerPos = new Vector3(coords.x, coords.y, 0f);
             var car = Object.Instantiate(this.car, playerPos, Quaternion.identity);
             car.SetWorld(world);
         }

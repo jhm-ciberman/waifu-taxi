@@ -37,6 +37,13 @@ namespace WaifuTaxi
             return hasRoad;
         }
 
+        public Vector2Int PositionToTileCoord(Vector2 pos)
+        {
+            int x = Mathf.RoundToInt(pos.x);
+            int y = Mathf.RoundToInt(pos.y);
+            return new Vector2Int(x, y);
+        }
+
         public Vector2Int RandomRoad()
         {
             int tries = 0;
