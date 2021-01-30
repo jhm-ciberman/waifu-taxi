@@ -77,9 +77,10 @@ namespace WaifuTaxi
                     return;
                 }
             }
+            var prevIndication = this._currentIndication;
             this._currentIndication = indication;
 
-            var e = new IndicationEvent(indication, this._pathWasRecentlyRestarted);
+            var e = new IndicationEvent(indication, prevIndication, this._pathWasRecentlyRestarted);
             this.onIndication.Invoke(e);
         }
 
