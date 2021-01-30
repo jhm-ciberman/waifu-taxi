@@ -14,10 +14,8 @@ namespace WaifuTaxi
         public Transform roadT;
         public Transform plaza;
         
-        void Start()
+        public Player GenerateWorld(World world)
         {
-            var world = new World(new Vector2Int(20, 20));
-
             for (int x = 0; x < world.size.x; x++) {
                 for (int y = 0; y < world.size.y; y++) {
                     var pos = new Vector2Int(x, y);
@@ -32,14 +30,14 @@ namespace WaifuTaxi
             }
 
             var playerPos = world.RandomRoad();
-            this.SpawnPlayer(world, playerPos);
+            return this.SpawnPlayer(world, playerPos);
         }
 
-        public void SpawnPlayer(World world, Vector2Int coords)
+        public Player SpawnPlayer(World world, Vector2Int coords)
         {
             var playerPos = new Vector3(coords.x, coords.y, 0f);
             var player = Object.Instantiate(this.player, playerPos, Quaternion.identity);
-            player.SetWorld(world);
+            return player;
         }
 
         public void SpawnCar(World world, Vector2Int coords)
