@@ -12,7 +12,7 @@ public class DialogueManager : MonoBehaviour
     static int MAX_LENGH = 183;
     static float TEXT_SPEED = .03f;
     [SerializeField] private TextMeshProUGUI textDialogue;
-    public bool canShowNormalialogue,canShowUrgentDialogue;
+    public bool canShowNormalialogue,canShowUrgentDialogue,canShowQuestion;
     public bool needsUrgentDialogue;
     public Pasajero pasajero;
     public NewDialogueEvent normalDialogueEvent,turnDialogueEvent;
@@ -20,6 +20,7 @@ public class DialogueManager : MonoBehaviour
 
     [SerializeField] NormalDialogue normalDialogueManager;
     [SerializeField] TurnDialogueManager turnDialogueManager;
+    [SerializeField] QuestionDialogueManager questionDialogueManager;
     
     public static DialogueManager I;
 
@@ -27,6 +28,7 @@ public class DialogueManager : MonoBehaviour
     {
         canShowNormalialogue=true;
         canShowUrgentDialogue=true;
+        canShowQuestion=false;
         textDialogue.text="";
         turnLeftEvent=new UnityEvent();
         turnRightEvent=new UnityEvent();
@@ -100,65 +102,6 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    /*public IEnumerator showQuestionDialogue(QuestionDialogue newDialogue)
-
-    {
-        needsUrgentDialogue=true;
-        string fullDialogue;
-        string actualText = textDialogue.text;
-        int lastSpace=0;
-        int k=1+newDialogue.Options.Length;
-        for(int j=0;j<=k;j++)
-        {
-            fullDialogue=" ";
-            //Dialogo inicial
-            if(j==0)
-            {
-                fullDialogue+=newDialogue.Text;
-            }
-            //Dialogo final
-            else if(j==k)
-            {
-                fullDialogue+=newDialogue.AfterDialogue;
-            }
-            //Las opciones
-            else
-            {
-                fullDialogue=newDialogue.Options[j-1];
-            }
-            int i=0;
-            while(i < fullDialogue.Length)
-            {
-                if(fullDialogue[i]==' ')
-                {
-                    lastSpace=i;
-                }
-                if(actualText.Length>MAX_LENGH)
-                {
-                    actualText="";
-                    i=lastSpace;
-                }
-                if(fullDialogue[i]=='*')
-                {
-                    yield return new WaitForSeconds(1f);
-                }
-                else
-                {
-                    actualText+= fullDialogue[i];
-                    textDialogue.text=actualText;
-                    yield return new WaitForSeconds(TEXT_SPEED);
-                }
-                i++;
-            }
-        }
-            needsUrgentDialogue=false;
-    }
-    */
-
-    public void newDialogue(string dialogue)
-    {
-        StartCoroutine(showDialogue(dialogue,false));
-    }
 
     public void NormalDialogue(string dialogue)
     {
@@ -167,21 +110,35 @@ public class DialogueManager : MonoBehaviour
 
     public void turnLeft()
     {
-        TurnDialogue turnDialogue = pasajero.getTurnLeftDialogue();
-        StartCoroutine(turnDialogueManager.showTurnDialogueRoutine(turnDialogue));
+        if(canShowUrgentDialogue)
+        {
+            needsUrgentDialogue=true;
+            TurnDialogue turnDialogue = pasajero.getTurnLeftDialogue();
+            StartCoroutine(turnDialogueManager.showTurnDialogueRoutine(turnDialogue));
+        }
 
     }
 
      public void turnRight()
     {
-        TurnDialogue turnDialogue = pasajero.getTurnLeftDialogue();
-        StartCoroutine(turnDialogueManager.showTurnDialogueRoutine(turnDialogue));
+        if(canShowUrgentDialogue)
+        {
+            needsUrgentDialogue=true;
+            TurnDialogue turnDialogue = pasajero.getTurnLeftDialogue();
+            StartCoroutine(turnDialogueManager.showTurnDialogueRoutine(turnDialogue));
+        }
+        
     }
 
     public void askQuestion()
     {
-        QuestionDialogue questionDialogue = pasajero.getRandomQuestionDialogue();
-        //StartCoroutine(showQuestionDialogue(questionDialogue));
+        if(canShowUrgentDialogue)
+        {
+            needsUrgentDialogue=true;
+            canShowQuestion=true;
+            QuestionDialogue questionDialogue = pasajero.getRandomQuestionDialogue();
+            StartCoroutine(questionDialogueManager.showQuestionRoutine(questionDialogue));
+        }
     }
 
 
