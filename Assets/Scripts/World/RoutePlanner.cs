@@ -21,6 +21,10 @@ namespace WaifuTaxi
 
         private Indication _currentIndication = Indication.None;
 
+        public System.Action<IndicationEvent> onIndication;
+        
+        private bool _pathWasRecentlyRestarted = false;
+
         public RoutePlanner(World world, Entity entity)
         {
             this._world = world;
@@ -74,7 +78,9 @@ namespace WaifuTaxi
                 }
             }
             this._currentIndication = indication;
-            Debug.Log("Indication: " + indication);
+
+            var e = new IndicationEvent(indication, this._pathWasRecentlyRestarted);
+            this.onIndication.Invoke(e);
         }
 
         public void StartNewPath()
@@ -86,14 +92,16 @@ namespace WaifuTaxi
         private void AdvanceToNextGoal()
         {
             this._pathIndex++; // Goal reached!
+            
             if (this._pathIndex < this._path.Count) {
                 this._currentCoord = this._path[this._pathIndex - 1];
                 this._nextGoal = this._path[this._pathIndex];
+
+                this.CalculateIndications();
             } else {
                 Debug.Log("GOAL REACHED!!! ");
             }
-
-
+            this._pathWasRecentlyRestarted = false;
         }
 
         private Vector2Int _GetRandomDestination()
@@ -111,8 +119,9 @@ namespace WaifuTaxi
 
         public void RecalculatePath()
         {
-            Debug.Log("Recalculate");
-
+            if (this._path != null) {
+                this._pathWasRecentlyRestarted = true;
+            }
             var pathfinder = new CarPathfinder(this._world, this._entity.currentCoord, this._finalDestination, this._entity.currentDirVector);
             this._path = pathfinder.Pathfind();
             this._pathIndex = 0;
