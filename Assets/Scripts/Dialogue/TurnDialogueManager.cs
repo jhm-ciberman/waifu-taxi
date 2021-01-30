@@ -16,11 +16,8 @@ public class TurnDialogueManager : MonoBehaviour
         bool canShowUrgentDialogue=DialogueManager.I.canShowUrgentDialogue;
         int numeroDeDialogosFalsos =Random.Range(0,4);
         string fullDialogue;
-        DialogueManager.I.needsUrgentDialogue=true;
-        DialogueManager.I.canShowUrgentDialogue=true;
         for(int j=0;j<=numeroDeDialogosFalsos;j++)
         {
-            Debug.Log("lol");
             fullDialogue="";
             //Al principio
             if(j==0)
