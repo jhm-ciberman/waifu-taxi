@@ -46,9 +46,9 @@ public abstract class Pasajero
         this.turnRightDialogue.Add(turnDialogue);
     }
 
-    public void addQuestionDialogue(string text,Dialogue.emotions emotion,string[] options,int correct,string afterDialogue)
+    public void addQuestionDialogue(string text,Dialogue.emotions emotion,string[] options,int correct,string afterDialogue,string correctDialogue,string failDialogue)
     {
-        QuestionDialogue dialogue=new QuestionDialogue(text,emotion,options,correct,afterDialogue);
+        QuestionDialogue dialogue=new QuestionDialogue(text,emotion,options,correct,afterDialogue,correctDialogue,failDialogue);
         this.questionDialogue.Add(dialogue);
     }
 

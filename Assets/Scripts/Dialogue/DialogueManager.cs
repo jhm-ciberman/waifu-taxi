@@ -52,9 +52,14 @@ public class DialogueManager : MonoBehaviour
         Debug.Log("test");
     }
 
-    public IEnumerator showDialogue(string newDialogue,bool isUrgent)
+    public IEnumerator showDialogue(string newDialogue,bool isUrgent,bool clear)
     {
         string actualText =textDialogue.text;
+        if(clear)
+            {
+                //actualText="";
+                Debug.Log("clear");
+            }
         int lastSpace=0;
         //newDialogueEvent.Invoke(pasajero,newDialogue);
         int i=0;
@@ -65,31 +70,31 @@ public class DialogueManager : MonoBehaviour
         while(i < newDialogue.Length)
         {
             if(newDialogue[i]==' ')
-                {
-                    lastSpace=i;
-                }
-                if(actualText.Length>MAX_LENGH)
-                {
-                    actualText="";
-                    i=lastSpace;
-                }
-                if(newDialogue[i]=='*')
-                {
-                    yield return new WaitForSeconds(1f);
-                }
-                else
-                {
-                    actualText+= newDialogue[i];
-                    textDialogue.text=actualText;
-                    yield return new WaitForSeconds(TEXT_SPEED);
-                }
-                i++;
-                if(!isUrgent && needsUrgentDialogue)
-                {
-                    yield return new WaitUntil(()=>!needsUrgentDialogue);
-                    actualText=textDialogue.text;
-                    i=lastSpace;
-                }
+            {
+                lastSpace=i;
+            }
+            if(actualText.Length>MAX_LENGH)
+            {
+                actualText="";
+                i=lastSpace;
+            }
+            if(newDialogue[i]=='*')
+            {
+                yield return new WaitForSeconds(1f);
+            }
+            else
+            {
+                actualText+= newDialogue[i];
+                textDialogue.text=actualText;
+                yield return new WaitForSeconds(TEXT_SPEED);
+            }
+            i++;
+            if(!isUrgent && needsUrgentDialogue)
+            {
+                yield return new WaitUntil(()=>!needsUrgentDialogue);
+                actualText=textDialogue.text;
+                i=lastSpace;
+            }
         }
         actualText+=" ";
         if(isUrgent)
@@ -105,7 +110,7 @@ public class DialogueManager : MonoBehaviour
 
     public void NormalDialogue(string dialogue)
     {
-        StartCoroutine(showDialogue(dialogue,false));
+        StartCoroutine(showDialogue(dialogue,false,false));
     }
 
     public void turnLeft()
