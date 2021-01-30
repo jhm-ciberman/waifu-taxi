@@ -132,6 +132,7 @@ GameObject:
   - component: {fileID: 1451054417}
   - component: {fileID: 1451054416}
   - component: {fileID: 1451054415}
+  - component: {fileID: 1451054418}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -204,3 +205,25 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1451054418
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1451054414}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 310883a75dd2114428758c029ad049c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  roadLine: {fileID: 1674897116535790981, guid: e563e4b1d4737a646a0627bb88cdbc4b,
+    type: 3}
+  roadCurve: {fileID: 8359948193525098634, guid: 1156abd6329036c4caffa558d3687601,
+    type: 3}
+  roadCross: {fileID: 3820606873509596707, guid: c6862b638084c844abc311f2160f85c5,
+    type: 3}
+  roadEnding: {fileID: 3981824889230394259, guid: 1ecf35bd6f257a140bc20c8bdae7d1e8,
+    type: 3}
+  roadT: {fileID: 1103150070888029510, guid: dd0d4f304333f224b920bc403790fe9d, type: 3}
+  plaza: {fileID: 2948901506516218768, guid: 19215c787b793b44a9db150b1d0d3378, type: 3}
