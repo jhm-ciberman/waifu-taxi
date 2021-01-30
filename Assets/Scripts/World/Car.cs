@@ -7,11 +7,19 @@ namespace WaifuTaxi
     {
         private Queue<Vector2Int> _path = null;
         
+        private Vector2Int _prevPoint;
         private Vector2Int _currentPoint;
 
         public float speed = 0.5f;
+        public float roadSeparation = 0.15f;
 
         private World _world;
+
+        public void Awake()
+        {
+            this._prevPoint = this.currentCoord;
+            this._currentPoint = this.currentCoord;
+        }
 
         public void SetWorld(World world)
         {
@@ -21,6 +29,7 @@ namespace WaifuTaxi
 
         public void StartNewRandomPath()
         {
+            this._path = null;
             if (this._world == null) return;
 
             var end = this._world.RandomRoad();
@@ -35,20 +44,18 @@ namespace WaifuTaxi
         {
             if (this._path == null) return;
 
-            var dest = new Vector3(this._currentPoint.x, this._currentPoint.y, 0f);
-            var pos = this.transform.position;
-            var dir = dest - pos;
-            this._angle = Vector2.SignedAngle(Vector2.up, dir);
+            var target = this.GetTarget();
+            var pos = new Vector2(this.transform.position.x, this.transform.position.y);
+            var dir = target - pos;
 
-            if (dir.magnitude >= 0.1f) {
+            if (dir.magnitude >= 0.10f) {
                 // Stear torwards current point
-                this.transform.position += dir.normalized * Time.deltaTime * this.speed;
+                var dirNormalized = dir.normalized;
+                this._angle = Vector2.SignedAngle(Vector2.up, dirNormalized);
+                this.transform.position += new Vector3(dirNormalized.x, dirNormalized.y, 0f) * Time.deltaTime * this.speed;
             } else if (this._path.Count > 0) {
-                // Next point in path
-                this._currentPoint = this._path.Dequeue();
+                this._NextPoint();
             } else {
-                // Path finished!
-                this._path = null;
                 this.StartNewRandomPath();
             }
 
@@ -56,9 +63,27 @@ namespace WaifuTaxi
             this.transform.rotation = Quaternion.AngleAxis(this._angle, Vector3.forward);
         }
 
+        private Vector2 GetTarget()
+        {
+            var pos = new Vector2(this.transform.position.x, this.transform.position.y);
+            var goalDir = (this._currentPoint - this._prevPoint);
+            var offset = new Vector2(-goalDir.y, -goalDir.x) * this.roadSeparation;
+            return this._currentPoint + offset;
+        }
+
         public void SetPath(IEnumerable<Vector2Int> path) 
         {
             this._path = new Queue<Vector2Int>(path);
+            this._NextPoint();
+
+            if (this._prevPoint == this._currentPoint) {
+                this._NextPoint();
+            }
+        }
+
+        private void _NextPoint()
+        {
+            this._prevPoint = this._currentPoint;
             this._currentPoint = this._path.Dequeue();
         }
 

@@ -7,11 +7,11 @@ namespace WaifuTaxi
         private float _speed = 0f;
 
         public float globalMultiplier = 200f;
-        public float maxSpeed = 0.6f;
-        public float friction = 1f;
-        public float aceleration = 10f;
-        public float deaceleration = 0.6f;
-        public float turnSpeed = 30f;
+        public float maxSpeed = 0.7f;
+        public float friction = 0.2f;
+        public float aceleration = 0.6f;
+        public float deaceleration = 0.5f;
+        public float turnSpeed = 35f;
         public float requiredRotationSpeed = 0.2f;
 
         void Update()

@@ -96,12 +96,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   globalMultiplier: 200
-  maxSpeed: 0.6
-  friction: 1
-  aceleration: 10
-  deaceleration: 0.6
-  turnSpeed: 30
-  requiredRotationSpeed: 0.2
+  maxSpeed: 0.8
+  friction: 0.2
+  aceleration: 0.6
+  deaceleration: 0.5
+  turnSpeed: 35
+  requiredRotationSpeed: 0.4
 --- !u!1 &3980685094102747683
 GameObject:
   m_ObjectHideFlags: 0

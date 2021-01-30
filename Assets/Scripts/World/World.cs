@@ -11,6 +11,14 @@ namespace WaifuTaxi
 
         private System.Random _random = new System.Random();
 
+        private bool[,] _city = new bool[,] {
+           { false, true, false, false, false },
+           { false, true, false, false, false },
+           { false, true, false, true , false },
+           { false, true, false, false, false },
+           { false, true, false, false, false },
+        };
+
         public World(Vector2Int size)
         {
             this.size = size;
@@ -22,11 +30,12 @@ namespace WaifuTaxi
                 }
             }
 
-            for (int x = 1; x < size.x - 1; x++) {
-                for (int y = 1; y < size.y - 1; y++) {
+            for (int x = 0; x < this.size.x; x++) {
+                for (int y = 0; y < this.size.y; y++) {
                     if (x % 3 == 0 || y % 3 == 0) {
                         this._road[new Vector2Int(x, y)] = true;
                     }
+                    //this._road[new Vector2Int(x, y)] = this._city[x, y];
                 }
             }
         }

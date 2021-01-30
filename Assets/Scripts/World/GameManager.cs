@@ -22,7 +22,7 @@ namespace WaifuTaxi
                 this._planner.onIndication += (e) => {
                     Debug.Log("Indication: " + e.indication);
                     Debug.Log("PrevIndication: " + e.prevIndication);
-                    Debug.Log("Restarted: " + e.pathWasRestarted);  
+                    Debug.Log("Restarted: " + e.pathWasRestarted);
                 };
             } else { // Without ui
                 this._planner.onIndication += (e) => {
