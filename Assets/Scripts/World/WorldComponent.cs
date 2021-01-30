@@ -5,6 +5,7 @@ namespace WaifuTaxi.World
     public class WorldComponent : MonoBehaviour
     {
         public Player player;
+        public Car car;
 
         public Transform roadLine;
         public Transform roadCurve;
@@ -24,10 +25,18 @@ namespace WaifuTaxi.World
                     this.MakeRoad(pos, connection);
                 }
             }
+        }
 
+        public void SpawnPlayer(World world)
+        {
             var playerPos = new Vector3((int) (world.size.x / 2f), (int) (world.size.y / 2f), 0f);
             Object.Instantiate(this.player, playerPos, Quaternion.identity);
+        }
 
+        public void SpawnCar(Vector2Int pos)
+        {
+            var playerPos = new Vector3(pos.x, pos.y, 0f);
+            Object.Instantiate(this.car, playerPos, Quaternion.identity);
         }
 
         public void MakeRoad(Vector2Int pos, RoadConnection connection)
