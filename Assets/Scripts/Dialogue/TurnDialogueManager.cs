@@ -37,7 +37,7 @@ public class TurnDialogueManager : MonoBehaviour
                 fullDialogue+="...Ah no, me equivoque, en realidad ";
             }
             yield return new WaitUntil(()=>DialogueManager.I.canShowUrgentDialogue);
-            IEnumerator newRoutine = DialogueManager.I.showDialogue(fullDialogue,true);
+            IEnumerator newRoutine = DialogueManager.I.showDialogue(fullDialogue,true,false);
             StartCoroutine(newRoutine);
         }
         yield return new WaitUntil(()=>DialogueManager.I.canShowUrgentDialogue);

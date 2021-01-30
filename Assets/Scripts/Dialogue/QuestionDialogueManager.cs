@@ -4,17 +4,8 @@ using UnityEngine;
 
 public class QuestionDialogueManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
 
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
+    [SerializeField] private QuestionInput questionInput;
 
     public IEnumerator showQuestionRoutine(QuestionDialogue dialogue)
     {
@@ -22,11 +13,15 @@ public class QuestionDialogueManager : MonoBehaviour
         {
             yield return new WaitUntil(()=>DialogueManager.I.canShowQuestion);
             int k=1+dialogue.Options.Length;
-            string fullDialogue;
+            string fullDialogue=null;
+            questionInput.askQuestion(dialogue.Correct);
             for(int i=0;i<=k;i++)
             {
                 fullDialogue=" ";
                 //Dialogo inicial
+                if(i==1)
+                {
+                }
                 if(i==0)
                 {
                     fullDialogue+=dialogue.Text;
@@ -42,12 +37,23 @@ public class QuestionDialogueManager : MonoBehaviour
                     fullDialogue=dialogue.Options[i-1];
                 }
                 yield return new WaitUntil(()=>DialogueManager.I.canShowUrgentDialogue);
-                IEnumerator newRoutine = DialogueManager.I.showDialogue(fullDialogue,true);
-                StartCoroutine(newRoutine);
+                StartCoroutine(DialogueManager.I.showDialogue(fullDialogue,true,false));
             }
+            yield return new WaitUntil(()=>DialogueManager.I.canShowUrgentDialogue);
+            if(questionInput.answeredCorrectly())
+            {
+                fullDialogue = dialogue.CorrectDialogue;
+            }
+            else
+            {
+                fullDialogue=dialogue.FailDialogue;
+            }
+            StartCoroutine(DialogueManager.I.showDialogue(fullDialogue,true,false));
             yield return new WaitUntil(()=>DialogueManager.I.canShowUrgentDialogue);
             DialogueManager.I.canShowQuestion=false;
             DialogueManager.I.needsUrgentDialogue=false;
+
+            
         }
         
     }
