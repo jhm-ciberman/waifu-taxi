@@ -1,4 +1,4 @@
-namespace WaifuTaxi.World
+namespace WaifuTaxi
 {
     public class Cell
     {

@@ -5,19 +5,33 @@ namespace WaifuTaxi
 {
     public class Car : MonoBehaviour
     {
-        private Queue<Vector2Int> _path = new Queue<Vector2Int>();
+        private Queue<Vector2Int> _path = null;
         
         private Vector2Int _currentPoint;
 
         public float speed = 0.5f;
 
-        public void Start()
+        private World _world;
+
+        public void SetWorld(World world)
         {
-            var path = new Queue<Vector2Int>();
-            path.Enqueue(new Vector2Int(2, 3));
-            path.Enqueue(new Vector2Int(5, 3));
-            path.Enqueue(new Vector2Int(5, 10));
-            this.SetPath(path);
+            this._world = world;
+            this.StartNewRandomPath();
+        }
+
+        public void StartNewRandomPath()
+        {
+            if (this._world == null) return;
+            var start = new Vector2Int((int) this.transform.position.x, (int) this.transform.position.y);
+            var end = this._world.RandomRoad();
+            CarPathfinder pathfinder = new CarPathfinder(this._world, start, end);
+            var path = pathfinder.Pathfind();
+            if (path == null) {
+                Debug.Log("PATH NOT FOUND start=" + start + " " + end);
+                return;
+            }
+            var queue = new Queue<Vector2Int>(path);
+            this.SetPath(queue);
         }
 
         public void Update()
@@ -43,6 +57,7 @@ namespace WaifuTaxi
         public void SetPath(Queue<Vector2Int> path) 
         {
             this._path = path;
+            Debug.Log("STARTING PATH LENGTH = " + path.Count);
             this._currentPoint = path.Dequeue();
         }
 

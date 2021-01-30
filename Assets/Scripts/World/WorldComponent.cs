@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace WaifuTaxi.World
+namespace WaifuTaxi
 {
     public class WorldComponent : MonoBehaviour
     {
@@ -25,6 +25,13 @@ namespace WaifuTaxi.World
                     this.MakeRoad(pos, connection);
                 }
             }
+
+            for (int i = 0; i < 20; i++) {
+                var pos = world.RandomRoad();
+                this.SpawnCar(world, pos);
+            }
+
+            this.SpawnPlayer(world);
         }
 
         public void SpawnPlayer(World world)
@@ -33,10 +40,11 @@ namespace WaifuTaxi.World
             Object.Instantiate(this.player, playerPos, Quaternion.identity);
         }
 
-        public void SpawnCar(Vector2Int pos)
+        public void SpawnCar(World world, Vector2Int pos)
         {
             var playerPos = new Vector3(pos.x, pos.y, 0f);
-            Object.Instantiate(this.car, playerPos, Quaternion.identity);
+            var car = Object.Instantiate(this.car, playerPos, Quaternion.identity);
+            car.SetWorld(world);
         }
 
         public void MakeRoad(Vector2Int pos, RoadConnection connection)
@@ -82,7 +90,8 @@ namespace WaifuTaxi.World
             }
 
             var rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-            Object.Instantiate(prefab, new Vector3(pos.x, pos.y, 0f), rotation);
+            var obj = Object.Instantiate(prefab, new Vector3(pos.x, pos.y, 0f), rotation);
+            obj.name = "Tile " + pos;
         }
     }
 }

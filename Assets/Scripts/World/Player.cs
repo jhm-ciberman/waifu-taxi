@@ -7,13 +7,13 @@ namespace WaifuTaxi
         private float _speed;
         private float _direction;
 
-        public float globalMultiplier = 100f;
-        public float maxSpeed = 2f;
-        public float friction = 0.5f;
-        public float aceleration = 0.5f;
-        public float deaceleration = 0.5f;
-        public float turnSpeed = 0.5f;
-        public float requiredRotationSpeed = 0.5f;
+        public float globalMultiplier = 200f;
+        public float maxSpeed = 0.6f;
+        public float friction = 1f;
+        public float aceleration = 10f;
+        public float deaceleration = 0.6f;
+        public float turnSpeed = 30f;
+        public float requiredRotationSpeed = 0.2f;
 
         void Start()
         {
@@ -32,7 +32,6 @@ namespace WaifuTaxi
             }
 
             var rotationSpeed = (this._speed / this.requiredRotationSpeed);
-            Debug.Log(rotationSpeed);
             if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) {
                 this._direction += this.turnSpeed * Time.deltaTime * rotationSpeed;
             }

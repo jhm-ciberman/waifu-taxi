@@ -1,13 +1,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace WaifuTaxi.World
+namespace WaifuTaxi
 {
     public class World
     {
         private Dictionary<Vector2Int, bool> _road;
 
         public Vector2Int size {get ; private set;}
+
+        private System.Random _random = new System.Random();
 
         public World(Vector2Int size)
         {
@@ -33,6 +35,23 @@ namespace WaifuTaxi.World
         {
             this._road.TryGetValue(pos, out bool hasRoad);
             return hasRoad;
+        }
+
+        public Vector2Int RandomRoad()
+        {
+            int tries = 0;
+            while (tries < 1000) 
+            {
+                int x = this._random.Next(1, this.size.x - 1);
+                int y = this._random.Next(1, this.size.y - 1);
+                var pos = new Vector2Int(x, y);
+                if (this.HasRoad(pos)) {
+                    return pos;
+                }
+
+                tries++;
+            }
+            return new Vector2Int(0, 0); // Error! 
         }
 
         public RoadConnection GetRoadConnectionAt(Vector2Int pos)

@@ -1,4 +1,4 @@
-namespace WaifuTaxi.World
+namespace WaifuTaxi
 {
     [System.Flags]
     public enum RoadConnection 
