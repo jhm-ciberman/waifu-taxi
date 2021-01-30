@@ -250,7 +250,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b995d62366aea084d90b46ee985a4a00, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pasajeroSprite: {fileID: 337323647}
+  pasajeroSprite: {fileID: 474973031}
   placeHolderHappy: {fileID: 21300000, guid: c82c22fb246d11f4a8c52be8e07d773b, type: 3}
   placeHolderAngry: {fileID: 21300000, guid: 37da9c7a646e3b5478be91b519c14aa9, type: 3}
   placeHolderEmbarrassed: {fileID: 21300000, guid: 21c4ea0c49f7d664594e305e48a13db7,
@@ -313,7 +313,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 337323645}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6.778, y: -1.713, z: -10.380091}
+  m_LocalPosition: {x: 6.778, y: -1.713, z: 0}
   m_LocalScale: {x: 27.23916, y: 41.749836, z: 1}
   m_Children:
   - {fileID: 474973030}
@@ -345,7 +345,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 474973029}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.0013, y: 0.0089, z: 10.380091}
+  m_LocalPosition: {x: 0.0013, y: 0.0089, z: 0}
   m_LocalScale: {x: 0.033306867, y: 0.023705352, z: 1}
   m_Children: []
   m_Father: {fileID: 337323648}
@@ -734,6 +734,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7eab0af833c8f3499240286cec8644f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MAX_LENGH: 200
   textDialogue: {fileID: 876712629}
 --- !u!4 &1597675461
 Transform:

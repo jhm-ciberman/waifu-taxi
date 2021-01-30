@@ -5,11 +5,15 @@ using UnityEngine;
 public abstract class Pasajero
 {
     protected List<Dialogue> possibleDialogue;
+    protected List<Dialogue> turnLeftDialogue,turnRightDialogue;
     protected Dialogue introduction;
     protected string name;
 
     public List<Dialogue> PossibleDialogue{get{return possibleDialogue;}}
     public Dialogue Introduction{get{return introduction;}}
+
+    public List<Dialogue> TurnLeftDialogue{get{return turnLeftDialogue;}}
+
 
     public Sprite happySprite{get;set;}
     public Sprite angrySprite{get;set;}
