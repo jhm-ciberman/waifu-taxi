@@ -11,8 +11,7 @@ public  class NewDialogueEvent:UnityEvent<Dialogue>{}
 public class DialogueManager : MonoBehaviour
 {
     static int MAX_LENGH = 40;
-    static float TEXT_SPEED = .03f / 3f;
-    static float WAIT_SPEED=0.07f;
+    static float WAIT_SPEED=0.16f;
     [SerializeField] private int ronda;
     [SerializeField] private TextMeshProUGUI textDialogue;
     [SerializeField] private TextMeshProUGUI[] textDialogueArray;
@@ -63,23 +62,18 @@ public class DialogueManager : MonoBehaviour
         Debug.Log("test");
     }
 
-    public IEnumerator showDialogue(string newDialogue,bool isUrgent,bool clear)
+    public IEnumerator showDialogue(string newDialogue,bool isUrgent)
     {
-        string actualText =textDialogue.text;
-        float actualSpeed =pasajero.getSpeed();
+        string actualText = textDialogue.text;
+        float actualSpeed = pasajero.getSpeed(isUrgent);
         int lastSpace=0;
-        if(clear)
-            {
-                //actualText="";
-                Debug.Log("clear");
-        }
         int i=0;
         if(!isUrgent)
             canShowNormalialogue=false;
         else
         {
             canShowUrgentDialogue=false;
-            textDialogue.text+=" ";
+            actualText += "- ";
         }
         while(i < newDialogue.Length)
         {
@@ -116,6 +110,7 @@ public class DialogueManager : MonoBehaviour
             }
             if(newDialogue[i]=='*')
             {
+                actualSpeed = pasajero.getSpeed(isUrgent);
                 yield return new WaitForSeconds(WAIT_SPEED);
             }
             else
@@ -164,7 +159,7 @@ public class DialogueManager : MonoBehaviour
     {
         yield return new WaitUntil(()=>DialogueManager.I.canShowUrgentDialogue);
         needsUrgentDialogue=true;
-        StartCoroutine(showDialogue(texto,true,false));
+        StartCoroutine(showDialogue(texto,true));
         yield return new WaitUntil(()=>DialogueManager.I.canShowUrgentDialogue);
         needsUrgentDialogue=false;
     }
@@ -172,7 +167,7 @@ public class DialogueManager : MonoBehaviour
     public void NormalDialogue(Dialogue dialogue)
     {
         changeSprite.Invoke(dialogue);
-        StartCoroutine(showDialogue(dialogue.Text,false,false));
+        StartCoroutine(showDialogue(dialogue.Text,false));
     }
 
     public void GiveIndication(Indication indication)

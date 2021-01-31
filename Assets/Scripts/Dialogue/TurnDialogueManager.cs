@@ -19,9 +19,9 @@ public class TurnDialogueManager : MonoBehaviour
             fullDialogue="";
             //Al principio
             if(j==0)
-                {
-                    fullDialogue+="W-Wait, ";
-                }
+            {
+                fullDialogue+=" ";
+            }
             //Direccion de verdad
             if(j==numeroDeDialogosFalsos)
             {
@@ -39,7 +39,7 @@ public class TurnDialogueManager : MonoBehaviour
                 fullDialogue+="...I'm sorry, what I really meant is ";
             }
             yield return new WaitUntil(()=>DialogueManager.I.canShowUrgentDialogue);
-            IEnumerator newRoutine = DialogueManager.I.showDialogue(fullDialogue,true,true);
+            IEnumerator newRoutine = DialogueManager.I.showDialogue(fullDialogue,true);
             StartCoroutine(newRoutine);
         }
         yield return new WaitUntil(()=>DialogueManager.I.canShowUrgentDialogue);

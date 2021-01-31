@@ -11,8 +11,9 @@ public abstract class Pasajero:MonoBehaviour
     protected List<QuestionDialogue> questionDialogue;
     protected Dialogue introduction;
 
-    public float MinSpeed{get;private set;}
-    public float MaxSpeed{get;private set;}
+    public float SpeedRandomFactor{get;private set;}
+    public float FastTextSpeed{get;private set;}
+    public float SlowTextSpeed{get;private set;}
 
     public List<Dialogue> PossibleDialogue{get{return possibleDialogue;}}
     public List<TurnDialogue> TurnLeftDialogue{get{return turnLeftDialogue;}}
@@ -27,6 +28,8 @@ public abstract class Pasajero:MonoBehaviour
 
     public abstract void addDialogue();
 
+    private bool useFastText = false;
+
     public void Start()
     {
         this.possibleDialogue=new List<Dialogue>();
@@ -34,15 +37,22 @@ public abstract class Pasajero:MonoBehaviour
         this.turnRightDialogue = new List<TurnDialogue>();
         this.questionDialogue = new List<QuestionDialogue>();
         this.failDirectionDialogue = new List<Dialogue>();
-        MinSpeed=0.01f;
-        MaxSpeed=0.03f;
+        SpeedRandomFactor=0.01f;
+        FastTextSpeed=0.004f;
+        SlowTextSpeed=0.010f;
         addDialogue();
     }
 
-    public float getSpeed()
+    public float getSpeed(bool forceFast = false)
     {
-        float speed = Random.Range(MinSpeed,MaxSpeed);
-        return speed;
+        if (forceFast) {
+            this.useFastText = true;
+        } else {
+            this.useFastText = ! this.useFastText;
+        }
+
+        float speedDelta = Random.Range(0f, SpeedRandomFactor);
+        return (this.useFastText ? FastTextSpeed : SlowTextSpeed) + speedDelta;
     }
 
     public void addPossibleDialogue(string text,Dialogue.emotions emotion)

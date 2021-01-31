@@ -37,7 +37,7 @@ public class QuestionDialogueManager : MonoBehaviour
                     fullDialogue=dialogue.Options[i-1];
                 }
                 yield return new WaitUntil(()=>DialogueManager.I.canShowUrgentDialogue);
-                StartCoroutine(DialogueManager.I.showDialogue(fullDialogue,true,false));
+                StartCoroutine(DialogueManager.I.showDialogue(fullDialogue,true));
             }
             yield return new WaitUntil(()=>DialogueManager.I.canShowUrgentDialogue);
             if(questionInput.answeredCorrectly())
@@ -48,7 +48,7 @@ public class QuestionDialogueManager : MonoBehaviour
             {
                 fullDialogue=dialogue.FailDialogue;
             }
-            StartCoroutine(DialogueManager.I.showDialogue(fullDialogue,true,false));
+            StartCoroutine(DialogueManager.I.showDialogue(fullDialogue,true));
             yield return new WaitUntil(()=>DialogueManager.I.canShowUrgentDialogue);
             DialogueManager.I.canShowQuestion=false;
             DialogueManager.I.needsUrgentDialogue=false;
