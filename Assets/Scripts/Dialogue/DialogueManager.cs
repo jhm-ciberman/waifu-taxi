@@ -10,7 +10,7 @@ public  class NewDialogueEvent:UnityEvent<Dialogue>{}
 
 public class DialogueManager : MonoBehaviour
 {
-    static int MAX_LENGH = 40;
+    static int MAX_LENGH = 50;
     static float WAIT_SPEED=0.16f;
     [SerializeField] private int ronda;
     [SerializeField] private TextMeshProUGUI textDialogue;
@@ -20,7 +20,7 @@ public class DialogueManager : MonoBehaviour
     public Pasajero pasajero;
     public NewDialogueEvent normalDialogueEvent,turnDialogueEvent,changeSprite;
     public UnityEvent turnLeftEvent,turnRightEvent,questionEvent,changePasajero;
-    [SerializeField] public int actualLine;
+    [SerializeField] public int actualLineIndex;
     [SerializeField] private Pasajero[] pasajeros;
 
     [SerializeField] NormalDialogue normalDialogue;
@@ -35,7 +35,7 @@ public class DialogueManager : MonoBehaviour
         canShowUrgentDialogue=true;
         canShowQuestion=false;
         isFinished=false;
-        actualLine=0;
+        actualLineIndex=0;
         textDialogue=textDialogueArray[0];
         turnLeftEvent=new UnityEvent();
         turnRightEvent=new UnityEvent();
@@ -87,24 +87,12 @@ public class DialogueManager : MonoBehaviour
                 }
                 if(i-aux+textDialogue.text.Length>MAX_LENGH)
                 {
-                    actualText="";
-                    if(actualLine!=3)
-                    {
-                        actualLine++;
-                    }
-                    else
-                    {
-                        actualLine=0;
-                    }
-                    textDialogue=textDialogueArray[actualLine];
-                    if(actualLine==3)
-                    {
-                        textDialogueArray[0].text="";
-                    }
-                    else
-                    {
-                        textDialogueArray[actualLine+1].text="";
-                    }
+                    actualText = "";
+                    actualLineIndex = (actualLineIndex + 1) % textDialogueArray.Length;
+                    var nextLineIndex = (actualLineIndex + 1) % textDialogueArray.Length;
+                    textDialogue = textDialogueArray[actualLineIndex];
+                    textDialogue.alpha = 1f;
+                    StartCoroutine(FadeOutText(textDialogueArray[nextLineIndex], textDialogue));
                     i++;
                 }
             }
@@ -140,12 +128,27 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
+    private float textFadeSpeed = 2f;
+
+    private IEnumerator FadeOutText(TextMeshProUGUI lineToFade, TextMeshProUGUI lineInProgress)
+    {
+        float percent = 1f;
+        while (percent > 0.01f) {
+            var maxPercent = 1f - ((float) lineInProgress.text.Length / (float) MAX_LENGH);
+            percent -= this.textFadeSpeed * Time.deltaTime;
+            percent = Mathf.Min(percent, maxPercent);
+            lineToFade.alpha = percent;
+            yield return null;
+        }
+        lineToFade.text = "";
+    }
+
     public void clearAllText()
     {
         for(int i=0;i<textDialogueArray.Length;i++)
         {
             textDialogueArray[i].text="";
-            actualLine=0;
+            actualLineIndex=0;
             textDialogue = textDialogueArray[0];
         }
     }
