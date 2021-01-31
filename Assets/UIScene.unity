@@ -1099,6 +1099,26 @@ MonoBehaviour:
   spriteAsking: {fileID: 21300000, guid: 21c4ea0c49f7d664594e305e48a13db7, type: 3}
   spriteBlush: {fileID: 21300000, guid: 21c4ea0c49f7d664594e305e48a13db7, type: 3}
   spriteNormal: {fileID: 21300000, guid: c82c22fb246d11f4a8c52be8e07d773b, type: 3}
+--- !u!1 &1477080371 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1687532234372714392, guid: d3167cce92cffb84a998f4c406c72c51,
+    type: 3}
+  m_PrefabInstance: {fileID: 278642707}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1477080372
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1477080371}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 214c7998a63398b479774ed7fb09450c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _sounds: []
+  _music: []
 --- !u!1 &1552239441
 GameObject:
   m_ObjectHideFlags: 0
