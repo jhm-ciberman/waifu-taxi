@@ -10,8 +10,8 @@ public  class NewDialogueEvent:UnityEvent<Dialogue>{}
 
 public class DialogueManager : MonoBehaviour
 {
-    static int MAX_LENGH = 33;
-    static float TEXT_SPEED = .03f;
+    static int MAX_LENGH = 40;
+    static float TEXT_SPEED = .03f / 3f;
     [SerializeField] private TextMeshProUGUI textDialogue;
     [SerializeField] private TextMeshProUGUI[] textDialogueArray;
     public bool canShowNormalialogue,canShowUrgentDialogue,canShowQuestion;
