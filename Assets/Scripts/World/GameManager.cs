@@ -14,7 +14,7 @@ namespace WaifuTaxi
 
         public void Start()
         {
-            var world = new World(new Vector2Int(20, 20));
+            var world = new World(new City());
 
             var player = this.worldComponent.GenerateWorld(world);
 

@@ -5,67 +5,66 @@ namespace WaifuTaxi
 {
     public class World
     {
-        private Dictionary<Vector2Int, bool> _road;
+
+        public enum TileType
+        {
+            Building = 0,
+            Plaza,
+            Road,
+        }
+
+        private Dictionary<Vector2Int, TileType> _road = new Dictionary<Vector2Int, TileType>();
 
         public Vector2Int size {get ; private set;}
 
         private System.Random _random = new System.Random();
 
-        private int[,] _city = new int[,] {
-           { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-           { 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0 },
-           { 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0 },
-           { 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0 },
-           { 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0 },
-           { 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0 },
-           { 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0 },
-           { 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0 },
-           { 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0 },
-           { 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 },
-           { 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0 },
-           { 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0 },
-           { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-        };
-
         public int roadCount = 0;
 
-        public World(Vector2Int size)
+        public World(City city)
         {
             this.size = size;
-            this._road = new Dictionary<Vector2Int, bool>();
 
             for (int x = 0; x < size.x; x++) {
                 for (int y = 0; y < size.y; y++) {
-                    this._road[new Vector2Int(x, y)] = false;
+                    this._road[new Vector2Int(x, y)] = 0;
                 }
             }
 
-            for (int x = 1; x < this.size.x - 1; x++) {
-                for (int y = 1; y < this.size.y - 1; y++) {
-                    if (x % 3 == 0 || y % 3 == 0) {
-                        this._road[new Vector2Int(x, y)] = true;
-                    }
+            var plan = city.GetCity();
+            this.size = new Vector2Int(plan.GetLength(0), plan.GetLength(1));
+            for (int x = 0; x < plan.GetLength(0); x++) {
+                for (int y = 0; y < plan.GetLength(1); y++) {
+                    this._road[new Vector2Int(x, y)] = plan[x, y];
                 }
             }
 
-            //for (int x = 0; x < this._city.GetLength(0); x++) {
-            //    for (int y = 0; y < this._city.GetLength(1); y++) {
-            //        this._road[new Vector2Int(x, y)] = (this._city[x, y] == 1);
+
+            //for (int x = 1; x < this.size.x - 1; x++) {
+            //    for (int y = 1; y < this.size.y - 1; y++) {
+            //        if (x % 3 == 0 || y % 3 == 0) {
+            //            this._road[new Vector2Int(x, y)] = true;
+            //        }
             //    }
             //}
 
-            //this.size = new Vector2Int(this._city.GetLength(0), this._city.GetLength(1));
 
 
-            foreach (var hasRoad in this._road.Values) {
-                if (hasRoad) this.roadCount++;
+            foreach (var type in this._road.Values) {
+                if (type == TileType.Road) this.roadCount++;
             }
         }
 
         public bool HasRoad(Vector2Int pos)
         {
-            this._road.TryGetValue(pos, out bool hasRoad);
-            return hasRoad;
+            this._road.TryGetValue(pos, out TileType hasRoad);
+            return hasRoad == TileType.Road;
+        }
+
+        public TileType GetTileType(Vector2Int pos)
+        {
+            this._road.TryGetValue(pos, out TileType type);
+            return type;
         }
 
         public Vector2Int RandomRoad()

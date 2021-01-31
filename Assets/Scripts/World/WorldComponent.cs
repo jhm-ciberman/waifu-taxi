@@ -7,20 +7,20 @@ namespace WaifuTaxi
         public Player player;
         public Car car;
 
-        public Transform roadLine;
-        public Transform roadCurve;
-        public Transform roadCross;
-        public Transform roadEnding;
-        public Transform roadT;
-        public Transform plaza;
+        public WorldPrefabs prefabs;
         
+        private System.Random _random = new System.Random();
+
         public Player GenerateWorld(World world)
         {
             for (int x = 0; x < world.size.x; x++) {
                 for (int y = 0; y < world.size.y; y++) {
                     var pos = new Vector2Int(x, y);
                     var connection = world.GetRoadConnectionAt(pos);
-                    this.MakeRoad(pos, connection);
+                    bool forceBuilding = (x == 0 || x == world.size.x - 1 || y == 0 || y == world.size.y - 1);
+                    var type = world.GetTileType(pos);
+                    if (forceBuilding) type = World.TileType.Building;
+                    this.MakeRoad(pos, connection, type);
                 }
             }
 
@@ -48,51 +48,68 @@ namespace WaifuTaxi
             car.SetWorld(world);
         }
 
-        public void MakeRoad(Vector2Int pos, RoadConnection connection)
+        public void MakeRoad(Vector2Int pos, RoadConnection connection, World.TileType tileType)
         {
-            Transform prefab = this.plaza;
+            Transform prefab = null;
             float angle = 0;
             switch (connection)
             {
                 case RoadConnection.TopLeft: 
-                    angle = 270; prefab = this.roadCurve; break;
+                    angle = 270; prefab = this.prefabs.roadCurve; break;
                 case RoadConnection.TopRight: 
-                    angle = 0; prefab = this.roadCurve; break;
+                    angle = 0;   prefab = this.prefabs.roadCurve; break;
                 case RoadConnection.BottomLeft: 
-                    angle = 180; prefab = this.roadCurve; break;
+                    angle = 180; prefab = this.prefabs.roadCurve; break;
                 case RoadConnection.BottomRight: 
-                    angle = 90; prefab = this.roadCurve; break;
+                    angle = 90;  prefab = this.prefabs.roadCurve; break;
 
                 case RoadConnection.Vertical:
-                    angle = 0; prefab = this.roadLine; break;
+                    angle = 0; prefab = this.prefabs.roadLine; break;
                 case RoadConnection.Horizontal:
-                    angle = 90; prefab = this.roadLine; break;
+                    angle = 90; prefab = this.prefabs.roadLine; break;
 
                 case RoadConnection.Cross:
-                    angle = 0; prefab = this.roadCross; break;
+                    angle = 0; prefab = this.prefabs.roadCross; break;
 
                 case RoadConnection.TRight: 
-                    angle = 0; prefab = this.roadT; break;
+                    angle = 0; prefab = this.prefabs.roadT; break;
                 case RoadConnection.TLeft: 
-                    angle = 180; prefab = this.roadT; break;
+                    angle = 180; prefab = this.prefabs.roadT; break;
                 case RoadConnection.TBottom: 
-                    angle = 90; prefab = this.roadT; break;
+                    angle = 90; prefab = this.prefabs.roadT; break;
                 case RoadConnection.TTop: 
-                    angle = 270; prefab = this.roadT; break;
+                    angle = 270; prefab = this.prefabs.roadT; break;
 
                 case RoadConnection.Top: 
-                    angle = 0; prefab = this.roadEnding; break;
+                    angle = 0; prefab = this.prefabs.roadEnding; break;
                 case RoadConnection.Bottom: 
-                    angle = 180; prefab = this.roadEnding; break;
+                    angle = 180; prefab = this.prefabs.roadEnding; break;
                 case RoadConnection.Right: 
-                    angle = 90; prefab = this.roadEnding; break;
+                    angle = 90; prefab = this.prefabs.roadEnding; break;
                 case RoadConnection.Left: 
-                    angle = 270; prefab = this.roadEnding; break;
+                    angle = 270; prefab = this.prefabs.roadEnding; break;
+
+                default:
+                    angle = this._random.Next(0, 4) * 90f;
+                    if (tileType == World.TileType.Building) {
+                        prefab = this.RandomBuildingPrefab();
+                    } else {
+                        prefab = this.RandomPlazaPrefab();
+                    }
+                    break;
             }
 
+            this._InstantiateTile(prefab, pos, angle);
+        }
+
+        private void _InstantiateTile(Transform prefab, Vector2Int pos, float angle)
+        {
             var rotation = Quaternion.AngleAxis(angle, Vector3.forward);
             var obj = Object.Instantiate(prefab, new Vector3(pos.x, pos.y, 0f), rotation);
             obj.name = "Tile " + pos;
         }
+
+        private Transform RandomPlazaPrefab()    => this.prefabs.plazas[this._random.Next(0, this.prefabs.plazas.Length - 1)];
+        private Transform RandomBuildingPrefab() => this.prefabs.buildings[this._random.Next(0, this.prefabs.buildings.Length - 1)];
     }
 }
