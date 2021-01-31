@@ -97,7 +97,6 @@ public class DialogueManager : MonoBehaviour
                     i++;
                 }
             }
-
             var currentCharacter = newDialogue[i];
             if(currentCharacter == '*')
             {
@@ -204,7 +203,7 @@ public class DialogueManager : MonoBehaviour
     {
         while(true)
         {
-            yield return new WaitForSeconds(Random.Range(1,5));
+            yield return new WaitForSeconds(Random.Range(10,20));
             yield return new WaitUntil(()=>canShowUrgentDialogue);
             yield return new WaitUntil(()=>!isAskingDirections);
             needsUrgentDialogue=true;
@@ -212,7 +211,6 @@ public class DialogueManager : MonoBehaviour
             QuestionDialogue questionDialogue = pasajero.getRandomQuestionDialogue();
             StartCoroutine(questionDialogueManager.showQuestionRoutine(questionDialogue));
         }
-        
     }
 
     public void GiveIndication(Indication indication)
@@ -283,6 +281,7 @@ public class DialogueManager : MonoBehaviour
         this.pasajero=pasajeros[ronda];
         isFinished=false;
         canShowNormalialogue=true;
+        StartCoroutine(mostrarUrgente(pasajero.getIntroduction().Text));
         StartCoroutine(normalDialogue.showNormalDialogue());
         StartCoroutine(askQuestions());
     }

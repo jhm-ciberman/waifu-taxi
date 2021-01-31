@@ -6,8 +6,6 @@ public class Pasajero1 : Pasajero
 {
     public override void addDialogue()
     {
-        this.introduction=new Dialogue("Hola, como estas?* Mi nombre es ",Dialogue.emotions.asking);
-
         this.possibleDialogue.Add(new Dialogue("Esto un dialogo de prueba.",Dialogue.emotions.angry));
         this.possibleDialogue.Add(new Dialogue("Este es otro dialogo de prueba.",Dialogue.emotions.blush));
         this.possibleDialogue.Add(new Dialogue("Mas dialogo random.",Dialogue.emotions.asking));
