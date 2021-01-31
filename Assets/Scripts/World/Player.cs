@@ -23,28 +23,38 @@ namespace WaifuTaxi
 
         public System.Action onCollision;
 
-        void Update()
+        private bool _maxSpeed = false;
+
+        void FixedUpdate()
         {
             if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)) {
                 this._speed += this.aceleration * Time.deltaTime;
-                if (this._speed >= this.maxSpeed) this._speed = this.maxSpeed;
+                if (this._speed >= this.maxSpeed) {
+                    this._speed = this.maxSpeed;
+                    if (! this._maxSpeed) {
+                        AudioManager.Instance.PlaySound("car_maximum_speed");
+                    }
+                    this._maxSpeed = true;
+                } else if (this._speed < this.maxSpeed * 0.5f) {
+                    this._maxSpeed = false;
+                }
             }
 
             if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) {
-                this._speed -= this.deaceleration * Time.deltaTime;
+                this._speed -= this.deaceleration * Time.fixedDeltaTime;
             }
 
             var rotationSpeed = (this._speed / this.requiredRotationSpeed);
             if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) {
-                this._angle += this.turnSpeed * Time.deltaTime * rotationSpeed;
+                this._angle += this.turnSpeed * Time.fixedDeltaTime * rotationSpeed;
             }
 
             if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) {
-                this._angle -= this.turnSpeed * Time.deltaTime * rotationSpeed;
+                this._angle -= this.turnSpeed * Time.fixedDeltaTime * rotationSpeed;
             }
 
             if (this._speed > 0f) {
-                this._speed -= this.friction * Time.deltaTime;
+                this._speed -= this.friction * Time.fixedDeltaTime;
             }
 
             this._angle %= 360f;
@@ -60,6 +70,7 @@ namespace WaifuTaxi
         void OnCollisionEnter2D(Collision2D collision)
         {
             if (Mathf.Abs(this._speed) > 0.5f) {
+                AudioManager.Instance.PlaySound("car_crash");
                 this.onCollision?.Invoke();
             }
         }

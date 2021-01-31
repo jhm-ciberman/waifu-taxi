@@ -96,8 +96,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f0b421f896e2d846b9e21726bf87108, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  globalMultiplier: 150
-  maxSpeed: 0.8
+  globalMultiplier: 180
+  maxSpeed: 1.25
   friction: 0.2
   aceleration: 0.6
   deaceleration: 0.5
