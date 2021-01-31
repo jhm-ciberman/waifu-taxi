@@ -10,8 +10,8 @@ public class Pasajero1 : Pasajero
         this.possibleDialogue.Add(new Dialogue("Este es otro dialogo de prueba.",Dialogue.emotions.blush));
         this.possibleDialogue.Add(new Dialogue("Mas dialogo random.",Dialogue.emotions.asking));
 
-        this.addTurnLeftDialogue("podes girar a la izquierda plz",Dialogue.emotions.blush);
-        this.addTurnRightDialogue("gira a derecha",Dialogue.emotions.angry);
+        //this.addTurnLeftDialogue("podes girar a la izquierda plz",Dialogue.emotions.blush);
+        //this.addTurnRightDialogue("gira a derecha",Dialogue.emotions.angry);
 
         string[] opciones = new string[3];
         opciones[0]="(1) opcion 1 ";

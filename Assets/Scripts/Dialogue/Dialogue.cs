@@ -11,21 +11,20 @@ public class Dialogue
         blush,
         normal
     }
-    protected string text;
     private emotions emotion;
 
-    public string Text{get{return text;}}
+    public string Text{get;set;}
     public emotions Emotion{get{return emotion;}}
 
     public Dialogue(string text,emotions emotion)
     {
-        this.text=text;
+        this.Text=text;
         this.emotion=emotion;
     }
 
     public Dialogue(string text)
     {
-        this.text=text;
+        this.Text=text;
         this.emotion=emotions.normal;
     }
 

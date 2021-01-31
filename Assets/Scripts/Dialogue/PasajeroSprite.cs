@@ -19,6 +19,7 @@ public class PasajeroSprite : MonoBehaviour
     {
         DialogueManager.I.changeSprite.AddListener(changeExpression);
         DialogueManager.I.changePasajero.AddListener(changePasajero);
+        this.pasajero=DialogueManager.I.pasajero;
 
     }
 
