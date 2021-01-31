@@ -9,7 +9,7 @@ public abstract class Pasajero:MonoBehaviour
     protected List<Dialogue> possibleDialogue;
     protected List<TurnDialogue> turnLeftDialogue,turnRightDialogue;
     protected List<QuestionDialogue> questionDialogue;
-    protected Dialogue introduction;
+    protected List<Dialogue> introduction;
 
     public float SpeedRandomFactor{get;private set;}
     public float FastTextSpeed{get;private set;}
@@ -19,7 +19,7 @@ public abstract class Pasajero:MonoBehaviour
     public List<TurnDialogue> TurnLeftDialogue{get{return turnLeftDialogue;}}
     public List<TurnDialogue> TurnRightDialogue{get {return turnRightDialogue;}}
     public List<Dialogue> failDirectionDialogue{get;private set;}
-    public Dialogue Introduction{get{return introduction;}}
+    public List<Dialogue> Introduction{get{return introduction;}}
 
     public Sprite spriteAngry;
     public Sprite spriteAsking;
@@ -37,6 +37,7 @@ public abstract class Pasajero:MonoBehaviour
         this.turnRightDialogue = new List<TurnDialogue>();
         this.questionDialogue = new List<QuestionDialogue>();
         this.failDirectionDialogue = new List<Dialogue>();
+        this.introduction=new List<Dialogue>();
         SpeedRandomFactor = 0.004f;
         FastTextSpeed = 0.004f;
         SlowTextSpeed = 0.008f;
@@ -65,6 +66,12 @@ public abstract class Pasajero:MonoBehaviour
     {
         Dialogue dialogue = new Dialogue(text);
         this.possibleDialogue.Add(dialogue);
+    }
+
+    public void addIntroduction(string text)
+    {
+        Dialogue dialogue = new Dialogue(text);
+        this.introduction.Add(dialogue);
     }
 
     public void addTurnLeftDialogue(string text,Dialogue.emotions emotion)
@@ -98,6 +105,14 @@ public abstract class Pasajero:MonoBehaviour
         dialogue=failDirectionDialogue[k];
         return dialogue;
 
+    }
+
+    public Dialogue getIntroduction()
+    {
+        Dialogue dialogue = null;
+        int k= Random.Range(0,introduction.Count);
+        dialogue=introduction[k];
+        return dialogue;
     }
 
     public QuestionDialogue getRandomQuestionDialogue()

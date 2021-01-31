@@ -14,6 +14,7 @@ public class NormalDialogue : MonoBehaviour
 
     public IEnumerator showNormalDialogue()
     {
+        yield return new WaitForSeconds(0.5f); //Esto esta muy feo
         while(true)
         {
             yield return new WaitUntil(()=>DialogueManager.I.canShowNormalialogue);

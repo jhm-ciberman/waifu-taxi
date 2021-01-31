@@ -28,7 +28,8 @@ public class ScoreManager : MonoBehaviour
             this.starts+=starts;
         else if(starts+amount<=0)
         {
-           //Nuevo pasajero
+           DialogueManager.I.changePasajero.Invoke();
+           //Direccion nueva 
         }
         else
             starts=5;
