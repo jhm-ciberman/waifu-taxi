@@ -9,7 +9,7 @@ namespace WaifuTaxi
         void Start()
         {
             AudioManager.Instance.PlayMusic("menu", true);
-        }
+        } 
 
         public void OnPlayButtonClick()
         {
