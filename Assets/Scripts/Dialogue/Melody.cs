@@ -42,13 +42,13 @@ public class Melody : Pasajero
         addIndicationDialogue("Turn [dir] in the next one.");
 
 
-        this.addFailDialogue("Are you listening? *Turn left now! **",Dialogue.emotions.angry);
-        this.addFailDialogue("Do you know how to follow directions? *Left. **",Dialogue.emotions.angry);
-        this.addFailDialogue("I said right, well then turn left. **",Dialogue.emotions.angry);
-        this.addFailDialogue("It was the other right! *Turn left. **",Dialogue.emotions.angry);
-        this.addFailDialogue("It was the other way around. *Turn left. **",Dialogue.emotions.angry);
-        this.addFailDialogue("We are never going to reach my destination this way. *Left. **",Dialogue.emotions.angry);
-        this.addFailDialogue("I didn’t know I was on a city tour. *Turn left. **",Dialogue.emotions.angry);
+        this.addFailDialogue("Are you listening? *Turn [dir] now! **",Dialogue.emotions.angry);
+        this.addFailDialogue("Do you know how to follow directions? *[dir]. **",Dialogue.emotions.angry);
+        this.addFailDialogue("I said [dir], well then turn [dir]. **",Dialogue.emotions.angry);
+        this.addFailDialogue("It was the other [dir]! *Turn [dir]. **",Dialogue.emotions.angry);
+        this.addFailDialogue("It was the other way around. *Turn [dir]. **",Dialogue.emotions.angry);
+        this.addFailDialogue("We are never going to reach my destination this way. *[dir]. **",Dialogue.emotions.angry);
+        this.addFailDialogue("I didn’t know I was on a city tour. *Turn [dir]. **",Dialogue.emotions.angry);
 
         string[] opciones = new string[3];
         opciones[0]="(1) *Yes";
