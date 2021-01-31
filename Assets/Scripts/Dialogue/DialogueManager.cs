@@ -174,10 +174,11 @@ public class DialogueManager : MonoBehaviour
         var currStringUpper = char.ToUpper(currString[0]) + currString.Substring(1);
         var prevStringUpper = char.ToUpper(prevString[0]) + prevString.Substring(1);
         var text = pasajero.getFailDialogue().Text;
-        text.Replace("[dir]", currString);
-        text.Replace("[prev_dir]", currString);
-        text.Replace("[Dir]", currStringUpper);
-        text.Replace("[Prev_dir]", prevStringUpper);
+        text =  text.Replace("[dir]", currString);
+        text = text.Replace("[prev_dir]", currString);
+        text = text.Replace("[Dir]", currStringUpper);
+        text = text.Replace("[Prev_dir]", prevStringUpper);
+        ScoreManager.I.addStar(-1);
         StartCoroutine(mostrarUrgente(text));
     }
 
