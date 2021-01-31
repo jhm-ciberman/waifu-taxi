@@ -95,17 +95,17 @@ public class AudioManager : MonoBehaviour
 	protected void Awake()
 	{
 		// Initialize the static reference
-		if (Instance == null)
-		{
+		//if (Instance == null)
+		//{
 			Instance = this;
-			DontDestroyOnLoad(gameObject);
+			//DontDestroyOnLoad(gameObject);
             
 			Initialize();
-		}
-		else
-		{
-			Destroy(gameObject);
-		}
+		//}
+		//else
+		//{
+		//	Destroy(gameObject);
+		//}
 	}
 
 	protected void Update()

@@ -5,8 +5,15 @@ namespace WaifuTaxi
 {
     public class MainMenu : MonoBehaviour
     {
+
+        void Start()
+        {
+            AudioManager.Instance.PlayMusic("menu", true);
+        }
+
         public void OnPlayButtonClick()
         {
+            AudioManager.Instance.StopPlayingMusic();
             SceneManager.LoadScene("UIScene", LoadSceneMode.Single);
         }
     }
