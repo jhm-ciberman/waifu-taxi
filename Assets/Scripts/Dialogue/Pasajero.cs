@@ -16,6 +16,7 @@ public abstract class Pasajero:MonoBehaviour
     public float SlowTextSpeed{get;private set;}
 
     public List<Dialogue> PossibleDialogue{get{return possibleDialogue;}}
+    public List<TurnDialogue> IndicationDialogue{get; private set;}
     public List<TurnDialogue> TurnLeftDialogue{get{return turnLeftDialogue;}}
     public List<TurnDialogue> TurnRightDialogue{get {return turnRightDialogue;}}
     public List<Dialogue> failDirectionDialogue{get;private set;}
@@ -38,6 +39,7 @@ public abstract class Pasajero:MonoBehaviour
         this.questionDialogue = new List<QuestionDialogue>();
         this.failDirectionDialogue = new List<Dialogue>();
         this.introduction=new List<Dialogue>();
+        IndicationDialogue=new List<TurnDialogue>();
         SpeedRandomFactor = 0.004f;
         FastTextSpeed = 0.004f;
         SlowTextSpeed = 0.008f;
@@ -68,23 +70,26 @@ public abstract class Pasajero:MonoBehaviour
         this.possibleDialogue.Add(dialogue);
     }
 
+    public void addIndicationDialogue(string text)
+    {
+        TurnDialogue dialogue = new TurnDialogue(text,Dialogue.emotions.normal);
+        IndicationDialogue.Add(dialogue);
+    }
+
     public void addIntroduction(string text)
     {
         Dialogue dialogue = new Dialogue(text);
         this.introduction.Add(dialogue);
     }
 
-    public void addTurnLeftDialogue(string text,Dialogue.emotions emotion)
+    public TurnDialogue getIndication()
     {
-        TurnDialogue turnDialogue = new TurnDialogue(text,emotion,Indication.TurnLeft);
-        this.turnLeftDialogue.Add(turnDialogue);
+        TurnDialogue dialogue = null;
+        int k= Random.Range(0,IndicationDialogue.Count);
+        dialogue=IndicationDialogue[k];
+        return dialogue;
     }
 
-     public void addTurnRightDialogue(string text,Dialogue.emotions emotion)
-    {
-        TurnDialogue turnDialogue = new TurnDialogue(text,emotion,Indication.TurnRight);
-        this.turnRightDialogue.Add(turnDialogue);
-    }
 
     public void addQuestionDialogue(string text,Dialogue.emotions emotion,string[] options,int correct,string afterDialogue,string correctDialogue,string failDialogue)
     {
