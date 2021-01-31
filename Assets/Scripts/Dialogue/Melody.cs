@@ -15,5 +15,12 @@ public class Melody : Pasajero
 
         this.addTurnLeftDialogue("Cold you please turn left?",Dialogue.emotions.angry);
         this.addTurnRightDialogue("Cold you please turn right?",Dialogue.emotions.angry);
+
+        string[] opciones = new string[3];
+        opciones[0]="(1) opcion 1 ";
+        opciones[1]="(2) opcion 2 ";
+        opciones[2]="(3) opcion 3 ";
+        this.addQuestionDialogue("Pregunta de multiple choice,",Dialogue.emotions.angry,opciones,2,"Que vas responder?","Muy bien, respondiste correctamente",
+        "Vos sos tarado?");
     }
 }

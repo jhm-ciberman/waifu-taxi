@@ -17,8 +17,7 @@ public class PasajeroSprite : MonoBehaviour
 
     public void Start()
     {
-        DialogueManager.I.normalDialogueEvent.AddListener(changeExpression);
-        DialogueManager.I.turnDialogueEvent.AddListener(changeExpression);
+        DialogueManager.I.changeSprite.AddListener(changeExpression);
     }
 
 

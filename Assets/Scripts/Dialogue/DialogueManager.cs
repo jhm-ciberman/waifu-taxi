@@ -17,7 +17,7 @@ public class DialogueManager : MonoBehaviour
     public bool canShowNormalialogue,canShowUrgentDialogue,canShowQuestion;
     public bool needsUrgentDialogue;
     [SerializeField] public Pasajero pasajero;
-    public NewDialogueEvent normalDialogueEvent,turnDialogueEvent;
+    public NewDialogueEvent normalDialogueEvent,turnDialogueEvent,changeSprite;
     public UnityEvent turnLeftEvent,turnRightEvent,questionEvent;
     [SerializeField] public int actualLine;
 
@@ -48,6 +48,7 @@ public class DialogueManager : MonoBehaviour
         I=this;
         normalDialogueEvent=new NewDialogueEvent();
         turnDialogueEvent= new NewDialogueEvent();
+        changeSprite=new NewDialogueEvent();
         normalDialogueEvent.AddListener(NormalDialogue);
     }
 
@@ -136,8 +137,8 @@ public class DialogueManager : MonoBehaviour
 
     public void NormalDialogue(Dialogue dialogue)
     {
+        changeSprite.Invoke(dialogue);
         StartCoroutine(showDialogue(dialogue.Text,false,false));
-        //normalDialogueEvent.Invoke(dialogue);
     }
 
     public void GiveIndication(Indication indication)
@@ -159,7 +160,7 @@ public class DialogueManager : MonoBehaviour
         {
             needsUrgentDialogue=true;
             TurnDialogue turnDialogue = pasajero.getTurnLeftDialogue();
-            turnDialogueEvent.Invoke(turnDialogue);
+            changeSprite.Invoke(turnDialogue);
             StartCoroutine(turnDialogueManager.showTurnDialogueRoutine(turnDialogue));
         }
 
@@ -171,7 +172,7 @@ public class DialogueManager : MonoBehaviour
         {
             needsUrgentDialogue=true;
             TurnDialogue turnDialogue = pasajero.getTurnRightDialogue();
-            turnDialogueEvent.Invoke(turnDialogue);
+            changeSprite.Invoke(turnDialogue);
             StartCoroutine(turnDialogueManager.showTurnDialogueRoutine(turnDialogue));
         }
         
