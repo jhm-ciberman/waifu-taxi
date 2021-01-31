@@ -15,5 +15,6 @@ namespace WaifuTaxi
         public Transform roadT;
         public Transform[] plazas;
         public Transform[] buildings;
+        public Car[] cars;
     }
 }

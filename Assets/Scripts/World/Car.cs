@@ -28,6 +28,8 @@ namespace WaifuTaxi
 
         private Rigidbody2D _rb;
 
+        public System.Action onCollision;
+
         public void Awake()
         {
             this._prevPoint = this.currentCoord;
@@ -39,6 +41,11 @@ namespace WaifuTaxi
         {
             this._world = world;
             this.StartNewRandomPath();
+        }
+
+        public void SetDeltaSpeed(float deltaSpeed)
+        {
+            this._speed += deltaSpeed;
         }
 
         public void StartNewRandomPath()
@@ -77,7 +84,6 @@ namespace WaifuTaxi
                 if (this._speed > this.maxSpeed) {
                     this._speed = this.maxSpeed;
                 }
-
                 this._rb.position += dirNormalized * Time.fixedDeltaTime * this._speed;
             } else if (this._path.Count > 0) {
                 this._NextPoint();
@@ -87,6 +93,8 @@ namespace WaifuTaxi
 
             var dirVec = this.currentDirVector;
             this._rb.rotation = this._angle; //Quaternion.AngleAxis(, Vector3.forward);
+
+            
         }
 
         void OnCollisionEnter2D(Collision2D col)

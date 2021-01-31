@@ -5,7 +5,6 @@ namespace WaifuTaxi
     public class WorldComponent : MonoBehaviour
     {
         public Player player;
-        public Car car;
 
         public WorldPrefabs prefabs;
         
@@ -44,7 +43,9 @@ namespace WaifuTaxi
         public void SpawnCar(World world, Vector2Int coords)
         {
             var playerPos = new Vector3(coords.x, coords.y, 0f);
-            var car = Object.Instantiate(this.car, playerPos, Quaternion.identity);
+            var prefab = this.RandomCarPrefab();
+            var car = Object.Instantiate(prefab, playerPos, Quaternion.identity);
+            car.SetDeltaSpeed(((float) this._random.NextDouble()) * 0.2f - 0.1f);
             car.SetWorld(world);
         }
 
@@ -111,5 +112,6 @@ namespace WaifuTaxi
 
         private Transform RandomPlazaPrefab()    => this.prefabs.plazas[this._random.Next(0, this.prefabs.plazas.Length - 1)];
         private Transform RandomBuildingPrefab() => this.prefabs.buildings[this._random.Next(0, this.prefabs.buildings.Length - 1)];
+        private Car RandomCarPrefab()            => this.prefabs.cars[this._random.Next(0, this.prefabs.cars.Length - 1)];
     }
 }
