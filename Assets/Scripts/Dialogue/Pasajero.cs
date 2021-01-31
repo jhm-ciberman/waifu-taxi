@@ -37,9 +37,9 @@ public abstract class Pasajero:MonoBehaviour
         this.turnRightDialogue = new List<TurnDialogue>();
         this.questionDialogue = new List<QuestionDialogue>();
         this.failDirectionDialogue = new List<Dialogue>();
-        SpeedRandomFactor=0.01f;
-        FastTextSpeed=0.004f;
-        SlowTextSpeed=0.010f;
+        SpeedRandomFactor = 0.004f;
+        FastTextSpeed = 0.004f;
+        SlowTextSpeed = 0.008f;
         addDialogue();
     }
 
@@ -107,7 +107,6 @@ public abstract class Pasajero:MonoBehaviour
         dialogue = questionDialogue[k];
         return dialogue;
     }
-
 
     public TurnDialogue getRandomTurnDialogue()
     {

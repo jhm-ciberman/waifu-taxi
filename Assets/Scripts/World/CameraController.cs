@@ -28,6 +28,8 @@ namespace WaifuTaxi
         public void SetTarget(Transform target)
         {
             this._target = target;
+            this.transform.position = this._target.position;
+            this.transform.rotation = this._target.rotation;
         }
 
         private Vector3 _prevTargetPos;

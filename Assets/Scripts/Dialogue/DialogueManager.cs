@@ -11,7 +11,7 @@ public  class NewDialogueEvent:UnityEvent<Dialogue>{}
 public class DialogueManager : MonoBehaviour
 {
     static int MAX_LENGH = 50;
-    static float WAIT_SPEED=0.16f;
+    static float WAIT_SPEED = 0.10f;
     [SerializeField] private int ronda;
     [SerializeField] private TextMeshProUGUI textDialogue;
     [SerializeField] private TextMeshProUGUI[] textDialogueArray;
@@ -96,14 +96,18 @@ public class DialogueManager : MonoBehaviour
                     i++;
                 }
             }
-            if(newDialogue[i]=='*')
+
+            var currentCharacter = newDialogue[i];
+            if(currentCharacter == '*')
             {
                 actualSpeed = pasajero.getSpeed(isUrgent);
                 yield return new WaitForSeconds(WAIT_SPEED);
             }
             else
             {
-                actualText+= newDialogue[i];
+                if (textDialogue.text != "" || currentCharacter != ' ') { // Prevent spaces at the start of new line
+                    actualText += currentCharacter;
+                }
                 textDialogue.text=actualText;
                 yield return new WaitForSeconds(actualSpeed);
             }
@@ -111,13 +115,15 @@ public class DialogueManager : MonoBehaviour
             
             if(!isUrgent && needsUrgentDialogue)
             {
-                textDialogue.text+=" ";
+                if (textDialogue.text != "") textDialogue.text+=" ";
                 yield return new WaitUntil(()=>!needsUrgentDialogue);
                 actualText=textDialogue.text;
                 i=lastSpace;
             }
         }
-        textDialogue.text+=" ";
+
+        if (textDialogue.text != "") textDialogue.text+=" ";
+
         if(isUrgent)
         {
             canShowUrgentDialogue=true;
