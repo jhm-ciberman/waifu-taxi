@@ -30,41 +30,41 @@ public class Crissy : Pasajero
         addPossibleDialogue("I want some chocolate cookies rn I’m so hungy. **");
         addPossibleDialogue("Hope my hair is looking oki. **");
         addPossibleDialogue("My mother is waiting for me at home, she made my favorite cookies!. **");
-        addPossibleDialogue("I don’t understand people who hate chocolate, my best friend does and I think it’s crazy!  **");
+        addPossibleDialogue("I don’t understand people who hate chocolate, my best friend does and I think it’s crazy! **");
         addPossibleDialogue("Most of the TikToks are soo cringe, but.. *there are really cute girls there.. **");
         addPossibleDialogue("Oh wow this girl dances so nicee she so cuteee. **");
         addPossibleDialogue("Oh.. I think I’m sleepy too, but I’m also full of energy! what is this feeling aaaaaaa. **");
         addPossibleDialogue("I miss when I was a cheerleader! I miss my old friends. **");
         addPossibleDialogue("I need coffee. **");
         addPossibleDialogue("I can't decide on a single type of aesthetic when I dress, sometimes I want to be retro, other times gothic, others I want to cosplay, *others use pastel colors and most of the time I just want to dress comfy with a very long-sleeved sweater.. **");
-        addPossibleDialogue("I have some gifts for everyone! even for my kitty!  **");
+        addPossibleDialogue("I have some gifts for everyone! even for my kitty! **");
         addPossibleDialogue("I was on a diet for a long time, I think I'm going to ruin it just for this day, Mom cooks things too delicious to refuse. *Besides, she would kill me if I went to visit her after a long time and didn't eat the things she prepared especially for me! *I have to be considerate! so I'm going to sacrifice for her! **");
         addPossibleDialogue("I'm 22 but my mom still treats me like her little girl, even now that I live alone! I love her so much. **");
         
-        addIndicationDialogue("[dir]");
-        addIndicationDialogue("[dir] please");
-        addIndicationDialogue("[dir]!");
-        addIndicationDialogue("we have to go [dir] in the next turn.");
-        addIndicationDialogue("[dir] we go.");
-        addIndicationDialogue("Turn [dir].");
-        addIndicationDialogue("Turn [dir]!");
+        addIndicationDialogue("[Dir] ");
+        addIndicationDialogue("[Dir] please ");
+        addIndicationDialogue("[Dir]! ");
+        addIndicationDialogue("we have to go [dir] in the next turn. ");
+        addIndicationDialogue("[Dir] we go. ");
+        addIndicationDialogue("Turn [dir]. ");
+        addIndicationDialogue("Turn [dir]! ");
         addIndicationDialogue("Turn [dir] please.");
         addIndicationDialogue("Turn [dir] in the next one.");
 
 
-        this.addFailDialogue("Are you listening? *Turn left now! **",Dialogue.emotions.angry);
+        this.addFailDialogue("Are you listening? *Turn [dir] now! **",Dialogue.emotions.angry);
         this.addFailDialogue("Do you know how to follow directions? *Left. **",Dialogue.emotions.angry);
-        this.addFailDialogue("I said right, well then turn left. **",Dialogue.emotions.angry);
-        this.addFailDialogue("It was the other right! *Turn left. **",Dialogue.emotions.angry);
-        this.addFailDialogue("It was the other way around. *Turn left. **",Dialogue.emotions.angry);
-        this.addFailDialogue("We are never going to reach my destination this way. *Left. **",Dialogue.emotions.angry);
-        this.addFailDialogue("I didn’t know I was on a city tour. *Turn left. **",Dialogue.emotions.angry);
+        this.addFailDialogue("I said right, well then turn [dir]. **",Dialogue.emotions.angry);
+        this.addFailDialogue("It was the other right! *Turn [dir]. **",Dialogue.emotions.angry);
+        this.addFailDialogue("It was the other way around. *Turn [dir]. **",Dialogue.emotions.angry);
+        this.addFailDialogue("We are never going to reach my destination this way. *[dir]. **",Dialogue.emotions.angry);
+        this.addFailDialogue("I didn’t know I was on a city tour. *Turn [dir]. **",Dialogue.emotions.angry);
 
         string[] opciones = new string[3];
-        opciones[0]="(1) *Yes";
-        opciones[1]="(2) *No";
-        opciones[2]="(3) *I like almost every music genre.";
-        this.addQuestionDialogue("So, do you like pop music?",Dialogue.emotions.asking,opciones,1,"Great, I like it too","Oh, I see…",
+        opciones[0]="(1) *Yes.* ";
+        opciones[1]="(2) *No.* ";
+        opciones[2]="(3) *I like almost every music genre.**";
+        this.addQuestionDialogue("So, do you like pop music? **",Dialogue.emotions.asking,opciones,1,"Great, I like it too** ","Oh, I see…** ",
         "aa");
 
         string[] opciones2 = new string[3];

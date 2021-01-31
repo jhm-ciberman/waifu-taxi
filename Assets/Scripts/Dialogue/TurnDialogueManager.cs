@@ -8,7 +8,7 @@ public class TurnDialogueManager : MonoBehaviour
 
     private Indication lastIndication;
 
-    public IEnumerator showTurnDialogueRoutine(TurnDialogue newDialogue)
+    public IEnumerator showTurnDialogueRoutine(TurnDialogue newDialogue,Indication indication)
     {
         Pasajero pasajero = DialogueManager.I.pasajero;
         bool canShowUrgentDialogue=DialogueManager.I.canShowUrgentDialogue;
@@ -38,6 +38,10 @@ public class TurnDialogueManager : MonoBehaviour
                 fullDialogue+= pasajero.getRandomTurnDialogue().Text;
                 fullDialogue+="...I'm sorry, what I really meant is ";
             }
+            string direction = DialogueManager.indicationToString(indication);
+            var directionUpper= char.ToUpper(direction[0]) +direction.Substring(1);
+            fullDialogue = fullDialogue.Replace("[dir]",direction);
+            fullDialogue = fullDialogue.Replace("[Dir]",directionUpper);
             yield return new WaitUntil(()=>DialogueManager.I.canShowUrgentDialogue);
             IEnumerator newRoutine = DialogueManager.I.showDialogue(fullDialogue,true);
             StartCoroutine(newRoutine);

@@ -157,7 +157,7 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    private string indicationToString(Indication indication)
+    public static string indicationToString(Indication indication)
     {
         string s = "...";
         switch (indication) {
@@ -220,10 +220,7 @@ public class DialogueManager : MonoBehaviour
             TurnDialogue turnDialogue = pasajero.getIndication();
             changeSprite.Invoke(turnDialogue);
             //esta feo pero no tengo tiempo para arreglarlo aaaa
-            string text = turnDialogue.Text;
-            var indicationString =indicationToString(indication);
-            turnDialogue.Text.Replace("[dir]",indicationString);
-            StartCoroutine(turnDialogueManager.showTurnDialogueRoutine(turnDialogue));
+            StartCoroutine(turnDialogueManager.showTurnDialogueRoutine(turnDialogue,indication));
         }
     }
 
