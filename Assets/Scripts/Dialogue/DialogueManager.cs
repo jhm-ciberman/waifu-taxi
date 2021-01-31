@@ -12,16 +12,19 @@ public class DialogueManager : MonoBehaviour
 {
     static int MAX_LENGH = 40;
     static float TEXT_SPEED = .03f / 3f;
+    static float WAIT_SPEED=0.07f;
+    [SerializeField] private int ronda;
     [SerializeField] private TextMeshProUGUI textDialogue;
     [SerializeField] private TextMeshProUGUI[] textDialogueArray;
     public bool canShowNormalialogue,canShowUrgentDialogue,canShowQuestion;
-    public bool needsUrgentDialogue;
-    [SerializeField] public Pasajero pasajero;
+    public bool needsUrgentDialogue,isFinished;
+    public Pasajero pasajero;
     public NewDialogueEvent normalDialogueEvent,turnDialogueEvent,changeSprite;
-    public UnityEvent turnLeftEvent,turnRightEvent,questionEvent;
+    public UnityEvent turnLeftEvent,turnRightEvent,questionEvent,changePasajero;
     [SerializeField] public int actualLine;
+    [SerializeField] private Pasajero[] pasajeros;
 
-    [SerializeField] NormalDialogue normalDialogueManager;
+    [SerializeField] NormalDialogue normalDialogue;
     [SerializeField] TurnDialogueManager turnDialogueManager;
     [SerializeField] QuestionDialogueManager questionDialogueManager;
     
@@ -32,6 +35,7 @@ public class DialogueManager : MonoBehaviour
         canShowNormalialogue=true;
         canShowUrgentDialogue=true;
         canShowQuestion=false;
+        isFinished=false;
         actualLine=0;
         textDialogue=textDialogueArray[0];
         turnLeftEvent=new UnityEvent();
@@ -40,15 +44,17 @@ public class DialogueManager : MonoBehaviour
         turnLeftEvent.AddListener(turnLeft);
         turnRightEvent.AddListener(turnRight);
         questionEvent.AddListener(askQuestion);
-        //StartCoroutine(showNormalDialogue());
+        enterPasajero();
     }
 
     private void Awake()
     {
+        pasajero=pasajeros[0];
         I=this;
         normalDialogueEvent=new NewDialogueEvent();
         turnDialogueEvent= new NewDialogueEvent();
         changeSprite=new NewDialogueEvent();
+        changePasajero=new UnityEvent();
         normalDialogueEvent.AddListener(NormalDialogue);
     }
 
@@ -60,6 +66,7 @@ public class DialogueManager : MonoBehaviour
     public IEnumerator showDialogue(string newDialogue,bool isUrgent,bool clear)
     {
         string actualText =textDialogue.text;
+        float actualSpeed =pasajero.getSpeed();
         int lastSpace=0;
         if(clear)
             {
@@ -70,7 +77,10 @@ public class DialogueManager : MonoBehaviour
         if(!isUrgent)
             canShowNormalialogue=false;
         else
+        {
             canShowUrgentDialogue=false;
+            textDialogue.text+=" ";
+        }
         while(i < newDialogue.Length)
         {
             if(newDialogue[i]==' ')
@@ -106,15 +116,16 @@ public class DialogueManager : MonoBehaviour
             }
             if(newDialogue[i]=='*')
             {
-                yield return new WaitForSeconds(1f);
+                yield return new WaitForSeconds(WAIT_SPEED);
             }
             else
             {
                 actualText+= newDialogue[i];
                 textDialogue.text=actualText;
-                yield return new WaitForSeconds(TEXT_SPEED);
+                yield return new WaitForSeconds(actualSpeed);
             }
             i++;
+            
             if(!isUrgent && needsUrgentDialogue)
             {
                 textDialogue.text+=" ";
@@ -134,6 +145,29 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
+    public void clearAllText()
+    {
+        for(int i=0;i<textDialogueArray.Length;i++)
+        {
+            textDialogueArray[i].text="";
+            actualLine=0;
+            textDialogue = textDialogueArray[0];
+        }
+    }
+
+    public void failDialogue()
+    {
+        StartCoroutine(mostrarUrgente(pasajero.getFailDialogue().Text));
+    }
+
+    public IEnumerator mostrarUrgente(string texto)
+    {
+        yield return new WaitUntil(()=>DialogueManager.I.canShowUrgentDialogue);
+        needsUrgentDialogue=true;
+        StartCoroutine(showDialogue(texto,true,false));
+        yield return new WaitUntil(()=>DialogueManager.I.canShowUrgentDialogue);
+        needsUrgentDialogue=false;
+    }
 
     public void NormalDialogue(Dialogue dialogue)
     {
@@ -154,7 +188,7 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    public void turnLeft()
+    private void turnLeft()
     {
         if(canShowUrgentDialogue)
         {
@@ -166,7 +200,7 @@ public class DialogueManager : MonoBehaviour
 
     }
 
-     public void turnRight()
+    private void turnRight()
     {
         if(canShowUrgentDialogue)
         {
@@ -187,6 +221,28 @@ public class DialogueManager : MonoBehaviour
             QuestionDialogue questionDialogue = pasajero.getRandomQuestionDialogue();
             StartCoroutine(questionDialogueManager.showQuestionRoutine(questionDialogue));
         }
+    }
+
+    public void nextPasajero()
+    {
+        StopAllCoroutines();
+        if(ronda!=2)
+        {
+            ronda++;
+        }
+        else
+            ronda=0;
+        enterPasajero();
+        changePasajero.Invoke();
+    }
+
+    public void enterPasajero()
+    {
+        clearAllText();
+        this.pasajero=pasajeros[ronda];
+        isFinished=false;
+        canShowNormalialogue=true;
+        StartCoroutine(normalDialogue.showNormalDialogue());
     }
 
 

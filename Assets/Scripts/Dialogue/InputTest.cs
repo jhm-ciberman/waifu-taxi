@@ -10,7 +10,7 @@ public class InputTest : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.P))
         {
             Debug.Log("Pregunta");
-            DialogueManager.I.questionEvent.Invoke();
+            DialogueManager.I.failDialogue();
         }
     }
 }

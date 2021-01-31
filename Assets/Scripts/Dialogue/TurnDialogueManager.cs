@@ -1,14 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using WaifuTaxi;
 
 public class TurnDialogueManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
 
-    }
+    private Indication lastIndication;
 
     public IEnumerator showTurnDialogueRoutine(TurnDialogue newDialogue)
     {
@@ -27,6 +25,10 @@ public class TurnDialogueManager : MonoBehaviour
             //Direccion de verdad
             if(j==numeroDeDialogosFalsos)
             {
+                if(newDialogue.indication ==lastIndication)
+                {
+                    
+                }
                 fullDialogue+=newDialogue.Text;
                 fullDialogue+="..As I was saying before;";
             }
