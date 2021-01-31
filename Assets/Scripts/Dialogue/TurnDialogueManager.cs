@@ -44,5 +44,6 @@ public class TurnDialogueManager : MonoBehaviour
         }
         yield return new WaitUntil(()=>DialogueManager.I.canShowUrgentDialogue);
         DialogueManager.I.needsUrgentDialogue=false;
+        DialogueManager.I.isAskingDirections=false;
     }
 }
