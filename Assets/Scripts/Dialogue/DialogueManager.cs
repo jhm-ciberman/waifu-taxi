@@ -94,7 +94,6 @@ public class DialogueManager : MonoBehaviour
                     textDialogue = textDialogueArray[actualLineIndex];
                     textDialogue.alpha = 1f;
                     StartCoroutine(FadeOutText(textDialogueArray[nextLineIndex], textDialogue));
-                    i++;
                 }
             }
             var currentCharacter = newDialogue[i];
