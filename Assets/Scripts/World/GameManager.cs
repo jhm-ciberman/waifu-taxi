@@ -31,6 +31,7 @@ namespace WaifuTaxi
                     }
                 };
                 this._planner.onPathFinished += this.dialogueManager.nextPasajero;
+                //player.onCollision += this.dialogueManager.failDialogue;
             } else { // Without ui
                 this._planner.onIndication += (e) => {
                     Debug.Log("Indication: " + e.indication);

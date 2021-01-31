@@ -21,6 +21,8 @@ namespace WaifuTaxi
             this._rb = this.GetComponent<Rigidbody2D>();
         }
 
+        public System.Action onCollision;
+
         void Update()
         {
             if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)) {
@@ -53,6 +55,11 @@ namespace WaifuTaxi
             var rot = new Vector2(Mathf.Sin(radians), Mathf.Cos(radians));
             this._rb.rotation = this._angle;
             this._rb.position += rot * this._speed / this.globalMultiplier;
+        }
+
+        void OnCollisionEnter2D(Collision2D collision)
+        {
+            this.onCollision?.Invoke();
         }
     }
 }
