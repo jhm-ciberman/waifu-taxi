@@ -60,6 +60,8 @@ namespace WaifuTaxi
         void OnCollisionEnter2D(Collision2D collision)
         {
             this.onCollision?.Invoke();
+            Debug.Log(collision.rigidbody.velocity);
+            Debug.Log(collision.otherRigidbody.velocity);
         }
     }
 }
