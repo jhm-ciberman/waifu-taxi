@@ -1,30 +1,23 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using WaifuTaxi;
 
 public class TurnDialogue : Dialogue
 {
 
-    public enum directions
+
+    public Indication indication{get;private set;}
+
+    public TurnDialogue(string text,emotions emotion,Indication indication):base(text,emotion)
     {
-        left,
-        right
-    }
-    private directions direction;
-
-
-
-    public directions Direction{get{return direction;}}
-
-    public TurnDialogue(string text,emotions emotion,directions direction):base(text,emotion)
-    {
-        this.direction=direction;
+        this.indication=indication;
     }
 
 
-    public void setDirection(directions direction)
+    public void setDirection(Indication indication)
     {
-        this.direction=direction;
+        this.indication=indication;
     }
 
     

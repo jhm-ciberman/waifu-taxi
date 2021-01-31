@@ -17,7 +17,7 @@ public class NormalDialogue : MonoBehaviour
         {
             yield return new WaitUntil(()=>DialogueManager.I.canShowNormalialogue);
             Dialogue dialogue= pasajero.getPossibleDialogue();
-            DialogueManager.I.normalDialogueEvent.Invoke(dialogue.Text);
+            DialogueManager.I.normalDialogueEvent.Invoke(dialogue);
         }
     }
 

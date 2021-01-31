@@ -21,6 +21,7 @@ namespace WaifuTaxi
             if (this.dialogueManager != null) { // With UI
                 this._planner.onIndication += (e) => {
                     Debug.Log("Indication: " + e.indication);
+                    dialogueManager.GiveIndication(e.indication);
                     Debug.Log("PrevIndication: " + e.prevIndication);
                     Debug.Log("Restarted: " + e.pathWasRestarted);
                 };
@@ -31,8 +32,6 @@ namespace WaifuTaxi
                     Debug.Log("Restarted: " + e.pathWasRestarted); 
                 };
             }
-
-
             this._planner.UpdatePath();
         }
 

@@ -1,15 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
+using UnityEngine.UI;
 
 public class PasajeroSprite : MonoBehaviour
 {
-    [SerializeField] private SpriteRenderer pasajeroSprite;
-
-    public Sprite placeHolderHappy;
-    public Sprite placeHolderAngry;
-    public Sprite placeHolderEmbarrassed;
+    [SerializeField] private Image pasajeroSprite;
+    [SerializeField] private Pasajero pasajero;
 
     public static PasajeroSprite I;
 
@@ -20,13 +17,31 @@ public class PasajeroSprite : MonoBehaviour
 
     public void Start()
     {
-        ///DialogueManager.I.newDialogueEvent.AddListener(changeExpression);
+        DialogueManager.I.changeSprite.AddListener(changeExpression);
     }
 
 
-    void changeExpression(Pasajero pasajero,Dialogue dialogue)
+    void changeExpression(Dialogue dialogue)
     {
-        pasajeroSprite.sprite=pasajero.GetSprite(dialogue.Emotion);
-
+        Sprite sprite=null;
+        Dialogue.emotions emotion =dialogue.Emotion;
+        if(emotion == Dialogue.emotions.angry)
+        {
+            sprite =pasajero.spriteAngry;
+        }
+        else if(emotion == Dialogue.emotions.asking)
+        {
+            sprite =pasajero.spriteAsking;
+        }
+        else if(emotion == Dialogue.emotions.blush)
+        {
+            sprite =pasajero.spriteBlush;
+        }
+        else if(emotion == Dialogue.emotions.normal)
+        {
+            sprite =pasajero.spriteNormal;
+        }
+        Debug.Assert(sprite!=null,"No obtuvo el sprite");
+        pasajeroSprite.sprite=sprite;
     }
 }
