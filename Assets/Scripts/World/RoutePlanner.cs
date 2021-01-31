@@ -86,7 +86,7 @@ namespace WaifuTaxi
 
         public void StartNewPath()
         {
-            this._finalDestination = this._GetRandomDestination();
+            this._finalDestination = this._world.RandomDestination(this._entity.currentCoord);
             this.RecalculatePath(); // No destination
         }
 
@@ -103,19 +103,6 @@ namespace WaifuTaxi
                 Debug.Log("GOAL REACHED!!! ");
             }
             this._pathWasRecentlyRestarted = false;
-        }
-
-        private Vector2Int _GetRandomDestination()
-        {
-            var start = this._entity.currentCoord;
-            Vector2Int end;
-            int tries = 0;
-            do {
-                end = this._world.RandomRoad();
-                tries++;
-                if (tries > 1000) return end;
-            } while (end == start);
-            return end;
         }
 
         public void RecalculatePath()

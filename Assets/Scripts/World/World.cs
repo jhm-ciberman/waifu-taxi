@@ -11,13 +11,23 @@ namespace WaifuTaxi
 
         private System.Random _random = new System.Random();
 
-        private bool[,] _city = new bool[,] {
-           { false, true, false, false, false },
-           { false, true, false, false, false },
-           { false, true, false, true , false },
-           { false, true, false, false, false },
-           { false, true, false, false, false },
+        private int[,] _city = new int[,] {
+           { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+           { 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0 },
+           { 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0 },
+           { 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0 },
+           { 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0 },
+           { 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0 },
+           { 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0 },
+           { 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0 },
+           { 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0 },
+           { 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 },
+           { 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0 },
+           { 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0 },
+           { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
         };
+
+        public int roadCount = 0;
 
         public World(Vector2Int size)
         {
@@ -30,13 +40,26 @@ namespace WaifuTaxi
                 }
             }
 
-            for (int x = 0; x < this.size.x; x++) {
-                for (int y = 0; y < this.size.y; y++) {
-                    if (x % 3 == 0 || y % 3 == 0) {
-                        this._road[new Vector2Int(x, y)] = true;
-                    }
-                    //this._road[new Vector2Int(x, y)] = this._city[x, y];
+            //for (int x = 0; x < this.size.x; x++) {
+            //    for (int y = 0; y < this.size.y; y++) {
+            //        if (x % 3 == 0 || y % 3 == 0) {
+            //            this._road[new Vector2Int(x, y)] = true;
+            //        }
+            //        //this._road[new Vector2Int(x, y)] = this._city[x, y];
+            //    }
+            //}
+
+            for (int x = 0; x < this._city.GetLength(0); x++) {
+                for (int y = 0; y < this._city.GetLength(1); y++) {
+                    this._road[new Vector2Int(x, y)] = (this._city[x, y] == 1);
                 }
+            }
+
+            this.size = new Vector2Int(this._city.GetLength(0), this._city.GetLength(1));
+
+
+            foreach (var hasRoad in this._road.Values) {
+                if (hasRoad) this.roadCount++;
             }
         }
 
@@ -61,6 +84,18 @@ namespace WaifuTaxi
                 tries++;
             }
             return new Vector2Int(0, 0); // Error! 
+        }
+
+        public Vector2Int RandomDestination(Vector2Int startCoord)
+        {
+            Vector2Int end;
+            int tries = 0;
+            do {
+                end = this.RandomRoad();
+                tries++;
+                if (tries > 1000) return end;
+            } while (end == startCoord);
+            return end;
         }
 
         public RoadConnection GetRoadConnectionAt(Vector2Int pos)

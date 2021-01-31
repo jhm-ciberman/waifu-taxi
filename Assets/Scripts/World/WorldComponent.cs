@@ -24,7 +24,8 @@ namespace WaifuTaxi
                 }
             }
 
-            for (int i = 0; i < 20; i++) {
+            var numberOfCars = (int) (world.roadCount * 0.5f);
+            for (int i = 0; i < numberOfCars; i++) {
                 var pos = world.RandomRoad();
                 this.SpawnCar(world, pos);
             }
@@ -58,9 +59,9 @@ namespace WaifuTaxi
                 case RoadConnection.TopRight: 
                     angle = 0; prefab = this.roadCurve; break;
                 case RoadConnection.BottomLeft: 
-                    angle = 90; prefab = this.roadCurve; break;
-                case RoadConnection.BottomRight: 
                     angle = 180; prefab = this.roadCurve; break;
+                case RoadConnection.BottomRight: 
+                    angle = 90; prefab = this.roadCurve; break;
 
                 case RoadConnection.Vertical:
                     angle = 0; prefab = this.roadLine; break;
