@@ -11,9 +11,13 @@ public abstract class Pasajero:MonoBehaviour
     protected List<QuestionDialogue> questionDialogue;
     protected Dialogue introduction;
 
+    public float MinSpeed{get;private set;}
+    public float MaxSpeed{get;private set;}
+
     public List<Dialogue> PossibleDialogue{get{return possibleDialogue;}}
     public List<TurnDialogue> TurnLeftDialogue{get{return turnLeftDialogue;}}
     public List<TurnDialogue> TurnRightDialogue{get {return turnRightDialogue;}}
+    public List<Dialogue> failDirectionDialogue{get;private set;}
     public Dialogue Introduction{get{return introduction;}}
 
     public Sprite spriteAngry;
@@ -29,7 +33,16 @@ public abstract class Pasajero:MonoBehaviour
         this.turnLeftDialogue = new List<TurnDialogue>();
         this.turnRightDialogue = new List<TurnDialogue>();
         this.questionDialogue = new List<QuestionDialogue>();
+        this.failDirectionDialogue = new List<Dialogue>();
+        MinSpeed=0.01f;
+        MaxSpeed=0.03f;
         addDialogue();
+    }
+
+    public float getSpeed()
+    {
+        float speed = Random.Range(MinSpeed,MaxSpeed);
+        return speed;
     }
 
     public void addPossibleDialogue(string text,Dialogue.emotions emotion)
@@ -62,6 +75,21 @@ public abstract class Pasajero:MonoBehaviour
         this.questionDialogue.Add(dialogue);
     }
 
+    public void addFailDialogue(string text,Dialogue.emotions emotion)
+    {
+        Dialogue dialogue = new Dialogue(text,emotion);
+        this.failDirectionDialogue.Add(dialogue);
+    }
+
+    public Dialogue getFailDialogue()
+    {
+        Dialogue dialogue = null;
+        int k= Random.Range(0,failDirectionDialogue.Count);
+        dialogue=failDirectionDialogue[k];
+        return dialogue;
+
+    }
+
     public QuestionDialogue getRandomQuestionDialogue()
     {
         QuestionDialogue dialogue=null;
@@ -69,6 +97,7 @@ public abstract class Pasajero:MonoBehaviour
         dialogue = questionDialogue[k];
         return dialogue;
     }
+
 
     public TurnDialogue getRandomTurnDialogue()
     {

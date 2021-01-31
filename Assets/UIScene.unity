@@ -456,8 +456,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 1408093374}
+  m_Children: []
   m_Father: {fileID: 1597675461}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -566,7 +565,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1597675461}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &506126744
 MonoBehaviour:
@@ -1109,12 +1108,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1408093373}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 316049276}
-  m_RootOrder: 0
+  m_Father: {fileID: 1597675461}
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1408093375
 MonoBehaviour:
@@ -1128,10 +1127,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e58e6d658cf005c4f925b647ec680aa0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spriteAngry: {fileID: 0}
-  spriteAsking: {fileID: 0}
-  spriteBlush: {fileID: 0}
-  spriteNormal: {fileID: 0}
+  spriteAngry: {fileID: 21300000, guid: 37da9c7a646e3b5478be91b519c14aa9, type: 3}
+  spriteAsking: {fileID: 21300000, guid: 21c4ea0c49f7d664594e305e48a13db7, type: 3}
+  spriteBlush: {fileID: 21300000, guid: 21c4ea0c49f7d664594e305e48a13db7, type: 3}
+  spriteNormal: {fileID: 21300000, guid: c82c22fb246d11f4a8c52be8e07d773b, type: 3}
 --- !u!1 &1552239441
 GameObject:
   m_ObjectHideFlags: 0
@@ -1235,6 +1234,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7eab0af833c8f3499240286cec8644f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ronda: 0
   textDialogue: {fileID: 0}
   textDialogueArray:
   - {fileID: 876712629}
@@ -1245,6 +1245,7 @@ MonoBehaviour:
   canShowUrgentDialogue: 0
   canShowQuestion: 0
   needsUrgentDialogue: 0
+  isFinished: 0
   pasajero: {fileID: 316049277}
   turnLeftEvent:
     m_PersistentCalls:
@@ -1255,8 +1256,14 @@ MonoBehaviour:
   questionEvent:
     m_PersistentCalls:
       m_Calls: []
+  changePasajero:
+    m_PersistentCalls:
+      m_Calls: []
   actualLine: 0
-  normalDialogueManager: {fileID: 1062495845}
+  pasajeros:
+  - {fileID: 316049277}
+  - {fileID: 1408093375}
+  normalDialogue: {fileID: 1062495845}
   turnDialogueManager: {fileID: 703447585}
   questionDialogueManager: {fileID: 2044553029}
 --- !u!4 &1597675461
@@ -1274,6 +1281,7 @@ Transform:
   - {fileID: 703447586}
   - {fileID: 2044553028}
   - {fileID: 316049276}
+  - {fileID: 1408093374}
   - {fileID: 506126743}
   m_Father: {fileID: 0}
   m_RootOrder: 2

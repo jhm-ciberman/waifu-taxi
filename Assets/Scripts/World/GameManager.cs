@@ -23,6 +23,10 @@ namespace WaifuTaxi
                     Debug.Log("Indication: " + e.indication);
                     dialogueManager.GiveIndication(e.indication);
                     Debug.Log("PrevIndication: " + e.prevIndication);
+                    if(e.pathWasRestarted)
+                    {
+                        dialogueManager.failDialogue();
+                    }
                     Debug.Log("Restarted: " + e.pathWasRestarted);
                 };
             } else { // Without ui
