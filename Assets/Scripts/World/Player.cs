@@ -7,12 +7,19 @@ namespace WaifuTaxi
         private float _speed = 0f;
 
         public float globalMultiplier = 200f;
-        public float maxSpeed = 0.6f;
-        public float friction = 1f;
-        public float aceleration = 10f;
-        public float deaceleration = 0.6f;
-        public float turnSpeed = 30f;
+        public float maxSpeed = 0.7f;
+        public float friction = 0.2f;
+        public float aceleration = 0.6f;
+        public float deaceleration = 0.5f;
+        public float turnSpeed = 35f;
         public float requiredRotationSpeed = 0.2f;
+
+        private Rigidbody2D _rb;
+
+        void Awake()
+        {
+            this._rb = this.GetComponent<Rigidbody2D>();
+        }
 
         void Update()
         {
@@ -40,9 +47,12 @@ namespace WaifuTaxi
 
             this._angle %= 360f;
 
-            var rot = Quaternion.AngleAxis(this._angle, Vector3.forward);
-            this.transform.rotation = rot;
-            this.transform.position += rot * Vector3.up * this._speed / this.globalMultiplier;
+            //var rot = Quaternion.AngleAxis(this._angle, Vector3.forward);
+            
+            var radians = -this._angle * Mathf.Deg2Rad;
+            var rot = new Vector2(Mathf.Sin(radians), Mathf.Cos(radians));
+            this._rb.rotation = this._angle;
+            this._rb.position += rot * this._speed / this.globalMultiplier;
         }
     }
 }
