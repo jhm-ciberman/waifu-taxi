@@ -74,7 +74,7 @@ public class DialogueManager : MonoBehaviour
             canShowUrgentDialogue=false;
             actualText += "- ";
         }
-        while(i < newDialogue.Length)
+        while(i <newDialogue.Length)
         {
             if(newDialogue[i]==' ')
             {
@@ -202,7 +202,7 @@ public class DialogueManager : MonoBehaviour
         {
             yield return new WaitUntil(()=>canShowUrgentDialogue);
             yield return new WaitUntil(()=>!isAskingDirections);
-            yield return new WaitForSeconds(Random.Range(15,20));
+            yield return new WaitForSeconds(Random.Range(1,4));
             needsUrgentDialogue=true;
             canShowQuestion=true;
             QuestionDialogue questionDialogue = pasajero.getRandomQuestionDialogue();
@@ -226,13 +226,14 @@ public class DialogueManager : MonoBehaviour
 
     public void askQuestion()
     {
-        if(canShowUrgentDialogue)
+        /*if(canShowUrgentDialogue)
         {
             needsUrgentDialogue=true;
             canShowQuestion=true;
             QuestionDialogue questionDialogue = pasajero.getRandomQuestionDialogue();
             StartCoroutine(questionDialogueManager.showQuestionRoutine(questionDialogue));
         }
+        */
     }
 
     public void nextPasajero()
@@ -256,7 +257,7 @@ public class DialogueManager : MonoBehaviour
         canShowNormalialogue=true;
         StartCoroutine(mostrarUrgente(pasajero.getIntroduction().Text));
         StartCoroutine(normalDialogue.showNormalDialogue());
-        StartCoroutine(askQuestions());
+        //StartCoroutine(askQuestions());
     }
 
 

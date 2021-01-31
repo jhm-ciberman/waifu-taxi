@@ -14,7 +14,7 @@ public class QuestionDialogueManager : MonoBehaviour
 
     public IEnumerator showQuestionRoutine(QuestionDialogue dialogue)
     {
-            int k=1+dialogue.Options.Length;
+            int k=dialogue.Options.Length;
             string fullDialogue=null;
             questionInput.askQuestion(dialogue.Correct);
             for(int i=0;i<=k;i++)

@@ -10,7 +10,6 @@ public class TurnDialogueManager : MonoBehaviour
 
     public IEnumerator showTurnDialogueRoutine(TurnDialogue newDialogue,Indication indication)
     {
-        Pasajero pasajero = DialogueManager.I.pasajero;
         bool canShowUrgentDialogue=DialogueManager.I.canShowUrgentDialogue;
         int numeroDeDialogosFalsos =Random.Range(0,1);
         string fullDialogue;
@@ -35,8 +34,7 @@ public class TurnDialogueManager : MonoBehaviour
             //Dialogos falsos
             else
             {
-                fullDialogue+= pasajero.getRandomTurnDialogue().Text;
-                fullDialogue+="...I'm sorry, what I really meant is ";
+                //WIP
             }
             string direction = DialogueManager.indicationToString(indication);
             var directionUpper= char.ToUpper(direction[0]) +direction.Substring(1);
