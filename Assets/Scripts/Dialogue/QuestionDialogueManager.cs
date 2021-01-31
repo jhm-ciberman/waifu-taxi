@@ -7,11 +7,13 @@ public class QuestionDialogueManager : MonoBehaviour
 
     [SerializeField] private QuestionInput questionInput;
 
+    public void Start()
+    {
+
+    }
+
     public IEnumerator showQuestionRoutine(QuestionDialogue dialogue)
     {
-        while(true)
-        {
-            yield return new WaitUntil(()=>DialogueManager.I.canShowQuestion);
             int k=1+dialogue.Options.Length;
             string fullDialogue=null;
             questionInput.askQuestion(dialogue.Correct);
@@ -29,7 +31,8 @@ public class QuestionDialogueManager : MonoBehaviour
                 //Dialogo final
                 else if(i==k)
                 {
-                    fullDialogue+=dialogue.AfterDialogue;
+                    //fullDialogue+=dialogue.AfterDialogue;
+                    yield return new WaitForSeconds(2);
                 }
                 //Las opciones
                 else
@@ -42,19 +45,17 @@ public class QuestionDialogueManager : MonoBehaviour
             yield return new WaitUntil(()=>DialogueManager.I.canShowUrgentDialogue);
             if(questionInput.answeredCorrectly())
             {
+                ScoreManager.I.addStar(1);
                 fullDialogue = dialogue.CorrectDialogue;
             }
             else
             {
+                ScoreManager.I.addStar(-1);
                 fullDialogue=dialogue.FailDialogue;
             }
             StartCoroutine(DialogueManager.I.showDialogue(fullDialogue,true));
             yield return new WaitUntil(()=>DialogueManager.I.canShowUrgentDialogue);
             DialogueManager.I.canShowQuestion=false;
             DialogueManager.I.needsUrgentDialogue=false;
-
-            
-        }
-        
     }
 }

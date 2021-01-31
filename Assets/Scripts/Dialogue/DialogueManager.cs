@@ -16,7 +16,7 @@ public class DialogueManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI textDialogue;
     [SerializeField] private TextMeshProUGUI[] textDialogueArray;
     public bool canShowNormalialogue,canShowUrgentDialogue,canShowQuestion;
-    public bool needsUrgentDialogue,isFinished;
+    public bool needsUrgentDialogue,isFinished,isAskingDirections;
     public Pasajero pasajero;
     public NewDialogueEvent normalDialogueEvent,turnDialogueEvent,changeSprite;
     public UnityEvent turnLeftEvent,turnRightEvent,questionEvent,changePasajero;
@@ -33,8 +33,9 @@ public class DialogueManager : MonoBehaviour
     {
         canShowNormalialogue=true;
         canShowUrgentDialogue=true;
-        canShowQuestion=false;
         isFinished=false;
+        isAskingDirections=false;
+        canShowQuestion=true;
         actualLineIndex=0;
         textDialogue=textDialogueArray[0];
         turnLeftEvent=new UnityEvent();
@@ -179,8 +180,24 @@ public class DialogueManager : MonoBehaviour
         StartCoroutine(showDialogue(dialogue.Text,false));
     }
 
+    public IEnumerator askQuestions()
+    {
+        while(true)
+        {
+            yield return new WaitForSeconds(Random.Range(1,5));
+            yield return new WaitUntil(()=>canShowUrgentDialogue);
+            yield return new WaitUntil(()=>!isAskingDirections);
+            needsUrgentDialogue=true;
+            canShowQuestion=true;
+            QuestionDialogue questionDialogue = pasajero.getRandomQuestionDialogue();
+            StartCoroutine(questionDialogueManager.showQuestionRoutine(questionDialogue));
+        }
+        
+    }
+
     public void GiveIndication(Indication indication)
     {
+        this.isAskingDirections=true;
         switch(indication)
         {
             case Indication.TurnLeft:
@@ -247,6 +264,7 @@ public class DialogueManager : MonoBehaviour
         isFinished=false;
         canShowNormalialogue=true;
         StartCoroutine(normalDialogue.showNormalDialogue());
+        StartCoroutine(askQuestions());
     }
 
 
