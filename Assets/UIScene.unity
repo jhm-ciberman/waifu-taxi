@@ -737,10 +737,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca9d776de6a01254cb8d9bacaf50a4e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spriteAngry: {fileID: 21300000, guid: d4f2382c34c98c147ad418f201845524, type: 3}
-  spriteAsking: {fileID: 21300000, guid: 04b1d273d605c4a4f99ccf48e91828ba, type: 3}
-  spriteBlush: {fileID: 21300000, guid: f3c285427749a9e4b96886cce62faff4, type: 3}
-  spriteNormal: {fileID: 21300000, guid: 30f00d09634c5f340a8b3892cd55d105, type: 3}
+  spriteAngry: {fileID: 21300000, guid: d2cb4c81a84140a4aa0459337beec066, type: 3}
+  spriteAsking: {fileID: 21300000, guid: 4a602531ac40b4f4d8103fd7abdac180, type: 3}
+  spriteBlush: {fileID: 21300000, guid: 83ea706e5f8d8b04392df2ae5610624e, type: 3}
+  spriteNormal: {fileID: 21300000, guid: ff0385686c0de4d4b869ca56b477e269, type: 3}
 --- !u!1 &664751964
 GameObject:
   m_ObjectHideFlags: 0
@@ -1120,10 +1120,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b70948718aff98408e607837d30c264, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spriteAngry: {fileID: 21300000, guid: 99a31201d4551294f8c5bb8c7f890734, type: 3}
-  spriteAsking: {fileID: 21300000, guid: bd4c6cf0d3ecf5f4bb6a3bbb371aec78, type: 3}
-  spriteBlush: {fileID: 21300000, guid: e8a7bcb88f8f2b64fbdec0dd577505de, type: 3}
-  spriteNormal: {fileID: 21300000, guid: 75f6376205aa08b4ca06d620806cb4c3, type: 3}
+  spriteAngry: {fileID: 21300000, guid: 212a41a157f7aa248b293899ef99ae91, type: 3}
+  spriteAsking: {fileID: 21300000, guid: 85aaef565b41e434084f45b8011d173d, type: 3}
+  spriteBlush: {fileID: 21300000, guid: 73217a4b0c276ae4e8947b98e05e45b2, type: 3}
+  spriteNormal: {fileID: 21300000, guid: e3bb8a1635a8e1041aa32c4b8c58069d, type: 3}
 --- !u!1 &1062495843
 GameObject:
   m_ObjectHideFlags: 0
@@ -1404,7 +1404,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 75f6376205aa08b4ca06d620806cb4c3, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e3bb8a1635a8e1041aa32c4b8c58069d, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1547,10 +1547,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 033420bcc46839b4b88b8548ec86cbc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spriteAngry: {fileID: 21300000, guid: f3ffc4892b5e6f342a00ade7eb79b796, type: 3}
-  spriteAsking: {fileID: 21300000, guid: f7b90aa0f041dfd4ea3e17ade8e27e59, type: 3}
-  spriteBlush: {fileID: 21300000, guid: 9bef2f168cbaa424487962e90143dd97, type: 3}
-  spriteNormal: {fileID: 21300000, guid: 3b17c03fcac59324f9d77e7af366fa5e, type: 3}
+  spriteAngry: {fileID: 21300000, guid: 8e15be6faff050347929fb4ce4522b00, type: 3}
+  spriteAsking: {fileID: 21300000, guid: d62f192038249cb42919a83ec6339fc1, type: 3}
+  spriteBlush: {fileID: 21300000, guid: 142dd25a2aeed14459831bb2f349f77f, type: 3}
+  spriteNormal: {fileID: 21300000, guid: 99de9de3246e9234dbd725e505f1c968, type: 3}
 --- !u!1 &1873582296
 GameObject:
   m_ObjectHideFlags: 0
