@@ -179,6 +179,9 @@ public class DialogueManager : MonoBehaviour
         text = text.Replace("[Dir]", currStringUpper);
         text = text.Replace("[Prev_dir]", prevStringUpper);
         ScoreManager.I.removeStar(1);
+
+        AudioManager.Instance.PlaySound("wrong_answer");
+
         StartCoroutine(mostrarUrgente(text));
     }
 
@@ -239,6 +242,7 @@ public class DialogueManager : MonoBehaviour
 
     public void nextPasajero()
     {
+        AudioManager.Instance.PlaySound("correct_answer");
         StopAllCoroutines();
         if(ronda!=2)
         {

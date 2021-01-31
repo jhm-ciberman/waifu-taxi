@@ -66,7 +66,14 @@ public abstract class Pasajero:MonoBehaviour
 
     public void addPossibleDialogue(string text)
     {
-        Dialogue dialogue = new Dialogue(text);
+        Dialogue.emotions emotion = Dialogue.emotions.normal;
+        switch (UnityEngine.Random.Range(0, 4)) {
+            case 0: emotion = Dialogue.emotions.angry; break;
+            case 1: emotion = Dialogue.emotions.asking; break;
+            case 2: emotion = Dialogue.emotions.blush; break;
+            case 3: emotion = Dialogue.emotions.normal; break;
+        }
+        Dialogue dialogue = new Dialogue(text, emotion);
         this.possibleDialogue.Add(dialogue);
     }
 

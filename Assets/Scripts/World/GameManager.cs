@@ -53,6 +53,10 @@ namespace WaifuTaxi
         void Update()
         {
             this._planner.UpdatePath();
+
+            if (Input.GetKeyDown(KeyCode.Space)) {
+                this.dialogueManager?.nextPasajero();
+            }
         }
     }
 }
