@@ -24,16 +24,14 @@ namespace WaifuTaxi
 
             if (this.dialogueManager != null) { // With UI
                 this._planner.onIndication += (e) => {
-                    Debug.Log("Indication: " + e.indication);
-                    dialogueManager.GiveIndication(e.indication);
-                    Debug.Log("PrevIndication: " + e.prevIndication);
-                    if(e.pathWasRestarted)
-                    {
-                        dialogueManager.failDialogue();
+                    if(e.pathWasRestarted) {
+                        dialogueManager.failDialogue(e.indication, e.prevIndication);
+                    } else {
+                        dialogueManager.GiveIndication(e.indication);
                     }
-                    Debug.Log("Restarted: " + e.pathWasRestarted);
                 };
                 this._planner.onPathFinished += this.dialogueManager.nextPasajero;
+                //player.onCollision += this.dialogueManager.failDialogue;
             } else { // Without ui
                 this._planner.onIndication += (e) => {
                     Debug.Log("Indication: " + e.indication);
