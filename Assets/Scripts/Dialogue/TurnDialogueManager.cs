@@ -14,7 +14,7 @@ public class TurnDialogueManager : MonoBehaviour
     {
         Pasajero pasajero = DialogueManager.I.pasajero;
         bool canShowUrgentDialogue=DialogueManager.I.canShowUrgentDialogue;
-        int numeroDeDialogosFalsos =Random.Range(0,4);
+        int numeroDeDialogosFalsos =Random.Range(0,1);
         string fullDialogue;
         for(int j=0;j<=numeroDeDialogosFalsos;j++)
         {
@@ -22,22 +22,22 @@ public class TurnDialogueManager : MonoBehaviour
             //Al principio
             if(j==0)
                 {
-                    fullDialogue+="-Para, ";
+                    fullDialogue+="W-Wait, ";
                 }
             //Direccion de verdad
             if(j==numeroDeDialogosFalsos)
             {
                 fullDialogue+=newDialogue.Text;
-                fullDialogue+=" -bueno, como te estaba diciendo antes ";
+                fullDialogue+="..As I was saying before;";
             }
             //Dialogos falsos
             else
             {
                 fullDialogue+= pasajero.getRandomTurnDialogue().Text;
-                fullDialogue+="...Ah no, me equivoque, en realidad ";
+                fullDialogue+="...I'm sorry, what I really meant is ";
             }
             yield return new WaitUntil(()=>DialogueManager.I.canShowUrgentDialogue);
-            IEnumerator newRoutine = DialogueManager.I.showDialogue(fullDialogue,true,false);
+            IEnumerator newRoutine = DialogueManager.I.showDialogue(fullDialogue,true,true);
             StartCoroutine(newRoutine);
         }
         yield return new WaitUntil(()=>DialogueManager.I.canShowUrgentDialogue);

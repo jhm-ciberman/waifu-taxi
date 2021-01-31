@@ -1,31 +1,35 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using WaifuTaxi;
 
-public abstract class Pasajero
+public abstract class Pasajero:MonoBehaviour
 {
     protected List<Dialogue> possibleDialogue;
     protected List<TurnDialogue> turnLeftDialogue,turnRightDialogue;
     protected List<QuestionDialogue> questionDialogue;
     protected Dialogue introduction;
-    protected string name;
 
     public List<Dialogue> PossibleDialogue{get{return possibleDialogue;}}
     public List<TurnDialogue> TurnLeftDialogue{get{return turnLeftDialogue;}}
     public List<TurnDialogue> TurnRightDialogue{get {return turnRightDialogue;}}
     public Dialogue Introduction{get{return introduction;}}
 
+    public Sprite spriteAngry;
+    public Sprite spriteAsking;
+    public Sprite spriteBlush;
+    public Sprite spriteNormal;
 
-    public Sprite happySprite{get;set;}
-    public Sprite angrySprite{get;set;}
-    public Sprite embarrassedSprite{get;set;}
+    public abstract void addDialogue();
 
-    public Pasajero()
+    public void Start()
     {
         this.possibleDialogue=new List<Dialogue>();
         this.turnLeftDialogue = new List<TurnDialogue>();
         this.turnRightDialogue = new List<TurnDialogue>();
         this.questionDialogue = new List<QuestionDialogue>();
+        addDialogue();
     }
 
     public void addPossibleDialogue(string text,Dialogue.emotions emotion)
@@ -34,15 +38,21 @@ public abstract class Pasajero
         this.possibleDialogue.Add(dialogue);
     }
 
+    public void addPossibleDialogue(string text)
+    {
+        Dialogue dialogue = new Dialogue(text);
+        this.possibleDialogue.Add(dialogue);
+    }
+
     public void addTurnLeftDialogue(string text,Dialogue.emotions emotion)
     {
-        TurnDialogue turnDialogue = new TurnDialogue(text,emotion,TurnDialogue.directions.left);
+        TurnDialogue turnDialogue = new TurnDialogue(text,emotion,Indication.TurnLeft);
         this.turnLeftDialogue.Add(turnDialogue);
     }
 
      public void addTurnRightDialogue(string text,Dialogue.emotions emotion)
     {
-        TurnDialogue turnDialogue = new TurnDialogue(text,emotion,TurnDialogue.directions.right);
+        TurnDialogue turnDialogue = new TurnDialogue(text,emotion,Indication.TurnRight);
         this.turnRightDialogue.Add(turnDialogue);
     }
 
@@ -101,24 +111,5 @@ public abstract class Pasajero
         return dialogue;
     }
 
-
-
-    public Sprite GetSprite(Dialogue.emotions emotion)
-    {
-        Sprite sprite =null;
-        if(emotion == Dialogue.emotions.happy)
-        {
-            sprite=happySprite;
-        }
-        else if(emotion == Dialogue.emotions.angry)
-        {
-            sprite=angrySprite;
-        }
-        else if(emotion == Dialogue.emotions.embarrased)
-        {
-            sprite=embarrassedSprite;
-        }
-        Debug.Assert(sprite!=null,"No obtuvo el sprite");
-        return sprite;
-    }
+        
 }

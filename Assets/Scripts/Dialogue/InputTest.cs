@@ -7,7 +7,7 @@ public class InputTest : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.LeftArrow))
+        /*if(Input.GetKeyDown(KeyCode.LeftArrow))
         {
             Debug.Log("Tiene que girar a la izquierda");
             DialogueManager.I.turnLeftEvent.Invoke();
@@ -22,5 +22,6 @@ public class InputTest : MonoBehaviour
             Debug.Log("Pregunta");
             DialogueManager.I.questionEvent.Invoke();
         }
+        */
     }
 }

@@ -6,9 +6,10 @@ public class Dialogue
 {
     public enum emotions
     {
-        happy,
         angry,
-        embarrased
+        asking,
+        blush,
+        normal
     }
     protected string text;
     private emotions emotion;
@@ -20,6 +21,12 @@ public class Dialogue
     {
         this.text=text;
         this.emotion=emotion;
+    }
+
+    public Dialogue(string text)
+    {
+        this.text=text;
+        this.emotion=emotions.normal;
     }
 
 
