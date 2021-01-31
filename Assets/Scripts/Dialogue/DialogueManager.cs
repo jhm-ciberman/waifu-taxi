@@ -159,9 +159,29 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    public void failDialogue()
+    private string indicationToString(Indication indication)
     {
-        StartCoroutine(mostrarUrgente(pasajero.getFailDialogue().Text));
+        string s = "...";
+        switch (indication) {
+            case Indication.TurnLeft: s = "left";  break;
+            case Indication.TurnRight: s = "right"; break;
+            case Indication.TurnU: s = "in u"; break;
+        }
+        return s;
+    }
+
+    public void failDialogue(Indication indication, Indication prevIndication)
+    {
+        var currString = indicationToString(indication);
+        var prevString = indicationToString(prevIndication);
+        var currStringUpper = char.ToUpper(currString[0]) + currString.Substring(1);
+        var prevStringUpper = char.ToUpper(prevString[0]) + prevString.Substring(1);
+        var text = pasajero.getFailDialogue().Text;
+        text.Replace("[dir]", currString);
+        text.Replace("[prev_dir]", currString);
+        text.Replace("[Dir]", currStringUpper);
+        text.Replace("[Prev_dir]", prevStringUpper);
+        StartCoroutine(mostrarUrgente(text));
     }
 
     public IEnumerator mostrarUrgente(string texto)
