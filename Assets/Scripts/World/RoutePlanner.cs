@@ -22,6 +22,7 @@ namespace WaifuTaxi
         private Indication _currentIndication = Indication.None;
 
         public System.Action<IndicationEvent> onIndication;
+        public System.Action onPathFinished;
         
         private bool _pathWasRecentlyRestarted = false;
 
@@ -51,9 +52,14 @@ namespace WaifuTaxi
         public void CalculateIndications()
         {
             var dirVector = this._nextGoal - this._currentCoord;
-
             var goalAngle = Vector2.SignedAngle(Vector2.up, dirVector);
-            var angleDelta = Mathf.DeltaAngle(this._entity.angle, goalAngle);
+            var indication = this._DirVectorToIndication(this._entity.angle, goalAngle);
+            this._SetNewIndication(indication);
+        }
+
+        private Indication _DirVectorToIndication(float currentAngle, float goalAngle)
+        {
+            var angleDelta = Mathf.DeltaAngle(currentAngle, goalAngle);
             var sign = Mathf.Sign(angleDelta);
             var abs = Mathf.Abs(angleDelta);
 
@@ -65,8 +71,7 @@ namespace WaifuTaxi
             } else {
                 indication = Indication.TurnU;
             }
-
-            this._SetNewIndication(indication);
+            return indication;
         }
 
         private void _SetNewIndication(Indication indication)
@@ -77,6 +82,7 @@ namespace WaifuTaxi
                     return;
                 }
             }
+
             var prevIndication = this._currentIndication;
             this._currentIndication = indication;
 
@@ -99,10 +105,11 @@ namespace WaifuTaxi
                 this._nextGoal = this._path[this._pathIndex];
 
                 this.CalculateIndications();
+                this._pathWasRecentlyRestarted = false;
             } else {
-                Debug.Log("GOAL REACHED!!! ");
+                this.onPathFinished?.Invoke();
+                this.StartNewPath();
             }
-            this._pathWasRecentlyRestarted = false;
         }
 
         public void RecalculatePath()
@@ -111,9 +118,10 @@ namespace WaifuTaxi
                 this._pathWasRecentlyRestarted = true;
             }
             var pathfinder = new CarPathfinder(this._world, this._entity.currentCoord, this._finalDestination, this._entity.currentDirVector);
-            this._path = pathfinder.Pathfind();
+            var path = pathfinder.Pathfind();
             this._pathIndex = 0;
-            if (this._path.Count > 1) {
+            if (path.Count > 1) {
+                this._path = path;
                 this.AdvanceToNextGoal();
             } else {
                 this._path = null; 

@@ -31,6 +31,9 @@ namespace WaifuTaxi
                     Debug.Log("PrevIndication: " + e.prevIndication);
                     Debug.Log("Restarted: " + e.pathWasRestarted); 
                 };
+                this._planner.onPathFinished += () => {
+                    Debug.Log("Path finished");
+                };
             }
             this._planner.UpdatePath();
         }

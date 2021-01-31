@@ -40,22 +40,21 @@ namespace WaifuTaxi
                 }
             }
 
-            //for (int x = 0; x < this.size.x; x++) {
-            //    for (int y = 0; y < this.size.y; y++) {
-            //        if (x % 3 == 0 || y % 3 == 0) {
-            //            this._road[new Vector2Int(x, y)] = true;
-            //        }
-            //        //this._road[new Vector2Int(x, y)] = this._city[x, y];
-            //    }
-            //}
-
-            for (int x = 0; x < this._city.GetLength(0); x++) {
-                for (int y = 0; y < this._city.GetLength(1); y++) {
-                    this._road[new Vector2Int(x, y)] = (this._city[x, y] == 1);
+            for (int x = 1; x < this.size.x - 1; x++) {
+                for (int y = 1; y < this.size.y - 1; y++) {
+                    if (x % 3 == 0 || y % 3 == 0) {
+                        this._road[new Vector2Int(x, y)] = true;
+                    }
                 }
             }
 
-            this.size = new Vector2Int(this._city.GetLength(0), this._city.GetLength(1));
+            //for (int x = 0; x < this._city.GetLength(0); x++) {
+            //    for (int y = 0; y < this._city.GetLength(1); y++) {
+            //        this._road[new Vector2Int(x, y)] = (this._city[x, y] == 1);
+            //    }
+            //}
+
+            //this.size = new Vector2Int(this._city.GetLength(0), this._city.GetLength(1));
 
 
             foreach (var hasRoad in this._road.Values) {
