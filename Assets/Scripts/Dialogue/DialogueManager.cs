@@ -41,8 +41,6 @@ public class DialogueManager : MonoBehaviour
         turnLeftEvent=new UnityEvent();
         turnRightEvent=new UnityEvent();
         questionEvent = new UnityEvent();
-        turnLeftEvent.AddListener(turnLeft);
-        turnRightEvent.AddListener(turnRight);
         questionEvent.AddListener(askQuestion);
         enterPasajero();
     }
@@ -203,9 +201,9 @@ public class DialogueManager : MonoBehaviour
     {
         while(true)
         {
-            yield return new WaitForSeconds(Random.Range(10,20));
             yield return new WaitUntil(()=>canShowUrgentDialogue);
             yield return new WaitUntil(()=>!isAskingDirections);
+            yield return new WaitForSeconds(Random.Range(15,20));
             needsUrgentDialogue=true;
             canShowQuestion=true;
             QuestionDialogue questionDialogue = pasajero.getRandomQuestionDialogue();
@@ -216,40 +214,19 @@ public class DialogueManager : MonoBehaviour
     public void GiveIndication(Indication indication)
     {
         this.isAskingDirections=true;
-        switch(indication)
-        {
-            case Indication.TurnLeft:
-                turnLeft();
-                break;
-            case Indication.TurnRight:
-                turnRight();
-                break;
-        }
-    }
-
-    private void turnLeft()
-    {
         if(canShowUrgentDialogue)
         {
             needsUrgentDialogue=true;
-            TurnDialogue turnDialogue = pasajero.getTurnLeftDialogue();
+            TurnDialogue turnDialogue = pasajero.getIndication();
             changeSprite.Invoke(turnDialogue);
+            //esta feo pero no tengo tiempo para arreglarlo aaaa
+            string text = turnDialogue.Text;
+            var indicationString =indicationToString(indication);
+            turnDialogue.Text.Replace("[dir]",indicationString);
             StartCoroutine(turnDialogueManager.showTurnDialogueRoutine(turnDialogue));
         }
-
     }
 
-    private void turnRight()
-    {
-        if(canShowUrgentDialogue)
-        {
-            needsUrgentDialogue=true;
-            TurnDialogue turnDialogue = pasajero.getTurnRightDialogue();
-            changeSprite.Invoke(turnDialogue);
-            StartCoroutine(turnDialogueManager.showTurnDialogueRoutine(turnDialogue));
-        }
-        
-    }
 
     public void askQuestion()
     {
