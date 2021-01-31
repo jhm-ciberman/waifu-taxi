@@ -45,12 +45,12 @@ public class QuestionDialogueManager : MonoBehaviour
             yield return new WaitUntil(()=>DialogueManager.I.canShowUrgentDialogue);
             if(questionInput.answeredCorrectly())
             {
-                ScoreManager.I.addStar(1);
+                //ScoreManager.I.addStar(1);
                 fullDialogue = dialogue.CorrectDialogue;
             }
             else
             {
-                ScoreManager.I.addStar(-1);
+                //ScoreManager.I.addStar(-1);
                 fullDialogue=dialogue.FailDialogue;
             }
             StartCoroutine(DialogueManager.I.showDialogue(fullDialogue,true));
