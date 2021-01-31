@@ -22,6 +22,11 @@ namespace WaifuTaxi
 
             this._planner = new RoutePlanner(world, player);
 
+
+            AudioManager.Instance.PlaySound("music_intro", false, (s) => {
+                AudioManager.Instance.PlayMusic("music_loop", false);
+            });
+
             if (this.dialogueManager != null) { // With UI
                 this._planner.onIndication += (e) => {
                     if(e.pathWasRestarted) {
