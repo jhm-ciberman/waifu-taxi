@@ -737,10 +737,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca9d776de6a01254cb8d9bacaf50a4e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spriteAngry: {fileID: 0}
-  spriteAsking: {fileID: 0}
-  spriteBlush: {fileID: 0}
-  spriteNormal: {fileID: 0}
+  spriteAngry: {fileID: 21300000, guid: d4f2382c34c98c147ad418f201845524, type: 3}
+  spriteAsking: {fileID: 21300000, guid: 04b1d273d605c4a4f99ccf48e91828ba, type: 3}
+  spriteBlush: {fileID: 21300000, guid: f3c285427749a9e4b96886cce62faff4, type: 3}
+  spriteNormal: {fileID: 21300000, guid: 30f00d09634c5f340a8b3892cd55d105, type: 3}
 --- !u!1 &664751964
 GameObject:
   m_ObjectHideFlags: 0
@@ -1481,6 +1481,7 @@ MonoBehaviour:
   pasajeros:
   - {fileID: 1050221462}
   - {fileID: 1750002793}
+  - {fileID: 506800365}
   normalDialogue: {fileID: 1062495845}
   turnDialogueManager: {fileID: 703447585}
   questionDialogueManager: {fileID: 2044553029}

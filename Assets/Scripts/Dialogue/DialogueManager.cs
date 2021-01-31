@@ -10,7 +10,7 @@ public  class NewDialogueEvent:UnityEvent<Dialogue>{}
 
 public class DialogueManager : MonoBehaviour
 {
-    static int MAX_LENGH = 50;
+    static int MAX_LENGH = 55;
     static float WAIT_SPEED = 0.10f;
     [SerializeField] private int ronda;
     [SerializeField] private TextMeshProUGUI textDialogue;
@@ -178,7 +178,7 @@ public class DialogueManager : MonoBehaviour
         text = text.Replace("[prev_dir]", currString);
         text = text.Replace("[Dir]", currStringUpper);
         text = text.Replace("[Prev_dir]", prevStringUpper);
-        ScoreManager.I.addStar(-1);
+        ScoreManager.I.removeStar(1);
         StartCoroutine(mostrarUrgente(text));
     }
 
@@ -214,7 +214,7 @@ public class DialogueManager : MonoBehaviour
     public void GiveIndication(Indication indication)
     {
         this.isAskingDirections=true;
-        if(canShowUrgentDialogue)
+        if(canShowUrgentDialogue && indication!=Indication.Continue)
         {
             needsUrgentDialogue=true;
             TurnDialogue turnDialogue = pasajero.getIndication();

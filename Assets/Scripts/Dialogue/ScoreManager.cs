@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class ScoreManager : MonoBehaviour
 {
-   public float starts{get; private set;}
+   [SerializeField] public float starts;
 
    [SerializeField] private Image[] startImage;
 
@@ -18,7 +18,13 @@ public class ScoreManager : MonoBehaviour
 
    public void Start()
    {
-       this.starts=3;
+       this.starts=4;
+       setStartSprite();
+   }
+
+   public void reiniciar()
+   {
+       this.starts=4;
        setStartSprite();
    }
 
@@ -26,19 +32,35 @@ public class ScoreManager : MonoBehaviour
    {
         if(starts+amount<=5)
             this.starts+=starts;
-        else if(starts+amount<=0)
-        {
-           DialogueManager.I.changePasajero.Invoke();
-           //Direccion nueva 
-        }
         else
-            starts=5;
+        {
+        starts=5;
+        }
        setStartSprite();
+   }
+
+   public void removeStar(float amount)
+   {
+       if(starts-amount==0)
+       {
+           DialogueManager.I.nextPasajero();
+           reiniciar();
+       }
+       else
+       {
+           this.starts-=amount;
+           setStartSprite();
+       }
+       
    }
 
    public void setStartSprite()
    {
        int whole = (int)Mathf.Round(starts);
+       for(int i=0;i<5;i++)
+       {
+           startImage[i].enabled=true;
+       }
        for(int i=4;i>=whole;i--)
        {
            startImage[i].enabled = false;
