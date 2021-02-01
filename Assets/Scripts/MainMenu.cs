@@ -14,7 +14,7 @@ namespace WaifuTaxi
         public void OnPlayButtonClick()
         {
             AudioManager.Instance.StopPlayingMusic();
-            SceneManager.LoadScene("UIScene", LoadSceneMode.Single);
+            SceneManager.LoadScene("MainGame", LoadSceneMode.Single);
         }
     }
 }

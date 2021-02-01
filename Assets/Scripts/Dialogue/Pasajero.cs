@@ -40,9 +40,9 @@ public abstract class Pasajero:MonoBehaviour
         this.failDirectionDialogue = new List<Dialogue>();
         this.introduction=new List<Dialogue>();
         IndicationDialogue=new List<TurnDialogue>();
-        SpeedRandomFactor = 0.004f;
-        FastTextSpeed = 0.004f;
-        SlowTextSpeed = 0.008f;
+        SpeedRandomFactor = 0.003f;
+        FastTextSpeed = 0.003f;
+        SlowTextSpeed = 0.009f;
         addDialogue();
     }
 

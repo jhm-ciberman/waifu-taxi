@@ -98,7 +98,13 @@ public class DialogueManager : MonoBehaviour
             if(currentCharacter == '*')
             {
                 actualSpeed = pasajero.getSpeed(isUrgent);
-                yield return new WaitForSeconds(WAIT_SPEED);
+                var waitSpeed = WAIT_SPEED;
+                if (i < newDialogue.Length - 1 && newDialogue[i + 1] == '*') {
+                    i++;
+                    Debug.Log(i);
+                    waitSpeed *= 2;
+                } 
+                yield return new WaitForSeconds(waitSpeed);
             }
             else
             {
