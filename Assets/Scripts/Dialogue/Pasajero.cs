@@ -34,8 +34,8 @@ public abstract class Pasajero : MonoBehaviour
         this.turnRightDialogue = new List<TurnDialogue>();
         this.questionDialogue = new List<QuestionDialogue>();
         this.failDirectionDialogue = new List<Dialogue>();
-        this.introduction=new List<Dialogue>();
-        IndicationDialogue=new List<TurnDialogue>();
+        this.introduction = new List<Dialogue>();
+        IndicationDialogue = new List<TurnDialogue>();
         SpeedRandomFactor = 0.003f;
         FastTextSpeed = 0.003f;
         SlowTextSpeed = 0.009f;
@@ -56,33 +56,31 @@ public abstract class Pasajero : MonoBehaviour
 
     public void addPossibleDialogue(string text, Emotion emotion)
     {
-        Dialogue dialogue = new Dialogue(text,emotion);
-        this.possibleDialogue.Add(dialogue);
+        this.possibleDialogue.Add(new Dialogue(text, emotion));
     }
 
     public void addPossibleDialogue(string text)
     {
         Emotion emotion = Emotion.normal;
+
         switch (UnityEngine.Random.Range(0, 4)) {
             case 0: emotion = Emotion.angry; break;
             case 1: emotion = Emotion.asking; break;
             case 2: emotion = Emotion.blush; break;
             case 3: emotion = Emotion.normal; break;
         }
-        Dialogue dialogue = new Dialogue(text, emotion);
-        this.possibleDialogue.Add(dialogue);
+
+        this.possibleDialogue.Add(new Dialogue(text, emotion));
     }
 
     public void addIndicationDialogue(string text)
     {
-        TurnDialogue dialogue = new TurnDialogue(text, Emotion.normal);
-        IndicationDialogue.Add(dialogue);
+        IndicationDialogue.Add(new TurnDialogue(text, Emotion.normal));
     }
 
     public void addIntroduction(string text)
     {
-        Dialogue dialogue = new Dialogue(text);
-        this.introduction.Add(dialogue);
+        this.introduction.Add(new Dialogue(text));
     }
 
     public TurnDialogue getIndication()
@@ -93,10 +91,9 @@ public abstract class Pasajero : MonoBehaviour
         return dialogue;
     }
 
-
     public void addQuestionDialogue(string text, Emotion emotion, string[] options, int correct, string afterDialogue, string correctDialogue, string failDialogue)
     {
-        QuestionDialogue dialogue = new QuestionDialogue(text,emotion,options,correct,correctDialogue,failDialogue);
+        QuestionDialogue dialogue = new QuestionDialogue(text, emotion, options, correct, correctDialogue, failDialogue);
         this.questionDialogue.Add(dialogue);
     }
 
@@ -109,10 +106,9 @@ public abstract class Pasajero : MonoBehaviour
     public Dialogue getFailDialogue()
     {
         Dialogue dialogue = null;
-        int k= Random.Range(0,failDirectionDialogue.Count);
-        dialogue=failDirectionDialogue[k];
+        int k = Random.Range(0, failDirectionDialogue.Count);
+        dialogue = failDirectionDialogue[k];
         return dialogue;
-
     }
 
     public Dialogue getIntroduction()
@@ -133,18 +129,13 @@ public abstract class Pasajero : MonoBehaviour
 
     public TurnDialogue getRandomTurnDialogue()
     {
-        TurnDialogue turnDialogue=null;
+        TurnDialogue turnDialogue = null;
         int k = Random.Range(0,2);
-        switch(k)
-        {
-            case 0:
-                turnDialogue=getTurnLeftDialogue();
-                break;
-            case 1:
-                turnDialogue=getTurnRightDialogue();
-                break;
+        switch (k) {
+            case 0: turnDialogue = getTurnLeftDialogue();  break;
+            case 1: turnDialogue = getTurnRightDialogue(); break;
         }
-        Debug.Assert(turnDialogue!=null,"Estas devolviendo un dialogo random nulo");
+        Debug.Assert(turnDialogue != null, "Estas devolviendo un dialogo random nulo");
         return turnDialogue;
     }
 
@@ -152,7 +143,7 @@ public abstract class Pasajero : MonoBehaviour
     {
         Dialogue dialogue;
         dialogue = this.possibleDialogue[Random.Range(0, this.possibleDialogue.Count)];
-        Debug.Assert(dialogue!=null,"esta devolviendo un dialogo nulo");
+        Debug.Assert(dialogue != null, "esta devolviendo un dialogo nulo");
         return dialogue;
     }
 
@@ -160,7 +151,7 @@ public abstract class Pasajero : MonoBehaviour
     {
         TurnDialogue dialogue;
         dialogue = this.turnLeftDialogue[Random.Range(0, this.turnLeftDialogue.Count)];
-        Debug.Assert(dialogue!=null,"esta devolviendo un dialogo nulo");
+        Debug.Assert(dialogue != null, "esta devolviendo un dialogo nulo");
         return dialogue;
     }
 
@@ -168,9 +159,7 @@ public abstract class Pasajero : MonoBehaviour
     {
         TurnDialogue dialogue;
         dialogue = this.turnRightDialogue[Random.Range(0, this.turnRightDialogue.Count)];
-        Debug.Assert(dialogue!=null,"esta devolviendo un dialogo nulo");
+        Debug.Assert(dialogue != null, "esta devolviendo un dialogo nulo");
         return dialogue;
     }
-
-        
 }

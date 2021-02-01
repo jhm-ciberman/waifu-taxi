@@ -60,26 +60,22 @@ public class Arachne : Pasajero
         this.addFailDialogue("We are never going to reach my destination this way. *[dir]. **", Emotion.angry);
         this.addFailDialogue("I didn’t know I was on a city tour. *Turn [dir]. **", Emotion.angry);
 
-        string[] opciones = new string[3];
-        opciones[0] = "(1) *Yes";
-        opciones[1] = "(2) *No";
-        opciones[2] = "(3) *I like almost every music genre.";
+        string[] opciones = new string[3] {
+            "(1) *Yes",
+            "(2) *No",
+            "(3) *I like almost every music genre.",
+        };
+        
         this.addQuestionDialogue("So, do you like pop music?", Emotion.asking, opciones, 1, "Great, I like it too","Oh, I see…",
         "aa");
 
-        string[] opciones2 = new string[3];
-        opciones[0] = "(1) *K-pop";
-        opciones[1] = "(2) *Rock";
-        opciones[2] = "(3) *I like almost every music genre";
+        string[] opciones2 = new string[3] {
+            "(1) *K-pop",
+            "(2) *Rock",
+            "(3) *I like almost every music genre",
+        };
+        
         this.addQuestionDialogue("What is your favorite music genre?", Emotion.asking, opciones2, 2, "Great, I like it too. ","Oh, I see…",
         "aa");
-
-        /*string[] opciones3 = new string[3];
-        opciones[0]="(1) aa";
-        opciones[1]="(2) aa";
-        opciones[2]="(3) aa";
-        this.addQuestionDialogue("What is your favourite drink?",Dialogue.emotions.asking,opciones3,2,"aa","aa",
-        "aa");
-        */
     }
 }

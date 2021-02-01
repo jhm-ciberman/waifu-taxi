@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class NormalDialogue : MonoBehaviour
@@ -9,7 +8,7 @@ public class NormalDialogue : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        pasajero=DialogueManager.I.pasajero;
+        pasajero=DialogueManager.Instance.pasajero;
     }
 
     public IEnumerator showNormalDialogue()
@@ -17,9 +16,9 @@ public class NormalDialogue : MonoBehaviour
         yield return new WaitForSeconds(0.5f); //Esto esta muy feo
         while(true)
         {
-            yield return new WaitUntil(()=>DialogueManager.I.canShowNormalialogue);
-            Dialogue dialogue= DialogueManager.I.pasajero.getPossibleDialogue();
-            DialogueManager.I.normalDialogueEvent.Invoke(dialogue);
+            yield return new WaitUntil(()=>DialogueManager.Instance.canShowNormalialogue);
+            Dialogue dialogue= DialogueManager.Instance.pasajero.getPossibleDialogue();
+            DialogueManager.Instance.normalDialogueEvent.Invoke(dialogue);
         }
     }
 

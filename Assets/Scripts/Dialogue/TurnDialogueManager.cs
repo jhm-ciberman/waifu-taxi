@@ -10,7 +10,7 @@ public class TurnDialogueManager : MonoBehaviour
 
     public IEnumerator showTurnDialogueRoutine(TurnDialogue newDialogue,Indication indication)
     {
-        bool canShowUrgentDialogue=DialogueManager.I.canShowUrgentDialogue;
+        bool canShowUrgentDialogue=DialogueManager.Instance.canShowUrgentDialogue;
         int numeroDeDialogosFalsos =Random.Range(0,1);
         string fullDialogue;
         for(int j=0;j<=numeroDeDialogosFalsos;j++)
@@ -40,12 +40,12 @@ public class TurnDialogueManager : MonoBehaviour
             var directionUpper= char.ToUpper(direction[0]) +direction.Substring(1);
             fullDialogue = fullDialogue.Replace("[dir]",direction);
             fullDialogue = fullDialogue.Replace("[Dir]",directionUpper);
-            yield return new WaitUntil(()=>DialogueManager.I.canShowUrgentDialogue);
-            IEnumerator newRoutine = DialogueManager.I.showDialogue(fullDialogue,true);
+            yield return new WaitUntil(()=>DialogueManager.Instance.canShowUrgentDialogue);
+            IEnumerator newRoutine = DialogueManager.Instance.showDialogue(fullDialogue,true);
             StartCoroutine(newRoutine);
         }
-        yield return new WaitUntil(()=>DialogueManager.I.canShowUrgentDialogue);
-        DialogueManager.I.needsUrgentDialogue=false;
-        DialogueManager.I.isAskingDirections=false;
+        yield return new WaitUntil(()=>DialogueManager.Instance.canShowUrgentDialogue);
+        DialogueManager.Instance.needsUrgentDialogue=false;
+        DialogueManager.Instance.isAskingDirections=false;
     }
 }

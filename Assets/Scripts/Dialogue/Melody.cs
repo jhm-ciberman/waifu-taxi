@@ -1,10 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class Melody : Pasajero
+﻿public class Melody : Pasajero
 {
-
     public override void addDialogue()
     {
         addIntroduction("Hello. **");
@@ -41,7 +36,6 @@ public class Melody : Pasajero
         addIndicationDialogue("Turn [dir] please.");
         addIndicationDialogue("Turn [dir] in the next one.");
 
-
         this.addFailDialogue("Are you listening? *Turn [dir] now! **", Emotion.angry);
         this.addFailDialogue("Do you know how to follow directions? *[dir]. **", Emotion.angry);
         this.addFailDialogue("I said [dir], well then turn [dir]. **", Emotion.angry);
@@ -50,26 +44,22 @@ public class Melody : Pasajero
         this.addFailDialogue("We are never going to reach my destination this way. *[dir]. **", Emotion.angry);
         this.addFailDialogue("I didn’t know I was on a city tour. *Turn [dir]. **", Emotion.angry);
 
-        string[] opciones = new string[3];
-        opciones[0]="(1) *Yes";
-        opciones[1]="(2) *No";
-        opciones[2]="(3) *I like almost every music genre.";
+        string[] opciones = new string[3] {
+            "(1) *Yes", 
+            "(2) *No", 
+            "(3) *I like almost every music genre.",
+        };
+
         this.addQuestionDialogue("So, do you like pop music?", Emotion.asking,opciones,1,"Great, I like it too","Oh, I see…",
         "aa");
 
-        string[] opciones2 = new string[3];
-        opciones[0]="(1) *K-pop";
-        opciones[1]="(2) *Rock";
-        opciones[2]="(3) *I like almost every music genre";
+        string[] opciones2 = new string[3] {
+            "(1) *K-pop",
+            "(2) *Rock",
+            "(3) *I like almost every music genre",
+        };       
+        
         this.addQuestionDialogue("What is your favorite music genre?", Emotion.asking,opciones2,2,"Great, I like it too. ","Oh, I see…",
         "aa");
-
-        /*string[] opciones3 = new string[3];
-        opciones[0]="(1) aa";
-        opciones[1]="(2) aa";
-        opciones[2]="(3) aa";
-        this.addQuestionDialogue("What is your favourite drink?",Dialogue.emotions.asking,opciones3,2,"aa","aa",
-        "aa");
-        */
     }
 }

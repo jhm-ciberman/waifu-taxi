@@ -9,28 +9,17 @@ public class QuestionDialogue : Dialogue
     private int correct;
     private string afterDialogue,correctDialogue,failDialogue;
 
-    public string[] Options{get{return options;}}
-    public int Correct{get{return correct;}}
-    public string AfterDialogue{get{return afterDialogue;}}
-    public string CorrectDialogue{get{return correctDialogue;}}
-    public string FailDialogue{get{return failDialogue;}}
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public string[] Options => options;
+    public int Correct => correct;
+    public string AfterDialogue => afterDialogue;
+    public string CorrectDialogue => correctDialogue;
+    public string FailDialogue => failDialogue;
 
-    public QuestionDialogue(string text,Emotion emotion,string[] options,int correct,string correctDialogue,string failDialogue):base(text,emotion)
+    public QuestionDialogue(string text, Emotion emotion, string[] options, int correct, string correctDialogue, string failDialogue) : base(text, emotion)
     {
-        this.options=options;
-        this.correctDialogue=correctDialogue;
-        this.failDialogue=failDialogue;
-        this.correct=correct;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        this.options = options;
+        this.correctDialogue = correctDialogue;
+        this.failDialogue = failDialogue;
+        this.correct = correct;
     }
 }

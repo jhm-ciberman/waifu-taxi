@@ -4,34 +4,28 @@ using UnityEngine;
 
 public class QuestionInput : MonoBehaviour
 {
-   [SerializeField] private int correct,answer;
+   [SerializeField] private int correct;
+   [SerializeField] private int answer;
 
    public void askQuestion(int correct)
    {
-       this.correct=correct;
-       answer=0;
+       this.correct = correct;
+       answer = 0;
    }
 
    public bool answeredCorrectly()
    {
-       return answer==correct;
+       return answer == correct;
    }
 
    public void Update()
    {
-
-        if(Input.GetKeyDown(KeyCode.Alpha1))
-        {
+        if(Input.GetKeyDown(KeyCode.Alpha1)) {
             answer=1;
-        }
-        else if(Input.GetKeyDown(KeyCode.Alpha2))
-        {
+        } else if(Input.GetKeyDown(KeyCode.Alpha2)) {
             answer=2;
-        }
-        else if(Input.GetKeyDown(KeyCode.Alpha3))
-        {
+        } else if(Input.GetKeyDown(KeyCode.Alpha3)) {
             answer=3;
         }
-       
    }
 }
