@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9345c1656bfd7134ab94cbee4a6e990b, type: 3}
+  m_Name: Arachne
+  m_EditorClassIdentifier: 
+  angry: {fileID: 21300000, guid: d2cb4c81a84140a4aa0459337beec066, type: 3}
+  asking: {fileID: 21300000, guid: 4a602531ac40b4f4d8103fd7abdac180, type: 3}
+  blush: {fileID: 21300000, guid: 83ea706e5f8d8b04392df2ae5610624e, type: 3}
+  normal: {fileID: 21300000, guid: ff0385686c0de4d4b869ca56b477e269, type: 3}

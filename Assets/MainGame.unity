@@ -677,7 +677,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34ad658cb1ca4d34ea5ccbc4b34d53b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canAnswer: 0
   correct: 0
   answer: 0
 --- !u!4 &371140654
@@ -737,10 +736,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca9d776de6a01254cb8d9bacaf50a4e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spriteAngry: {fileID: 21300000, guid: d2cb4c81a84140a4aa0459337beec066, type: 3}
-  spriteAsking: {fileID: 21300000, guid: 4a602531ac40b4f4d8103fd7abdac180, type: 3}
-  spriteBlush: {fileID: 21300000, guid: 83ea706e5f8d8b04392df2ae5610624e, type: 3}
-  spriteNormal: {fileID: 21300000, guid: ff0385686c0de4d4b869ca56b477e269, type: 3}
+  portrait: {fileID: 11400000, guid: f6c4a96974fbbe3499cce1ee3207d9e3, type: 2}
 --- !u!1 &664751964
 GameObject:
   m_ObjectHideFlags: 0
@@ -1120,10 +1116,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b70948718aff98408e607837d30c264, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spriteAngry: {fileID: 21300000, guid: 212a41a157f7aa248b293899ef99ae91, type: 3}
-  spriteAsking: {fileID: 21300000, guid: 85aaef565b41e434084f45b8011d173d, type: 3}
-  spriteBlush: {fileID: 21300000, guid: 73217a4b0c276ae4e8947b98e05e45b2, type: 3}
-  spriteNormal: {fileID: 21300000, guid: e3bb8a1635a8e1041aa32c4b8c58069d, type: 3}
+  portrait: {fileID: 11400000, guid: 4f2e3c373e009df4ab2b88b19d89e2c9, type: 2}
 --- !u!1 &1062495843
 GameObject:
   m_ObjectHideFlags: 0
@@ -1301,53 +1294,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!1 &1408093373
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1408093374}
-  - component: {fileID: 1408093375}
-  m_Layer: 0
-  m_Name: PasajeroTest
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1408093374
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1408093373}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1597675461}
-  m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1408093375
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1408093373}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e58e6d658cf005c4f925b647ec680aa0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spriteAngry: {fileID: 21300000, guid: 37da9c7a646e3b5478be91b519c14aa9, type: 3}
-  spriteAsking: {fileID: 21300000, guid: 21c4ea0c49f7d664594e305e48a13db7, type: 3}
-  spriteBlush: {fileID: 21300000, guid: 21c4ea0c49f7d664594e305e48a13db7, type: 3}
-  spriteNormal: {fileID: 21300000, guid: c82c22fb246d11f4a8c52be8e07d773b, type: 3}
 --- !u!1 &1552239441
 GameObject:
   m_ObjectHideFlags: 0
@@ -1500,7 +1446,6 @@ Transform:
   - {fileID: 703447586}
   - {fileID: 2044553028}
   - {fileID: 316049276}
-  - {fileID: 1408093374}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1547,10 +1492,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 033420bcc46839b4b88b8548ec86cbc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spriteAngry: {fileID: 21300000, guid: 8e15be6faff050347929fb4ce4522b00, type: 3}
-  spriteAsking: {fileID: 21300000, guid: d62f192038249cb42919a83ec6339fc1, type: 3}
-  spriteBlush: {fileID: 21300000, guid: 142dd25a2aeed14459831bb2f349f77f, type: 3}
-  spriteNormal: {fileID: 21300000, guid: 99de9de3246e9234dbd725e505f1c968, type: 3}
+  portrait: {fileID: 11400000, guid: b85c2f71895349848af6b8cd5fe249fd, type: 2}
 --- !u!1 &1873582296
 GameObject:
   m_ObjectHideFlags: 0

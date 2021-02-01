@@ -20,7 +20,7 @@ public class QuestionDialogue : Dialogue
         
     }
 
-    public QuestionDialogue(string text,emotions emotion,string[] options,int correct,string correctDialogue,string failDialogue):base(text,emotion)
+    public QuestionDialogue(string text,Emotion emotion,string[] options,int correct,string correctDialogue,string failDialogue):base(text,emotion)
     {
         this.options=options;
         this.correctDialogue=correctDialogue;

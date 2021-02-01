@@ -8,7 +8,7 @@ public class TurnDialogue : Dialogue
     public Indication indication{get;private set;}
     public string failDialogue;
 
-    public TurnDialogue(string text,emotions emotion):base(text,emotion)
+    public TurnDialogue(string text,Emotion emotion):base(text,emotion)
     {
         
     }

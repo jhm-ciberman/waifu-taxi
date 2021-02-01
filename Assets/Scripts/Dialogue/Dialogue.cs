@@ -4,19 +4,13 @@ using UnityEngine;
 
 public class Dialogue
 {
-    public enum emotions
-    {
-        angry,
-        asking,
-        blush,
-        normal
-    }
-    private emotions emotion;
+
+    private Emotion emotion;
 
     public string Text{get;set;}
-    public emotions Emotion{get{return emotion;}}
+    public Emotion Emotion{get{return emotion;}}
 
-    public Dialogue(string text,emotions emotion)
+    public Dialogue(string text, Emotion emotion)
     {
         this.Text=text;
         this.emotion=emotion;
@@ -25,9 +19,6 @@ public class Dialogue
     public Dialogue(string text)
     {
         this.Text=text;
-        this.emotion=emotions.normal;
+        this.emotion=Emotion.normal;
     }
-
-
-
 }

@@ -19,37 +19,28 @@ public class PasajeroSprite : MonoBehaviour
     {
         DialogueManager.I.changeSprite.AddListener(changeExpression);
         DialogueManager.I.changePasajero.AddListener(changePasajero);
-        this.pasajero=DialogueManager.I.pasajero;
-
+        this.pasajero = DialogueManager.I.pasajero;
     }
 
     private void changePasajero()
     {
-        this.pasajero=DialogueManager.I.pasajero;
+        this.pasajero = DialogueManager.I.pasajero;
     }
-
 
     void changeExpression(Dialogue dialogue)
     {
-        Sprite sprite=null;
-        Dialogue.emotions emotion =dialogue.Emotion;
-        if(emotion == Dialogue.emotions.angry)
+        Sprite sprite = null;
+        Emotion emotion = dialogue.Emotion;
+
+        switch (emotion)
         {
-            sprite =pasajero.spriteAngry;
+            case Emotion.angry:  sprite = pasajero.portrait.angry;  break;
+            case Emotion.asking: sprite = pasajero.portrait.asking; break;
+            case Emotion.blush:  sprite = pasajero.portrait.blush;  break;
+            case Emotion.normal: sprite = pasajero.portrait.normal; break;
         }
-        else if(emotion == Dialogue.emotions.asking)
-        {
-            sprite =pasajero.spriteAsking;
-        }
-        else if(emotion == Dialogue.emotions.blush)
-        {
-            sprite =pasajero.spriteBlush;
-        }
-        else if(emotion == Dialogue.emotions.normal)
-        {
-            sprite =pasajero.spriteNormal;
-        }
-        Debug.Assert(sprite!=null,"No obtuvo el sprite");
-        pasajeroSprite.sprite=sprite;
+
+        Debug.Assert(sprite != null, "No obtuvo el sprite");
+        pasajeroSprite.sprite = sprite;
     }
 }

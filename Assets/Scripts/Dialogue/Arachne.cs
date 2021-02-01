@@ -52,26 +52,26 @@ public class Arachne : Pasajero
         addIndicationDialogue("Turn [dir] in the next one.");
 
 
-        this.addFailDialogue("Are you listening? *Turn [dir] now! **",Dialogue.emotions.angry);
-        this.addFailDialogue("Do you know how to follow directions? *Left. **",Dialogue.emotions.angry);
-        this.addFailDialogue("I said right, well then turn [dir]. **",Dialogue.emotions.angry);
-        this.addFailDialogue("It was the other right! *Turn [dir]. **",Dialogue.emotions.angry);
-        this.addFailDialogue("It was the other way around. *Turn [dir]. **",Dialogue.emotions.angry);
-        this.addFailDialogue("We are never going to reach my destination this way. *[dir]. **",Dialogue.emotions.angry);
-        this.addFailDialogue("I didn’t know I was on a city tour. *Turn [dir]. **",Dialogue.emotions.angry);
+        this.addFailDialogue("Are you listening? *Turn [dir] now! **", Emotion.angry);
+        this.addFailDialogue("Do you know how to follow directions? *Left. **", Emotion.angry);
+        this.addFailDialogue("I said right, well then turn [dir]. **", Emotion.angry);
+        this.addFailDialogue("It was the other right! *Turn [dir]. **", Emotion.angry);
+        this.addFailDialogue("It was the other way around. *Turn [dir]. **", Emotion.angry);
+        this.addFailDialogue("We are never going to reach my destination this way. *[dir]. **", Emotion.angry);
+        this.addFailDialogue("I didn’t know I was on a city tour. *Turn [dir]. **", Emotion.angry);
 
         string[] opciones = new string[3];
-        opciones[0]="(1) *Yes";
-        opciones[1]="(2) *No";
-        opciones[2]="(3) *I like almost every music genre.";
-        this.addQuestionDialogue("So, do you like pop music?",Dialogue.emotions.asking,opciones,1,"Great, I like it too","Oh, I see…",
+        opciones[0] = "(1) *Yes";
+        opciones[1] = "(2) *No";
+        opciones[2] = "(3) *I like almost every music genre.";
+        this.addQuestionDialogue("So, do you like pop music?", Emotion.asking, opciones, 1, "Great, I like it too","Oh, I see…",
         "aa");
 
         string[] opciones2 = new string[3];
-        opciones[0]="(1) *K-pop";
-        opciones[1]="(2) *Rock";
-        opciones[2]="(3) *I like almost every music genre";
-        this.addQuestionDialogue("What is your favorite music genre?",Dialogue.emotions.asking,opciones2,2,"Great, I like it too. ","Oh, I see…",
+        opciones[0] = "(1) *K-pop";
+        opciones[1] = "(2) *Rock";
+        opciones[2] = "(3) *I like almost every music genre";
+        this.addQuestionDialogue("What is your favorite music genre?", Emotion.asking, opciones2, 2, "Great, I like it too. ","Oh, I see…",
         "aa");
 
         /*string[] opciones3 = new string[3];

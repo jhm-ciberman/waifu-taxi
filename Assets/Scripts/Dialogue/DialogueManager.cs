@@ -101,7 +101,6 @@ public class DialogueManager : MonoBehaviour
                 var waitSpeed = WAIT_SPEED;
                 if (i < newDialogue.Length - 1 && newDialogue[i + 1] == '*') {
                     i++;
-                    Debug.Log(i);
                     waitSpeed *= 2;
                 } 
                 yield return new WaitForSeconds(waitSpeed);

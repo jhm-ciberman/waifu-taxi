@@ -1,31 +1,27 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using WaifuTaxi;
 
-public abstract class Pasajero:MonoBehaviour
+public abstract class Pasajero : MonoBehaviour
 {
     protected List<Dialogue> possibleDialogue;
-    protected List<TurnDialogue> turnLeftDialogue,turnRightDialogue;
+    protected List<TurnDialogue> turnLeftDialogue;
+    protected List<TurnDialogue> turnRightDialogue;
     protected List<QuestionDialogue> questionDialogue;
     protected List<Dialogue> introduction;
 
-    public float SpeedRandomFactor{get;private set;}
-    public float FastTextSpeed{get;private set;}
-    public float SlowTextSpeed{get;private set;}
+    public float SpeedRandomFactor {get; private set;}
+    public float FastTextSpeed {get; private set;}
+    public float SlowTextSpeed {get; private set;}
 
-    public List<Dialogue> PossibleDialogue{get{return possibleDialogue;}}
-    public List<TurnDialogue> IndicationDialogue{get; private set;}
-    public List<TurnDialogue> TurnLeftDialogue{get{return turnLeftDialogue;}}
-    public List<TurnDialogue> TurnRightDialogue{get {return turnRightDialogue;}}
-    public List<Dialogue> failDirectionDialogue{get;private set;}
-    public List<Dialogue> Introduction{get{return introduction;}}
+    public List<Dialogue> PossibleDialogue {get{return possibleDialogue;}}
+    public List<TurnDialogue> IndicationDialogue {get; private set;}
+    public List<TurnDialogue> TurnLeftDialogue {get{return turnLeftDialogue;}}
+    public List<TurnDialogue> TurnRightDialogue {get {return turnRightDialogue;}}
+    public List<Dialogue> failDirectionDialogue {get;private set;}
+    public List<Dialogue> Introduction {get{return introduction;}}
 
-    public Sprite spriteAngry;
-    public Sprite spriteAsking;
-    public Sprite spriteBlush;
-    public Sprite spriteNormal;
+    public Portrait portrait;
 
     public abstract void addDialogue();
 
@@ -33,7 +29,7 @@ public abstract class Pasajero:MonoBehaviour
 
     public void Start()
     {
-        this.possibleDialogue=new List<Dialogue>();
+        this.possibleDialogue = new List<Dialogue>();
         this.turnLeftDialogue = new List<TurnDialogue>();
         this.turnRightDialogue = new List<TurnDialogue>();
         this.questionDialogue = new List<QuestionDialogue>();
@@ -58,7 +54,7 @@ public abstract class Pasajero:MonoBehaviour
         return (this.useFastText ? FastTextSpeed : SlowTextSpeed) + speedDelta;
     }
 
-    public void addPossibleDialogue(string text,Dialogue.emotions emotion)
+    public void addPossibleDialogue(string text, Emotion emotion)
     {
         Dialogue dialogue = new Dialogue(text,emotion);
         this.possibleDialogue.Add(dialogue);
@@ -66,12 +62,12 @@ public abstract class Pasajero:MonoBehaviour
 
     public void addPossibleDialogue(string text)
     {
-        Dialogue.emotions emotion = Dialogue.emotions.normal;
+        Emotion emotion = Emotion.normal;
         switch (UnityEngine.Random.Range(0, 4)) {
-            case 0: emotion = Dialogue.emotions.angry; break;
-            case 1: emotion = Dialogue.emotions.asking; break;
-            case 2: emotion = Dialogue.emotions.blush; break;
-            case 3: emotion = Dialogue.emotions.normal; break;
+            case 0: emotion = Emotion.angry; break;
+            case 1: emotion = Emotion.asking; break;
+            case 2: emotion = Emotion.blush; break;
+            case 3: emotion = Emotion.normal; break;
         }
         Dialogue dialogue = new Dialogue(text, emotion);
         this.possibleDialogue.Add(dialogue);
@@ -79,7 +75,7 @@ public abstract class Pasajero:MonoBehaviour
 
     public void addIndicationDialogue(string text)
     {
-        TurnDialogue dialogue = new TurnDialogue(text,Dialogue.emotions.normal);
+        TurnDialogue dialogue = new TurnDialogue(text, Emotion.normal);
         IndicationDialogue.Add(dialogue);
     }
 
@@ -98,13 +94,13 @@ public abstract class Pasajero:MonoBehaviour
     }
 
 
-    public void addQuestionDialogue(string text,Dialogue.emotions emotion,string[] options,int correct,string afterDialogue,string correctDialogue,string failDialogue)
+    public void addQuestionDialogue(string text, Emotion emotion, string[] options, int correct, string afterDialogue, string correctDialogue, string failDialogue)
     {
-        QuestionDialogue dialogue=new QuestionDialogue(text,emotion,options,correct,correctDialogue,failDialogue);
+        QuestionDialogue dialogue = new QuestionDialogue(text,emotion,options,correct,correctDialogue,failDialogue);
         this.questionDialogue.Add(dialogue);
     }
 
-    public void addFailDialogue(string text,Dialogue.emotions emotion)
+    public void addFailDialogue(string text, Emotion emotion)
     {
         Dialogue dialogue = new Dialogue(text,emotion);
         this.failDirectionDialogue.Add(dialogue);
@@ -155,7 +151,7 @@ public abstract class Pasajero:MonoBehaviour
     public Dialogue getPossibleDialogue()
     {
         Dialogue dialogue;
-        dialogue = this.possibleDialogue[Random.Range(0,this.possibleDialogue.Count)];
+        dialogue = this.possibleDialogue[Random.Range(0, this.possibleDialogue.Count)];
         Debug.Assert(dialogue!=null,"esta devolviendo un dialogo nulo");
         return dialogue;
     }
@@ -163,7 +159,7 @@ public abstract class Pasajero:MonoBehaviour
     public TurnDialogue getTurnLeftDialogue()
     {
         TurnDialogue dialogue;
-        dialogue = this.turnLeftDialogue[Random.Range(0,this.turnLeftDialogue.Count)];
+        dialogue = this.turnLeftDialogue[Random.Range(0, this.turnLeftDialogue.Count)];
         Debug.Assert(dialogue!=null,"esta devolviendo un dialogo nulo");
         return dialogue;
     }
@@ -171,7 +167,7 @@ public abstract class Pasajero:MonoBehaviour
     public TurnDialogue getTurnRightDialogue()
     {
         TurnDialogue dialogue;
-        dialogue = this.turnRightDialogue[Random.Range(0,this.turnRightDialogue.Count)];
+        dialogue = this.turnRightDialogue[Random.Range(0, this.turnRightDialogue.Count)];
         Debug.Assert(dialogue!=null,"esta devolviendo un dialogo nulo");
         return dialogue;
     }
