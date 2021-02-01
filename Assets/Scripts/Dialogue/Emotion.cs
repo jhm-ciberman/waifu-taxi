@@ -1,7 +1,7 @@
 public enum Emotion
 {
-    angry,
-    asking,
-    blush,
-    normal
+    Angry,
+    Asking,
+    Blush,
+    Normal
 }

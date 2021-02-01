@@ -12,19 +12,32 @@ public class DialogueManager : MonoBehaviour
 {
     static int MAX_LENGH = 55;
     static float WAIT_SPEED = 0.10f;
+
     [SerializeField] private int ronda;
     [SerializeField] private TextMeshProUGUI textDialogue;
     [SerializeField] private TextMeshProUGUI[] textDialogueArray;
-    public bool canShowNormalialogue,canShowUrgentDialogue,canShowQuestion;
-    public bool needsUrgentDialogue,isFinished,isAskingDirections;
+
+    public bool canShowNormalialogue;
+    public bool canShowUrgentDialogue;
+    public bool canShowQuestion;
+
+    public bool needsUrgentDialogue;
+    public bool isFinished;
+    public bool isAskingDirections;
+
     public Pasajero pasajero;
-    public NewDialogueEvent normalDialogueEvent,turnDialogueEvent,changeSprite;
-    public UnityEvent turnLeftEvent,turnRightEvent,questionEvent,changePasajero;
+    public NewDialogueEvent normalDialogueEvent;
+    public NewDialogueEvent turnDialogueEvent;
+    public NewDialogueEvent changeSprite;
+
+    public UnityEvent turnLeftEvent;
+    public UnityEvent turnRightEvent;
+    public UnityEvent questionEvent;
+    public UnityEvent changePasajero;
+
     [SerializeField] public int actualLineIndex;
     [SerializeField] private Pasajero[] pasajeros;
 
-    [SerializeField] NormalDialogue normalDialogue;
-    [SerializeField] TurnDialogueManager turnDialogueManager;
     [SerializeField] QuestionDialogueManager questionDialogueManager;
     
     public static DialogueManager Instance;
@@ -41,7 +54,6 @@ public class DialogueManager : MonoBehaviour
         turnLeftEvent = new UnityEvent();
         turnRightEvent = new UnityEvent();
         questionEvent = new UnityEvent();
-        questionEvent.AddListener(askQuestion);
         enterPasajero();
     }
 
@@ -61,8 +73,8 @@ public class DialogueManager : MonoBehaviour
         string actualText = textDialogue.text;
         float actualSpeed = pasajero.getSpeed(isUrgent);
 
-        int lastSpace=0;
-        int i=0;
+        int lastSpace = 0;
+        int i = 0;
 
         if (!isUrgent) {
             canShowNormalialogue=false;
@@ -78,7 +90,7 @@ public class DialogueManager : MonoBehaviour
                 while (aux<newDialogue.Length && newDialogue[aux] != ' ') {
                     aux++;
                 }
-                if (i-aux+textDialogue.text.Length>MAX_LENGH) {
+                if (i - aux + textDialogue.text.Length > MAX_LENGH) {
                     actualText = "";
                     actualLineIndex = (actualLineIndex + 1) % textDialogueArray.Length;
                     var nextLineIndex = (actualLineIndex + 1) % textDialogueArray.Length;
@@ -194,13 +206,12 @@ public class DialogueManager : MonoBehaviour
 
     public IEnumerator askQuestions()
     {
-        while(true)
-        {
-            yield return new WaitUntil(()=>canShowUrgentDialogue);
-            yield return new WaitUntil(()=>!isAskingDirections);
-            yield return new WaitForSeconds(Random.Range(1,4));
-            needsUrgentDialogue=true;
-            canShowQuestion=true;
+        while(true) {
+            yield return new WaitUntil(() => canShowUrgentDialogue);
+            yield return new WaitUntil(() => !isAskingDirections);
+            yield return new WaitForSeconds(Random.Range(1, 4));
+            needsUrgentDialogue = true;
+            canShowQuestion = true;
             QuestionDialogue questionDialogue = pasajero.getRandomQuestionDialogue();
             StartCoroutine(questionDialogueManager.showQuestionRoutine(questionDialogue));
         }
@@ -208,40 +219,53 @@ public class DialogueManager : MonoBehaviour
 
     public void GiveIndication(Indication indication)
     {
-        this.isAskingDirections=true;
-        if(canShowUrgentDialogue && indication!=Indication.Continue)
-        {
-            needsUrgentDialogue=true;
+        this.isAskingDirections = true;
+        if(canShowUrgentDialogue && indication != Indication.Continue) {
+            needsUrgentDialogue = true;
             TurnDialogue turnDialogue = pasajero.getIndication();
             changeSprite.Invoke(turnDialogue);
-            //esta feo pero no tengo tiempo para arreglarlo aaaa
-            StartCoroutine(turnDialogueManager.showTurnDialogueRoutine(turnDialogue,indication));
+            StartCoroutine(showTurnDialogueRoutine(turnDialogue, indication));
         }
     }
 
-
-    public void askQuestion()
+    public IEnumerator showTurnDialogueRoutine(TurnDialogue newDialogue, Indication indication)
     {
-        /*if(canShowUrgentDialogue)
-        {
-            needsUrgentDialogue=true;
-            canShowQuestion=true;
-            QuestionDialogue questionDialogue = pasajero.getRandomQuestionDialogue();
-            StartCoroutine(questionDialogueManager.showQuestionRoutine(questionDialogue));
+        bool canShowUrgentDialogue = DialogueManager.Instance.canShowUrgentDialogue;
+        int numeroDeDialogosFalsos = Random.Range(0,1);
+        string fullDialogue;
+        for(int j = 0; j <= numeroDeDialogosFalsos; j++) {
+            fullDialogue="";
+            
+            if (j==0) { //Al principio
+                fullDialogue+=" ";
+            }
+
+            if(j == numeroDeDialogosFalsos) { //Direccion de verdad 
+                fullDialogue+=newDialogue.Text;
+                fullDialogue+="..As I was saying before;";
+            }
+            string direction = DialogueManager.indicationToString(indication);
+            var directionUpper= char.ToUpper(direction[0]) + direction.Substring(1);
+            fullDialogue = fullDialogue.Replace("[dir]", direction);
+            fullDialogue = fullDialogue.Replace("[Dir]", directionUpper);
+            yield return new WaitUntil(() => DialogueManager.Instance.canShowUrgentDialogue);
+            IEnumerator newRoutine = DialogueManager.Instance.showDialogue(fullDialogue, true);
+            StartCoroutine(newRoutine);
         }
-        */
+        yield return new WaitUntil(() => DialogueManager.Instance.canShowUrgentDialogue);
+        DialogueManager.Instance.needsUrgentDialogue= false;
+        DialogueManager.Instance.isAskingDirections = false;
     }
 
     public void nextPasajero()
     {
         AudioManager.Instance.PlaySound("correct_answer");
         StopAllCoroutines();
-        if(ronda!=2)
-        {
+        if(ronda!=2) {
             ronda++;
-        }
-        else
+        } else {
             ronda=0;
+        }
         enterPasajero();
         changePasajero.Invoke();
     }
@@ -253,11 +277,20 @@ public class DialogueManager : MonoBehaviour
         isFinished=false;
         canShowNormalialogue=true;
         StartCoroutine(mostrarUrgente(pasajero.getIntroduction().Text));
-        StartCoroutine(normalDialogue.showNormalDialogue());
+        StartCoroutine(showNormalDialogue());
         //StartCoroutine(askQuestions());
     }
 
-
+    public IEnumerator showNormalDialogue()
+    {
+        yield return new WaitForSeconds(0.5f); //Esto esta muy feo
+        while(true)
+        {
+            yield return new WaitUntil(() => DialogueManager.Instance.canShowNormalialogue);
+            Dialogue dialogue= DialogueManager.Instance.pasajero.getPossibleDialogue();
+            DialogueManager.Instance.normalDialogueEvent.Invoke(dialogue);
+        }
+    }
 }
 
 

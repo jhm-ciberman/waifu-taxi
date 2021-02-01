@@ -36,13 +36,13 @@
         addIndicationDialogue("Turn [dir] please.");
         addIndicationDialogue("Turn [dir] in the next one.");
 
-        this.addFailDialogue("Are you listening? *Turn [dir] now! **", Emotion.angry);
-        this.addFailDialogue("Do you know how to follow directions? *[dir]. **", Emotion.angry);
-        this.addFailDialogue("I said [dir], well then turn [dir]. **", Emotion.angry);
-        this.addFailDialogue("It was the other [dir]! *Turn [dir]. **", Emotion.angry);
-        this.addFailDialogue("It was the other way around. *Turn [dir]. **", Emotion.angry);
-        this.addFailDialogue("We are never going to reach my destination this way. *[dir]. **", Emotion.angry);
-        this.addFailDialogue("I didn’t know I was on a city tour. *Turn [dir]. **", Emotion.angry);
+        this.addFailDialogue("Are you listening? *Turn [dir] now! **", Emotion.Angry);
+        this.addFailDialogue("Do you know how to follow directions? *[dir]. **", Emotion.Angry);
+        this.addFailDialogue("I said [dir], well then turn [dir]. **", Emotion.Angry);
+        this.addFailDialogue("It was the other [dir]! *Turn [dir]. **", Emotion.Angry);
+        this.addFailDialogue("It was the other way around. *Turn [dir]. **", Emotion.Angry);
+        this.addFailDialogue("We are never going to reach my destination this way. *[dir]. **", Emotion.Angry);
+        this.addFailDialogue("I didn’t know I was on a city tour. *Turn [dir]. **", Emotion.Angry);
 
         string[] opciones = new string[3] {
             "(1) *Yes", 
@@ -50,7 +50,7 @@
             "(3) *I like almost every music genre.",
         };
 
-        this.addQuestionDialogue("So, do you like pop music?", Emotion.asking,opciones,1,"Great, I like it too","Oh, I see…",
+        this.addQuestionDialogue("So, do you like pop music?", Emotion.Asking,opciones,1,"Great, I like it too","Oh, I see…",
         "aa");
 
         string[] opciones2 = new string[3] {
@@ -59,7 +59,7 @@
             "(3) *I like almost every music genre",
         };       
         
-        this.addQuestionDialogue("What is your favorite music genre?", Emotion.asking,opciones2,2,"Great, I like it too. ","Oh, I see…",
+        this.addQuestionDialogue("What is your favorite music genre?", Emotion.Asking,opciones2,2,"Great, I like it too. ","Oh, I see…",
         "aa");
     }
 }

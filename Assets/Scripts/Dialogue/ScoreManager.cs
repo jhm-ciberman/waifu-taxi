@@ -44,7 +44,7 @@ public class ScoreManager : MonoBehaviour
            DialogueManager.Instance.nextPasajero();
            reiniciar();
        } else {
-           this.starts-=amount;
+           this.starts -= amount;
            setStartSprite();
        }
    }
@@ -52,10 +52,10 @@ public class ScoreManager : MonoBehaviour
    public void setStartSprite()
    {
        int whole = (int) Mathf.Round(starts);
-       for(int i=0;i<5;i++) {
+       for(int i = 0; i<5; i++) {
            startImage[i].enabled=true;
        }
-       for(int i=4;i>=whole;i--) {
+       for(int i = 4; i >= whole; i--) {
            startImage[i].enabled = false;
        }
    }

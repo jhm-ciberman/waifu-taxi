@@ -61,13 +61,13 @@ public abstract class Pasajero : MonoBehaviour
 
     public void addPossibleDialogue(string text)
     {
-        Emotion emotion = Emotion.normal;
+        Emotion emotion = Emotion.Normal;
 
         switch (UnityEngine.Random.Range(0, 4)) {
-            case 0: emotion = Emotion.angry; break;
-            case 1: emotion = Emotion.asking; break;
-            case 2: emotion = Emotion.blush; break;
-            case 3: emotion = Emotion.normal; break;
+            case 0: emotion = Emotion.Angry; break;
+            case 1: emotion = Emotion.Asking; break;
+            case 2: emotion = Emotion.Blush; break;
+            case 3: emotion = Emotion.Normal; break;
         }
 
         this.possibleDialogue.Add(new Dialogue(text, emotion));
@@ -75,7 +75,7 @@ public abstract class Pasajero : MonoBehaviour
 
     public void addIndicationDialogue(string text)
     {
-        IndicationDialogue.Add(new TurnDialogue(text, Emotion.normal));
+        IndicationDialogue.Add(new TurnDialogue(text, Emotion.Normal));
     }
 
     public void addIntroduction(string text)

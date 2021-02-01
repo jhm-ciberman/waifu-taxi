@@ -52,13 +52,13 @@ public class Crissy : Pasajero
         addIndicationDialogue("Turn [dir] in the next one.");
 
 
-        this.addFailDialogue("Are you listening? *Turn [dir] now! **", Emotion.angry);
-        this.addFailDialogue("Do you know how to follow directions? *Left. **", Emotion.angry);
-        this.addFailDialogue("I said right, well then turn [dir]. **", Emotion.angry);
-        this.addFailDialogue("It was the other right! *Turn [dir]. **", Emotion.angry);
-        this.addFailDialogue("It was the other way around. *Turn [dir]. **", Emotion.angry);
-        this.addFailDialogue("We are never going to reach my destination this way. *[dir]. **", Emotion.angry);
-        this.addFailDialogue("I didn’t know I was on a city tour. *Turn [dir]. **", Emotion.angry);
+        this.addFailDialogue("Are you listening? *Turn [dir] now! **", Emotion.Angry);
+        this.addFailDialogue("Do you know how to follow directions? *Left. **", Emotion.Angry);
+        this.addFailDialogue("I said right, well then turn [dir]. **", Emotion.Angry);
+        this.addFailDialogue("It was the other right! *Turn [dir]. **", Emotion.Angry);
+        this.addFailDialogue("It was the other way around. *Turn [dir]. **", Emotion.Angry);
+        this.addFailDialogue("We are never going to reach my destination this way. *[dir]. **", Emotion.Angry);
+        this.addFailDialogue("I didn’t know I was on a city tour. *Turn [dir]. **", Emotion.Angry);
 
         string[] opciones = new string[3] {
             "(1) *Yes.* ",
@@ -66,7 +66,7 @@ public class Crissy : Pasajero
             "(3) *I like almost every music genre.**",
         };
 
-        this.addQuestionDialogue("So, do you like pop music? **", Emotion.asking, opciones, 1, "Great, I like it too** ", "Oh, I see…** ", "aa");
+        this.addQuestionDialogue("So, do you like pop music? **", Emotion.Asking, opciones, 1, "Great, I like it too** ", "Oh, I see…** ", "aa");
 
         string[] opciones2 = new string[3] {
             "(1) *K-pop",
@@ -74,14 +74,6 @@ public class Crissy : Pasajero
             "(3) *I like almost every music genre",
         };
 
-        this.addQuestionDialogue("What is your favorite music genre?", Emotion.asking, opciones2, 2, "Great, I like it too. ","Oh, I see…", "aa");
-
-        /*string[] opciones3 = new string[3];
-        opciones[0]="(1) aa";
-        opciones[1]="(2) aa";
-        opciones[2]="(3) aa";
-        this.addQuestionDialogue("What is your favourite drink?",Dialogue.emotions.asking,opciones3,2,"aa","aa",
-        "aa");
-        */
+        this.addQuestionDialogue("What is your favorite music genre?", Emotion.Asking, opciones2, 2, "Great, I like it too. ","Oh, I see…", "aa");
     }
 }

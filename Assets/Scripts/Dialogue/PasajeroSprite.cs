@@ -8,13 +8,6 @@ public class PasajeroSprite : MonoBehaviour
     [SerializeField] private Image pasajeroSprite;
     [SerializeField] private Pasajero pasajero;
 
-    public static PasajeroSprite I;
-
-    private void Awake()
-    {
-        I=this;
-    }
-
     public void Start()
     {
         DialogueManager.Instance.changeSprite.AddListener(changeExpression);
@@ -34,10 +27,10 @@ public class PasajeroSprite : MonoBehaviour
 
         switch (emotion)
         {
-            case Emotion.angry:  sprite = pasajero.portrait.angry;  break;
-            case Emotion.asking: sprite = pasajero.portrait.asking; break;
-            case Emotion.blush:  sprite = pasajero.portrait.blush;  break;
-            case Emotion.normal: sprite = pasajero.portrait.normal; break;
+            case Emotion.Angry:  sprite = pasajero.portrait.angry;  break;
+            case Emotion.Asking: sprite = pasajero.portrait.asking; break;
+            case Emotion.Blush:  sprite = pasajero.portrait.blush;  break;
+            case Emotion.Normal: sprite = pasajero.portrait.normal; break;
         }
 
         Debug.Assert(sprite != null, "No obtuvo el sprite");
