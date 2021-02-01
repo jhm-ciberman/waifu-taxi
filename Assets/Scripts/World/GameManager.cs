@@ -30,7 +30,7 @@ namespace WaifuTaxi
             if (this.dialogueManager != null) { // With UI
                 this._planner.onIndication += (e) => {
                     if(e.pathWasRestarted) {
-                        dialogueManager.failDialogue(e.indication, e.prevIndication);
+                        dialogueManager.FailDialogue(e.indication, e.prevIndication);
                     } else {
                         dialogueManager.GiveIndication(e.indication);
                     }

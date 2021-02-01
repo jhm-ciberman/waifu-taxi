@@ -2,7 +2,7 @@
 using UnityEngine;
 using WaifuTaxi;
 
-public abstract class Pasajero : MonoBehaviour
+public class Pasajero
 {
     protected List<Dialogue> possibleDialogue;
     protected List<TurnDialogue> turnLeftDialogue;
@@ -14,21 +14,14 @@ public abstract class Pasajero : MonoBehaviour
     public float FastTextSpeed {get; private set;}
     public float SlowTextSpeed {get; private set;}
 
-    public List<Dialogue> PossibleDialogue {get{return possibleDialogue;}}
     public List<TurnDialogue> IndicationDialogue {get; private set;}
-    public List<TurnDialogue> TurnLeftDialogue {get{return turnLeftDialogue;}}
-    public List<TurnDialogue> TurnRightDialogue {get {return turnRightDialogue;}}
     public List<Dialogue> failDirectionDialogue {get;private set;}
-    public List<Dialogue> Introduction {get{return introduction;}}
 
     public Portrait portrait;
 
-    public abstract void addDialogue();
-
-    private bool useFastText = false;
-
-    public void Start()
+    public Pasajero(Portrait portrait)
     {
+        this.portrait = portrait;
         this.possibleDialogue = new List<Dialogue>();
         this.turnLeftDialogue = new List<TurnDialogue>();
         this.turnRightDialogue = new List<TurnDialogue>();
@@ -39,8 +32,14 @@ public abstract class Pasajero : MonoBehaviour
         SpeedRandomFactor = 0.003f;
         FastTextSpeed = 0.003f;
         SlowTextSpeed = 0.009f;
-        addDialogue();
     }
+
+    public void AddIntroduction(string text)
+    {
+        this.introduction.Add(new Dialogue(text));
+    }
+
+    private bool useFastText = false;
 
     public float getSpeed(bool forceFast = false)
     {
@@ -59,7 +58,7 @@ public abstract class Pasajero : MonoBehaviour
         this.possibleDialogue.Add(new Dialogue(text, emotion));
     }
 
-    public void addPossibleDialogue(string text)
+    public void AddDialogue(string text)
     {
         Emotion emotion = Emotion.Normal;
 
@@ -73,14 +72,9 @@ public abstract class Pasajero : MonoBehaviour
         this.possibleDialogue.Add(new Dialogue(text, emotion));
     }
 
-    public void addIndicationDialogue(string text)
+    public void AddIndication(string text)
     {
         IndicationDialogue.Add(new TurnDialogue(text, Emotion.Normal));
-    }
-
-    public void addIntroduction(string text)
-    {
-        this.introduction.Add(new Dialogue(text));
     }
 
     public TurnDialogue getIndication()
@@ -91,13 +85,13 @@ public abstract class Pasajero : MonoBehaviour
         return dialogue;
     }
 
-    public void addQuestionDialogue(string text, Emotion emotion, string[] options, int correct, string afterDialogue, string correctDialogue, string failDialogue)
+    public void AddQuestion(string text, Emotion emotion, string[] options, int correct, string afterDialogue, string correctDialogue, string failDialogue)
     {
         QuestionDialogue dialogue = new QuestionDialogue(text, emotion, options, correct, correctDialogue, failDialogue);
         this.questionDialogue.Add(dialogue);
     }
 
-    public void addFailDialogue(string text, Emotion emotion)
+    public void AddFailDialogue(string text, Emotion emotion)
     {
         Dialogue dialogue = new Dialogue(text,emotion);
         this.failDirectionDialogue.Add(dialogue);

@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class PasajeroSprite : MonoBehaviour
@@ -23,7 +21,7 @@ public class PasajeroSprite : MonoBehaviour
     void changeExpression(Dialogue dialogue)
     {
         Sprite sprite = null;
-        Emotion emotion = dialogue.Emotion;
+        Emotion emotion = dialogue.emotion;
 
         switch (emotion)
         {
