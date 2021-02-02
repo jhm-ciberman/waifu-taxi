@@ -12,6 +12,8 @@ namespace WaifuTaxi
 
         public DialogueManager dialogueManager = null;
 
+        public GUIManager guiManager = null;
+
         public void Start()
         {
             var world = new World(new City());
@@ -22,32 +24,24 @@ namespace WaifuTaxi
 
             this._planner = new RoutePlanner(world, player);
 
-
             AudioManager.Instance.PlaySound("music_intro", false, (s) => {
                 AudioManager.Instance.PlayMusic("music_loop", true);
             });
 
-            if (this.dialogueManager != null) { // With UI
-                this._planner.onIndication += (e) => {
-                    if(e.pathWasRestarted) {
-                        dialogueManager.FailDialogue(e.indication, e.prevIndication);
-                    } else {
-                        dialogueManager.GiveIndication(e.indication);
-                    }
-                };
-                this._planner.onPathFinished += this.dialogueManager.nextPasajero;
-                //player.onCollision += this.dialogueManager.failDialogue;
-            } else { // Without ui
-                this._planner.onIndication += (e) => {
-                    Debug.Log("Indication: " + e.indication);
-                    Debug.Log("PrevIndication: " + e.prevIndication);
-                    Debug.Log("Restarted: " + e.pathWasRestarted); 
-                };
-                this._planner.onPathFinished += () => {
-                    Debug.Log("Path finished");
-                };
-            }
+            this._planner.onIndication += (e) => {
+                if(e.pathWasRestarted) {
+                    dialogueManager.FailDialogue(e.indication, e.prevIndication);
+                } else {
+                    dialogueManager.GiveIndication(e.indication);
+                }
+            };
+            this._planner.onPathFinished += this.dialogueManager.NextCharacter;
             this._planner.UpdatePath();
+
+            this.dialogueManager.changeCharacter += this.guiManager.ChangeCharacter;
+            this.dialogueManager.changeSprite += this.guiManager.SetExpression;
+            this.guiManager.ChangeCharacter(this.dialogueManager.character);
+
         }
 
         void Update()
@@ -55,7 +49,7 @@ namespace WaifuTaxi
             this._planner.UpdatePath();
 
             if (Input.GetKeyDown(KeyCode.Space)) {
-                this.dialogueManager?.nextPasajero();
+                this.dialogueManager?.NextCharacter();
             }
         }
     }

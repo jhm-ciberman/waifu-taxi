@@ -1,11 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class ScoreManager : MonoBehaviour
 {
-   [SerializeField] public float starts;
+   [SerializeField] public float stars;
 
    [SerializeField] private Image[] startImage;
 
@@ -18,40 +16,40 @@ public class ScoreManager : MonoBehaviour
 
    public void Start()
    {
-       this.starts = 4;
-       setStartSprite();
+       this.stars = 4;
+       SetStartSprite();
    }
 
-   public void reiniciar()
+   public void Restart()
    {
-       this.starts = 4;
-       setStartSprite();
+       this.stars = 4;
+       SetStartSprite();
    }
 
-   public void addStar(float amount)
+   public void AddStar(float amount)
    {
-        if(starts + amount <= 5) {
-            this.starts += starts;
+        if(stars + amount <= 5) {
+            this.stars += stars;
         } else {
-            starts=5;
+            stars=5;
         }
-       setStartSprite();
+       SetStartSprite();
    }
 
-   public void removeStar(float amount)
+   public void RemoveStar(float amount)
    {
-       if(starts - amount == 0) {
-           DialogueManager.Instance.nextPasajero();
-           reiniciar();
+       if(stars - amount == 0) {
+           DialogueManager.Instance.NextCharacter();
+           Restart();
        } else {
-           this.starts -= amount;
-           setStartSprite();
+           this.stars -= amount;
+           SetStartSprite();
        }
    }
 
-   public void setStartSprite()
+   public void SetStartSprite()
    {
-       int whole = (int) Mathf.Round(starts);
+       int whole = (int) Mathf.Round(stars);
        for(int i = 0; i<5; i++) {
            startImage[i].enabled=true;
        }

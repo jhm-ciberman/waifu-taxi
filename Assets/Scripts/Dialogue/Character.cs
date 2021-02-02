@@ -2,7 +2,7 @@
 using UnityEngine;
 using WaifuTaxi;
 
-public class Pasajero
+public class Character
 {
     protected List<Dialogue> possibleDialogue;
     protected List<TurnDialogue> turnLeftDialogue;
@@ -19,7 +19,7 @@ public class Pasajero
 
     public Portrait portrait;
 
-    public Pasajero(Portrait portrait)
+    public Character(Portrait portrait)
     {
         this.portrait = portrait;
         this.possibleDialogue = new List<Dialogue>();
@@ -97,7 +97,7 @@ public class Pasajero
         this.failDirectionDialogue.Add(dialogue);
     }
 
-    public Dialogue getFailDialogue()
+    public Dialogue GetFailDialogue()
     {
         Dialogue dialogue = null;
         int k = Random.Range(0, failDirectionDialogue.Count);
@@ -126,34 +126,25 @@ public class Pasajero
         TurnDialogue turnDialogue = null;
         int k = Random.Range(0,2);
         switch (k) {
-            case 0: turnDialogue = getTurnLeftDialogue();  break;
-            case 1: turnDialogue = getTurnRightDialogue(); break;
+            case 0: turnDialogue = this.GetTurnLeftDialogue();  break;
+            case 1: turnDialogue = this.GetTurnRightDialogue(); break;
         }
         Debug.Assert(turnDialogue != null, "Estas devolviendo un dialogo random nulo");
         return turnDialogue;
     }
 
-    public Dialogue getPossibleDialogue()
+    public Dialogue GetPossibleDialogue()
     {
-        Dialogue dialogue;
-        dialogue = this.possibleDialogue[Random.Range(0, this.possibleDialogue.Count)];
-        Debug.Assert(dialogue != null, "esta devolviendo un dialogo nulo");
-        return dialogue;
+        return this.possibleDialogue[Random.Range(0, this.possibleDialogue.Count)];
     }
 
-    public TurnDialogue getTurnLeftDialogue()
+    public TurnDialogue GetTurnLeftDialogue()
     {
-        TurnDialogue dialogue;
-        dialogue = this.turnLeftDialogue[Random.Range(0, this.turnLeftDialogue.Count)];
-        Debug.Assert(dialogue != null, "esta devolviendo un dialogo nulo");
-        return dialogue;
+        return this.turnLeftDialogue[Random.Range(0, this.turnLeftDialogue.Count)];
     }
 
-    public TurnDialogue getTurnRightDialogue()
+    public TurnDialogue GetTurnRightDialogue()
     {
-        TurnDialogue dialogue;
-        dialogue = this.turnRightDialogue[Random.Range(0, this.turnRightDialogue.Count)];
-        Debug.Assert(dialogue != null, "esta devolviendo un dialogo nulo");
-        return dialogue;
+        return this.turnRightDialogue[Random.Range(0, this.turnRightDialogue.Count)];
     }
 }

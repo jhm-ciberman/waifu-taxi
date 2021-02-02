@@ -2,9 +2,9 @@
 
 public static class Melody
 {
-    public static Pasajero Make(Portrait portrait)
+    public static Character Make(Portrait portrait)
     {
-        var p = new Pasajero(portrait);
+        var p = new Character(portrait);
 
         p.AddIntroduction("Hello. **");
         p.AddIntroduction("Good afternoon. **");

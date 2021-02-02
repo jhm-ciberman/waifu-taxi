@@ -11,7 +11,7 @@ public class DialogueManager : MonoBehaviour
     static int MAX_LENGH = 55;
     static float WAIT_SPEED = 0.10f;
 
-    [SerializeField] private int ronda;
+    [SerializeField] private int characterIndex;
     [SerializeField] private TextMeshProUGUI textDialogue;
     [SerializeField] private TextMeshProUGUI[] textDialogueArray;
 
@@ -23,16 +23,16 @@ public class DialogueManager : MonoBehaviour
     public bool isFinished;
     public bool isAskingDirections;
 
-    public Pasajero pasajero;
+    public Character character;
 
     public System.Action<Dialogue> normalDialogueEvent;
     public System.Action turnDialogueEvent;
-    public System.Action<Dialogue> changeSprite;
-    public System.Action changePasajero;
+    public System.Action<Emotion> changeSprite;
+    public System.Action<Character> changeCharacter;
 
     [SerializeField] public int actualLineIndex;
     
-    private Pasajero[] pasajeros;
+    private Character[] characters;
     
     private int correct = 0;
     private int answer = 0;
@@ -52,18 +52,18 @@ public class DialogueManager : MonoBehaviour
         canShowQuestion = true;
         actualLineIndex = 0;
         textDialogue = textDialogueArray[0];
-        enterPasajero();
+        EnterCharacter();
     }
 
     private void Awake()
     {
-        this.pasajeros = new Pasajero[] {
+        this.characters = new Character[] {
             Crissy.Make(this.portraitCrissy),
             Melody.Make(this.portraitMelody),
             Arachne.Make(this.portraitArachne),
         };
 
-        pasajero = pasajeros[0];
+        character = characters[0];
         Instance = this;
         normalDialogueEvent += NormalDialogue;
     }
@@ -98,7 +98,7 @@ public class DialogueManager : MonoBehaviour
     private IEnumerator ShowDialogue(string newDialogue, bool isUrgent)
     {
         string actualText = textDialogue.text;
-        float actualSpeed = pasajero.getSpeed(isUrgent);
+        float actualSpeed = character.getSpeed(isUrgent);
 
         int lastSpace = 0;
         int i = 0;
@@ -128,7 +128,7 @@ public class DialogueManager : MonoBehaviour
             }
             var currentCharacter = newDialogue[i];
             if (currentCharacter == '*') {
-                actualSpeed = pasajero.getSpeed(isUrgent);
+                actualSpeed = character.getSpeed(isUrgent);
                 var waitSpeed = WAIT_SPEED;
                 if (i < newDialogue.Length - 1 && newDialogue[i + 1] == '*') {
                     i++;
@@ -187,60 +187,44 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    private static string IndicationToString(Indication indication)
-    {
-        string s = "...";
-        switch (indication) {
-            case Indication.TurnLeft: s = "left";  break;
-            case Indication.TurnRight: s = "right"; break;
-            case Indication.TurnU: s = "in u"; break;
-        }
-        return s;
-    }
 
     public void FailDialogue(Indication indication, Indication prevIndication)
     {
-        var currString = IndicationToString(indication);
-        var prevString = IndicationToString(prevIndication);
-        var currStringUpper = char.ToUpper(currString[0]) + currString.Substring(1);
-        var prevStringUpper = char.ToUpper(prevString[0]) + prevString.Substring(1);
-        var text = pasajero.getFailDialogue().text;
-        text = text.Replace("[dir]", currString);
-        text = text.Replace("[prev_dir]", currString);
-        text = text.Replace("[Dir]", currStringUpper);
-        text = text.Replace("[Prev_dir]", prevStringUpper);
-        ScoreManager.Instance.removeStar(1);
+        var dialogue = character.GetFailDialogue();
+        
+
+        ScoreManager.Instance.RemoveStar(1);
 
         AudioManager.Instance.PlaySound("wrong_answer");
 
-        StartCoroutine(mostrarUrgente(text));
+        this.StartCoroutine(this._ShowUrgent(dialogue.GetText(indication, prevIndication)));
     }
 
-    public IEnumerator mostrarUrgente(string texto)
+    private IEnumerator _ShowUrgent(string text)
     {
         yield return new WaitUntil(() => DialogueManager.Instance.canShowUrgentDialogue);
-        needsUrgentDialogue = true;
-        StartCoroutine(ShowDialogue(texto, true));
+        this.needsUrgentDialogue = true;
+        StartCoroutine(this.ShowDialogue(text, true));
         yield return new WaitUntil(() => DialogueManager.Instance.canShowUrgentDialogue);
-        needsUrgentDialogue = false;
+        this.needsUrgentDialogue = false;
     }
 
     public void NormalDialogue(Dialogue dialogue)
     {
-        changeSprite.Invoke(dialogue);
-        StartCoroutine(ShowDialogue(dialogue.text, false));
+        this.changeSprite.Invoke(dialogue.emotion);
+        StartCoroutine(this.ShowDialogue(dialogue.GetText(), false));
     }
 
-    public IEnumerator askQuestions()
+    public IEnumerator AskQuestions()
     {
         while(true) {
             yield return new WaitUntil(() => canShowUrgentDialogue);
             yield return new WaitUntil(() => !isAskingDirections);
             yield return new WaitForSeconds(Random.Range(1, 4));
-            needsUrgentDialogue = true;
-            canShowQuestion = true;
-            QuestionDialogue questionDialogue = pasajero.getRandomQuestionDialogue();
-            StartCoroutine(showQuestionRoutine(questionDialogue));
+            this.needsUrgentDialogue = true;
+            this.canShowQuestion = true;
+            QuestionDialogue questionDialogue = character.getRandomQuestionDialogue();
+            StartCoroutine(this._ShowQuestionRoutine(questionDialogue));
         }
     }
 
@@ -249,13 +233,13 @@ public class DialogueManager : MonoBehaviour
         this.isAskingDirections = true;
         if(canShowUrgentDialogue && indication != Indication.Continue) {
             needsUrgentDialogue = true;
-            TurnDialogue turnDialogue = pasajero.getIndication();
-            changeSprite.Invoke(turnDialogue);
-            StartCoroutine(showTurnDialogueRoutine(turnDialogue, indication));
+            TurnDialogue turnDialogue = character.getIndication();
+            changeSprite.Invoke(turnDialogue.emotion);
+            StartCoroutine(this._ShowTurnDialogueRoutine(turnDialogue, indication));
         }
     }
 
-    public IEnumerator showQuestionRoutine(QuestionDialogue dialogue)
+    private IEnumerator _ShowQuestionRoutine(QuestionDialogue dialogue)
     {
         int k = dialogue.Options.Length;
         string fullDialogue = null;
@@ -264,93 +248,69 @@ public class DialogueManager : MonoBehaviour
         for(int i = 0; i <= k; i++) {
             fullDialogue = " ";
             if (i == 0) { // Dialogo inicial
-                fullDialogue += dialogue.text;
+                fullDialogue += dialogue.GetText();
             } else if (i == k) { // Dialogo final
                 yield return new WaitForSeconds(2);
             } else {
                 fullDialogue = dialogue.Options[i - 1];
             }
 
-            yield return new WaitUntil(() => DialogueManager.Instance.canShowUrgentDialogue);
+            yield return new WaitUntil(() => this.canShowUrgentDialogue);
 
-            StartCoroutine(DialogueManager.Instance.ShowDialogue(fullDialogue, true));
+            this.StartCoroutine(this.ShowDialogue(fullDialogue, true));
         }
 
-        yield return new WaitUntil(() => DialogueManager.Instance.canShowUrgentDialogue);
+        yield return new WaitUntil(() => this.canShowUrgentDialogue);
 
-        if (this.answeredCorrectly()) {
-            fullDialogue = dialogue.CorrectDialogue;
-        } else {
-            fullDialogue = dialogue.FailDialogue;
-        }
+        fullDialogue = this.answeredCorrectly() ? dialogue.CorrectDialogue : dialogue.FailDialogue;
 
-        StartCoroutine(DialogueManager.Instance.ShowDialogue(fullDialogue, true));
+        this.StartCoroutine(this.ShowDialogue(fullDialogue, true));
 
-        yield return new WaitUntil(() => DialogueManager.Instance.canShowUrgentDialogue);
+        yield return new WaitUntil(() => this.canShowUrgentDialogue);
 
-        DialogueManager.Instance.canShowQuestion = false;
-        DialogueManager.Instance.needsUrgentDialogue = false;
+        this.canShowQuestion = false;
+        this.needsUrgentDialogue = false;
     }
 
-    public IEnumerator showTurnDialogueRoutine(TurnDialogue newDialogue, Indication indication)
+    private IEnumerator _ShowTurnDialogueRoutine(TurnDialogue newDialogue, Indication indication)
     {
-        bool canShowUrgentDialogue = DialogueManager.Instance.canShowUrgentDialogue;
-        int numeroDeDialogosFalsos = Random.Range(0,1);
-        string fullDialogue;
-        for(int j = 0; j <= numeroDeDialogosFalsos; j++) {
-            fullDialogue="";
-            
-            if (j==0) { //Al principio
-                fullDialogue+=" ";
-            }
-
-            if(j == numeroDeDialogosFalsos) { //Direccion de verdad 
-                fullDialogue+=newDialogue.text;
-                fullDialogue+="..As I was saying before;";
-            }
-            string direction = DialogueManager.IndicationToString(indication);
-            var directionUpper= char.ToUpper(direction[0]) + direction.Substring(1);
-            fullDialogue = fullDialogue.Replace("[dir]", direction);
-            fullDialogue = fullDialogue.Replace("[Dir]", directionUpper);
-            yield return new WaitUntil(() => DialogueManager.Instance.canShowUrgentDialogue);
-            IEnumerator newRoutine = DialogueManager.Instance.ShowDialogue(fullDialogue, true);
-            StartCoroutine(newRoutine);
-        }
-        yield return new WaitUntil(() => DialogueManager.Instance.canShowUrgentDialogue);
-        DialogueManager.Instance.needsUrgentDialogue= false;
-        DialogueManager.Instance.isAskingDirections = false;
+        bool canShowUrgentDialogue = this.canShowUrgentDialogue;
+        string fullDialogue = newDialogue.GetText(indication);
+        fullDialogue += "..As I was saying before; ";
+        yield return new WaitUntil(() => this.canShowUrgentDialogue);
+        this.StartCoroutine(this.ShowDialogue(fullDialogue, true));
+        yield return new WaitUntil(() => this.canShowUrgentDialogue);
+        this.needsUrgentDialogue = false;
+        this.isAskingDirections = false;
     }
 
-    public void nextPasajero()
+    public void NextCharacter()
     {
         AudioManager.Instance.PlaySound("correct_answer");
-        StopAllCoroutines();
-        if (ronda!=2) {
-            ronda++;
-        } else {
-            ronda=0;
-        }
-        enterPasajero();
-        changePasajero.Invoke();
+        this.StopAllCoroutines();
+
+        this.characterIndex = (this.characterIndex + 1) % this.characters.Length;
+        this.EnterCharacter();
+        this.changeCharacter?.Invoke(this.character);
     }
 
-    public void enterPasajero()
+    public void EnterCharacter()
     {
-        ClearAllText();
-        this.pasajero=pasajeros[ronda];
-        isFinished=false;
-        canShowNormalialogue=true;
-        StartCoroutine(mostrarUrgente(pasajero.getIntroduction().text));
-        StartCoroutine(showNormalDialogue());
+        this.ClearAllText();
+        this.character = this.characters[characterIndex];
+        this.isFinished = false;
+        this.canShowNormalialogue = true;
+        this.StartCoroutine(this._ShowUrgent(this.character.getIntroduction().GetText()));
+        this.StartCoroutine(this.ShowNormalDialogue());
     }
 
-    public IEnumerator showNormalDialogue()
+    public IEnumerator ShowNormalDialogue()
     {
         yield return new WaitForSeconds(0.5f);
 
-        while(true) {
-            yield return new WaitUntil(() => DialogueManager.Instance.canShowNormalialogue);
-            Dialogue dialogue= DialogueManager.Instance.pasajero.getPossibleDialogue();
+        while (true) {
+            yield return new WaitUntil(() => this.canShowNormalialogue);
+            Dialogue dialogue = this.character.GetPossibleDialogue();
             this.normalDialogueEvent?.Invoke(dialogue);
         }
     }
