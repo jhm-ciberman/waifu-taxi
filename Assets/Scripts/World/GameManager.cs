@@ -24,6 +24,10 @@ namespace WaifuTaxi
 
             this._planner = new RoutePlanner(world, player);
 
+            this.dialogueManager.changeCharacter += this.guiManager.ChangeCharacter;
+            this.dialogueManager.changeSprite += this.guiManager.SetExpression;
+            this.guiManager.ChangeCharacter(this.dialogueManager.character);
+
             AudioManager.Instance.PlaySound("music_intro", false, (s) => {
                 AudioManager.Instance.PlayMusic("music_loop", true);
             });
@@ -38,9 +42,7 @@ namespace WaifuTaxi
             this._planner.onPathFinished += this.dialogueManager.NextCharacter;
             this._planner.UpdatePath();
 
-            this.dialogueManager.changeCharacter += this.guiManager.ChangeCharacter;
-            this.dialogueManager.changeSprite += this.guiManager.SetExpression;
-            this.guiManager.ChangeCharacter(this.dialogueManager.character);
+            
 
         }
 
