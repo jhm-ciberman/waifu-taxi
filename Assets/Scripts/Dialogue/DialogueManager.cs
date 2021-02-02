@@ -6,8 +6,6 @@ using UnityEngine.Events;
 using TMPro;
 using WaifuTaxi;
 
-public  class NewDialogueEvent:UnityEvent<Dialogue>{}
-
 public class DialogueManager : MonoBehaviour
 {
     static int MAX_LENGH = 55;
@@ -26,14 +24,11 @@ public class DialogueManager : MonoBehaviour
     public bool isAskingDirections;
 
     public Pasajero pasajero;
-    public NewDialogueEvent normalDialogueEvent;
-    public NewDialogueEvent turnDialogueEvent;
-    public NewDialogueEvent changeSprite;
 
-    public UnityEvent turnLeftEvent;
-    public UnityEvent turnRightEvent;
-    public UnityEvent questionEvent;
-    public UnityEvent changePasajero;
+    public System.Action<Dialogue> normalDialogueEvent;
+    public System.Action turnDialogueEvent;
+    public System.Action<Dialogue> changeSprite;
+    public System.Action changePasajero;
 
     [SerializeField] public int actualLineIndex;
     
@@ -57,9 +52,6 @@ public class DialogueManager : MonoBehaviour
         canShowQuestion = true;
         actualLineIndex = 0;
         textDialogue = textDialogueArray[0];
-        turnLeftEvent = new UnityEvent();
-        turnRightEvent = new UnityEvent();
-        questionEvent = new UnityEvent();
         enterPasajero();
     }
 
@@ -73,11 +65,7 @@ public class DialogueManager : MonoBehaviour
 
         pasajero = pasajeros[0];
         Instance = this;
-        normalDialogueEvent = new NewDialogueEvent();
-        turnDialogueEvent = new NewDialogueEvent();
-        changeSprite = new NewDialogueEvent();
-        changePasajero = new UnityEvent();
-        normalDialogueEvent.AddListener(NormalDialogue);
+        normalDialogueEvent += NormalDialogue;
     }
 
     public void askQuestion(int correct)
@@ -217,7 +205,7 @@ public class DialogueManager : MonoBehaviour
         var currStringUpper = char.ToUpper(currString[0]) + currString.Substring(1);
         var prevStringUpper = char.ToUpper(prevString[0]) + prevString.Substring(1);
         var text = pasajero.getFailDialogue().text;
-        text =  text.Replace("[dir]", currString);
+        text = text.Replace("[dir]", currString);
         text = text.Replace("[prev_dir]", currString);
         text = text.Replace("[Dir]", currStringUpper);
         text = text.Replace("[Prev_dir]", prevStringUpper);
@@ -230,17 +218,17 @@ public class DialogueManager : MonoBehaviour
 
     public IEnumerator mostrarUrgente(string texto)
     {
-        yield return new WaitUntil(()=>DialogueManager.Instance.canShowUrgentDialogue);
-        needsUrgentDialogue=true;
-        StartCoroutine(ShowDialogue(texto,true));
-        yield return new WaitUntil(()=>DialogueManager.Instance.canShowUrgentDialogue);
-        needsUrgentDialogue=false;
+        yield return new WaitUntil(() => DialogueManager.Instance.canShowUrgentDialogue);
+        needsUrgentDialogue = true;
+        StartCoroutine(ShowDialogue(texto, true));
+        yield return new WaitUntil(() => DialogueManager.Instance.canShowUrgentDialogue);
+        needsUrgentDialogue = false;
     }
 
     public void NormalDialogue(Dialogue dialogue)
     {
         changeSprite.Invoke(dialogue);
-        StartCoroutine(ShowDialogue(dialogue.text,false));
+        StartCoroutine(ShowDialogue(dialogue.text, false));
     }
 
     public IEnumerator askQuestions()
@@ -337,7 +325,7 @@ public class DialogueManager : MonoBehaviour
     {
         AudioManager.Instance.PlaySound("correct_answer");
         StopAllCoroutines();
-        if(ronda!=2) {
+        if (ronda!=2) {
             ronda++;
         } else {
             ronda=0;
@@ -363,7 +351,7 @@ public class DialogueManager : MonoBehaviour
         while(true) {
             yield return new WaitUntil(() => DialogueManager.Instance.canShowNormalialogue);
             Dialogue dialogue= DialogueManager.Instance.pasajero.getPossibleDialogue();
-            DialogueManager.Instance.normalDialogueEvent.Invoke(dialogue);
+            this.normalDialogueEvent?.Invoke(dialogue);
         }
     }
 }

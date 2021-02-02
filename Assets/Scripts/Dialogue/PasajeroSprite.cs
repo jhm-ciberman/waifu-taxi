@@ -8,8 +8,9 @@ public class PasajeroSprite : MonoBehaviour
 
     public void Start()
     {
-        DialogueManager.Instance.changeSprite.AddListener(changeExpression);
-        DialogueManager.Instance.changePasajero.AddListener(changePasajero);
+        DialogueManager.Instance.changePasajero += changePasajero;
+        DialogueManager.Instance.changeSprite += changeExpression;
+        DialogueManager.Instance.changePasajero += changePasajero;
         this.pasajero = DialogueManager.Instance.pasajero;
     }
 
