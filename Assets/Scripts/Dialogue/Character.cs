@@ -85,7 +85,7 @@ public class Character
         return dialogue;
     }
 
-    public void AddQuestion(string text, Emotion emotion, string[] options, int correct, string afterDialogue, string correctDialogue, string failDialogue)
+    public void AddQuestion(string text, Emotion emotion, string[] options, int correct, string correctDialogue, string failDialogue)
     {
         QuestionDialogue dialogue = new QuestionDialogue(text, emotion, options, correct, correctDialogue, failDialogue);
         this.questionDialogue.Add(dialogue);
