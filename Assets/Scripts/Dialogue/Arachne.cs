@@ -66,7 +66,7 @@ public static class Arachne
             "(3) *I like almost every music genre.",
         };
         
-        p.AddQuestion("So, do you like pop music?", Emotion.Asking, opciones, 1, "Great, I like it too", "Oh, I see…", "aa");
+        p.AddQuestion("So, do you like pop music?", Emotion.Asking, opciones, 1, "Great, I like it too", "Oh, I see…");
 
         string[] opciones2 = new string[3] {
             "(1) *K-pop",
@@ -74,7 +74,7 @@ public static class Arachne
             "(3) *I like almost every music genre",
         };
         
-        p.AddQuestion("What is your favorite music genre?", Emotion.Asking, opciones2, 2, "Great, I like it too. ", "Oh, I see…", "aa");
+        p.AddQuestion("What is your favorite music genre?", Emotion.Asking, opciones2, 2, "Great, I like it too. ", "Oh, I see…");
 
         return p;
     }
