@@ -10,12 +10,14 @@ public class DialogueManager : MonoBehaviour
 
     public event System.Action<Emotion> onEmotionChanged;
     public event System.Action<Character> onCharacterChanged;
+    public event System.Action onAnswerCorrect;
+    public event System.Action onAnswerIncorrect;
 
-    [SerializeField] private int characterIndex;
-    [SerializeField] private TextMeshProUGUI textDialogue;
-    [SerializeField] private TextMeshProUGUI[] textDialogueArray;
+    [SerializeField] private TextMeshProUGUI[] _textLines;
+    private TextMeshProUGUI _currentTextLine;
 
     private int _actualLineIndex = 0;
+    private int _characterIndex;
 
     private bool _canShowNormalialogue = true;
     private bool _canShowUrgentDialogue = false;
@@ -53,11 +55,10 @@ public class DialogueManager : MonoBehaviour
             WaifuArachne.Make(this.portraitArachne),
         };
 
-        this.character = _characters[0];
+        this.character = this._characters[0];
         DialogueManager.Instance = this;
-        this.normalDialogueEvent += _NormalDialogue;
-        this.textDialogue = textDialogueArray[0];
-        
+        this.normalDialogueEvent += this._NormalDialogue;
+        this._currentTextLine = this._textLines[0];
     }
 
     public void AskQuestion(int correct)
@@ -84,7 +85,7 @@ public class DialogueManager : MonoBehaviour
 
     private IEnumerator _ShowDialogue(string newDialogue, bool isUrgent)
     {
-        string actualText = textDialogue.text;
+        string actualText = _currentTextLine.text;
         float actualSpeed = character.GetSpeed(isUrgent);
 
         int lastSpace = 0;
@@ -103,13 +104,13 @@ public class DialogueManager : MonoBehaviour
                 while (aux < newDialogue.Length && newDialogue[aux] != ' ') {
                     aux++;
                 }
-                if (i - aux + textDialogue.text.Length > MAX_LENGH) {
+                if (i - aux + _currentTextLine.text.Length > MAX_LENGH) {
                     actualText = "";
-                    this._actualLineIndex = (this._actualLineIndex + 1) % textDialogueArray.Length;
-                    var nextLineIndex = (this._actualLineIndex + 1) % textDialogueArray.Length;
-                    textDialogue = textDialogueArray[this._actualLineIndex];
-                    textDialogue.alpha = 1f;
-                    StartCoroutine(_FadeOutText(textDialogueArray[nextLineIndex], textDialogue));
+                    this._actualLineIndex = (this._actualLineIndex + 1) % _textLines.Length;
+                    var nextLineIndex = (this._actualLineIndex + 1) % _textLines.Length;
+                    _currentTextLine = _textLines[this._actualLineIndex];
+                    _currentTextLine.alpha = 1f;
+                    StartCoroutine(_FadeOutText(_textLines[nextLineIndex], _currentTextLine));
                 }
             }
             var currentCharacter = newDialogue[i];
@@ -122,24 +123,24 @@ public class DialogueManager : MonoBehaviour
                 } 
                 yield return new WaitForSeconds(waitSpeed);
             } else {
-                if (textDialogue.text != "" || currentCharacter != ' ') { // Prevent spaces at the start of new line
+                if (_currentTextLine.text != "" || currentCharacter != ' ') { // Prevent spaces at the start of new line
                     actualText += currentCharacter;
                 }
-                textDialogue.text = actualText;
+                _currentTextLine.text = actualText;
                 yield return new WaitForSeconds(actualSpeed);
             }
             i++;
             
             if (!isUrgent && _needsUrgentDialogue) {
-                if (textDialogue.text != "") textDialogue.text += " ";
+                if (_currentTextLine.text != "") _currentTextLine.text += " ";
                 this._canShowUrgentDialogue = true;
                 yield return new WaitUntil(() => !_needsUrgentDialogue);
-                actualText = textDialogue.text;
+                actualText = _currentTextLine.text;
                 i = lastSpace;
             }
         }
 
-        if (textDialogue.text != "") textDialogue.text+=" ";
+        if (_currentTextLine.text != "") _currentTextLine.text+=" ";
 
         if (isUrgent) {
             this._canShowUrgentDialogue = true;
@@ -165,17 +166,15 @@ public class DialogueManager : MonoBehaviour
 
     private void _ClearAllText()
     {
-        for(int i = 0; i < this.textDialogueArray.Length; i++) {
-            this.textDialogueArray[i].text = "";
+        for(int i = 0; i < this._textLines.Length; i++) {
+            this._textLines[i].text = "";
             this._actualLineIndex = 0;
-            this.textDialogue = this.textDialogueArray[0];
+            this._currentTextLine = this._textLines[0];
         }
     }
 
     public void FailDialogue(Indication indication, Indication prevIndication)
     {
-        ScoreManager.Instance.RemoveStar(1);
-
         var text = character.GetFailDialogue().GetText(indication, prevIndication);
         this.StartCoroutine(this._ShowUrgent(text));
     }
@@ -193,7 +192,7 @@ public class DialogueManager : MonoBehaviour
 
     private void _NormalDialogue(Dialogue dialogue)
     {
-        this.onEmotionChanged.Invoke(dialogue.emotion);
+        this.onEmotionChanged?.Invoke(dialogue.emotion);
         StartCoroutine(this._ShowDialogue(dialogue.GetText(), false));
     }
 
@@ -233,17 +232,15 @@ public class DialogueManager : MonoBehaviour
         yield return new WaitForSeconds(2);
         
         if (this._AnsweredCorrectly()) {
-            fullDialogue=dialogue.CorrectDialogue;
-            AudioManager.Instance.PlaySound("correct_answer");
-            ScoreManager.Instance.AddStar(0.5f);
+            fullDialogue = dialogue.CorrectDialogue;
+            this.onAnswerCorrect?.Invoke();
         } else {
-            fullDialogue=dialogue.FailDialogue;
-            AudioManager.Instance.PlaySound("wrong_answer");
-            ScoreManager.Instance.RemoveStar(0.5f);
+            fullDialogue = dialogue.FailDialogue;
+            this.onAnswerIncorrect?.Invoke();
         }
 
-        this.StartCoroutine(_ShowUrgent(fullDialogue));
-        yield return new WaitUntil(()=>_canShowNormalialogue);
+        this.StartCoroutine(this._ShowUrgent(fullDialogue));
+        yield return new WaitUntil(() => this._canShowNormalialogue);
     }
 
     private IEnumerator _ShowTurnDialogueRoutine(Dialogue newDialogue, Indication indication)
@@ -256,9 +253,8 @@ public class DialogueManager : MonoBehaviour
 
     public void NextCharacter()
     {
-        AudioManager.Instance.PlaySound("correct_answer");
         this.StopAllCoroutines();
-        this.characterIndex = (this.characterIndex + 1) % this._characters.Length;
+        this._characterIndex = (this._characterIndex + 1) % this._characters.Length;
         this._EnterCharacter();
         this.onCharacterChanged?.Invoke(this.character);
     }
@@ -266,9 +262,8 @@ public class DialogueManager : MonoBehaviour
     private void _EnterCharacter()
     {
         this._ClearAllText();
-        this.character = this._characters[characterIndex];
+        this.character = this._characters[this._characterIndex];
         this._NormalDialogue(this.character.GetIntroduction());
-        ScoreManager.Instance.Restart();
         this.StartCoroutine(this._ShowNormalDialogue());
         this.StartCoroutine(this._AskQuestions());
     }

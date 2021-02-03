@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace WaifuTaxi
 {
-    public class WorldComponent : MonoBehaviour
+    public class WorldGenerator : MonoBehaviour
     {
         public Player player;
 
