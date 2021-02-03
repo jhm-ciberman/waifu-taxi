@@ -8,7 +8,7 @@ public class GUIManager : MonoBehaviour
 
     public void ChangeCharacter(Character character)
     {
-        this.character = DialogueManager.Instance.character;
+        this.character = character;
     }
 
     public void SetExpression(Emotion emotion)

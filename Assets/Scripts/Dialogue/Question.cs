@@ -1,4 +1,4 @@
-﻿public class QuestionDialogue : Dialogue
+﻿public class Question : Dialogue
 {
     private string[] options;
     private int correct;
@@ -12,7 +12,7 @@
     public string CorrectDialogue => correctDialogue;
     public string FailDialogue => failDialogue;
 
-    public QuestionDialogue(
+    public Question(
         string text, 
         Emotion emotion, 
         string[] options, 

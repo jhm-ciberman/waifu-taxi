@@ -2,8 +2,9 @@
 
 public class Dialogue
 {
-    private string _text;
-    public Emotion emotion;
+    private readonly string _text;
+
+    public readonly Emotion emotion;
 
     public Dialogue(string text, Emotion emotion)
     {
@@ -17,7 +18,7 @@ public class Dialogue
         this.emotion = Emotion.Normal;
     }
 
-    private static string IndicationToString(Indication indication)
+    private string _IndicationToString(Indication indication)
     {
         string s = "...";
         switch (indication) {
@@ -28,12 +29,12 @@ public class Dialogue
         return s;
     }
 
-    private string _Replace(string str, Indication indication, string token, string upperToken)
+    private string _Replace(string str, Indication indication, string lowercaseToken, string uppercaseToken)
     {
-        var currString = IndicationToString(indication);
-        var currStringUpper = char.ToUpper(currString[0]) + currString.Substring(1);
-        str = str.Replace(token, currString);
-        str = str.Replace(upperToken, currStringUpper);
+        var currStringLower = this._IndicationToString(indication);
+        var currStringUpper = char.ToUpper(currStringLower[0]) + currStringLower.Substring(1);
+        str = str.Replace(lowercaseToken, currStringLower);
+        str = str.Replace(uppercaseToken, currStringUpper);
         return str;
     }
 
@@ -48,6 +49,4 @@ public class Dialogue
     }
 
     public string GetText() => this._text;
-
-
 }

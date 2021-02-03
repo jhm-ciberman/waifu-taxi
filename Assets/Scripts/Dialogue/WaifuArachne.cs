@@ -1,6 +1,6 @@
 ﻿using WaifuTaxi;
 
-public static class Arachne
+public static class WaifuArachne
 {
     public static Character Make(Portrait portrait)
     {
@@ -60,21 +60,21 @@ public static class Arachne
         p.AddFailDialogue("We are never going to reach my destination this way. *[dir]. **", Emotion.Angry);
         p.AddFailDialogue("I didn’t know I was on a city tour. *Turn [dir]. **", Emotion.Angry);
 
-        string[] opciones = new string[3] {
+        string[] options = new string[3] {
             "(1) *Yes",
             "(2) *No",
             "(3) *I like almost every music genre.",
         };
         
-        p.AddQuestion("So, do you like pop music?", Emotion.Asking, opciones, 1, "Great, I like it too", "Oh, I see…");
+        p.AddQuestion("So, do you like pop music?", Emotion.Asking, options, 1, "Great, I like it too", "Oh, I see…");
 
-        string[] opciones2 = new string[3] {
+        string[] options2 = new string[3] {
             "(1) *K-pop",
             "(2) *Rock",
             "(3) *I like almost every music genre",
         };
         
-        p.AddQuestion("What is your favorite music genre?", Emotion.Asking, opciones2, 2, "Great, I like it too. ", "Oh, I see…");
+        p.AddQuestion("What is your favorite music genre?", Emotion.Asking, options2, 2, "Great, I like it too. ", "Oh, I see…");
 
         return p;
     }

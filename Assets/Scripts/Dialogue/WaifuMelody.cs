@@ -1,6 +1,6 @@
 ﻿using WaifuTaxi;
 
-public static class Melody
+public static class WaifuMelody
 {
     public static Character Make(Portrait portrait)
     {

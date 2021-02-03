@@ -24,8 +24,8 @@ namespace WaifuTaxi
 
             this._planner = new RoutePlanner(world, player);
 
-            this.dialogueManager.changeCharacter += this.guiManager.ChangeCharacter;
-            this.dialogueManager.changeSprite += this.guiManager.SetExpression;
+            this.dialogueManager.onCharacterChanged += this.guiManager.ChangeCharacter;
+            this.dialogueManager.onEmotionChanged += this.guiManager.SetExpression;
             this.guiManager.ChangeCharacter(this.dialogueManager.character);
 
             AudioManager.Instance.PlaySound("music_intro", false, (s) => {
@@ -34,6 +34,7 @@ namespace WaifuTaxi
 
             this._planner.onIndication += (e) => {
                 if(e.pathWasRestarted) {
+                    AudioManager.Instance.PlaySound("wrong_answer");
                     dialogueManager.FailDialogue(e.indication, e.prevIndication);
                 } else {
                     dialogueManager.GiveIndication(e.indication);

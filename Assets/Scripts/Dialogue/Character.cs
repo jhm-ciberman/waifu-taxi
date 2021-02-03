@@ -4,58 +4,42 @@ using WaifuTaxi;
 
 public class Character
 {
-    protected List<Dialogue> possibleDialogue;
-    protected List<TurnDialogue> turnLeftDialogue;
-    protected List<TurnDialogue> turnRightDialogue;
-    protected List<QuestionDialogue> questionDialogue;
-    protected List<Dialogue> introduction;
+    private readonly List<Dialogue> _possibleDialogue      = new List<Dialogue>();
+    private readonly List<Dialogue> _turnLeftDialogue      = new List<Dialogue>();
+    private readonly List<Dialogue> _turnRightDialogue     = new List<Dialogue>();
+    private readonly List<Dialogue> _introduction          = new List<Dialogue>();
+    private readonly List<Dialogue> _indicationDialogue    = new List<Dialogue>();
+    private readonly List<Dialogue> _failDirectionDialogue = new List<Dialogue>();
+    private readonly List<Question> _questionDialogue      = new List<Question>();
 
-    public float SpeedRandomFactor {get; private set;}
-    public float FastTextSpeed {get; private set;}
-    public float SlowTextSpeed {get; private set;}
+    private readonly float _speedRandomFactor = 0.003f;
+    private readonly float _fastTextSpeed     = 0.003f;
+    private readonly float _slowTextSpeed     = 0.009f;
 
-    public List<TurnDialogue> IndicationDialogue {get; private set;}
-    public List<Dialogue> failDirectionDialogue {get;private set;}
+    public readonly Portrait portrait;
 
-    public Portrait portrait;
+    private bool _useFastText = false;
 
     public Character(Portrait portrait)
     {
         this.portrait = portrait;
-        this.possibleDialogue = new List<Dialogue>();
-        this.turnLeftDialogue = new List<TurnDialogue>();
-        this.turnRightDialogue = new List<TurnDialogue>();
-        this.questionDialogue = new List<QuestionDialogue>();
-        this.failDirectionDialogue = new List<Dialogue>();
-        this.introduction = new List<Dialogue>();
-        IndicationDialogue = new List<TurnDialogue>();
-        SpeedRandomFactor = 0.003f;
-        FastTextSpeed = 0.003f;
-        SlowTextSpeed = 0.009f;
+    }
+
+    public float GetSpeed(bool forceFast = false)
+    {
+        if (forceFast) {
+            this._useFastText = true;
+        } else {
+            this._useFastText = ! this._useFastText;
+        }
+
+        float speedDelta = Random.Range(0f, this._speedRandomFactor);
+        return (this._useFastText ? this._fastTextSpeed : this._slowTextSpeed) + speedDelta;
     }
 
     public void AddIntroduction(string text)
     {
-        this.introduction.Add(new Dialogue(text));
-    }
-
-    private bool useFastText = false;
-
-    public float getSpeed(bool forceFast = false)
-    {
-        if (forceFast) {
-            this.useFastText = true;
-        } else {
-            this.useFastText = ! this.useFastText;
-        }
-
-        float speedDelta = Random.Range(0f, SpeedRandomFactor);
-        return (this.useFastText ? FastTextSpeed : SlowTextSpeed) + speedDelta;
-    }
-
-    public void addPossibleDialogue(string text, Emotion emotion)
-    {
-        this.possibleDialogue.Add(new Dialogue(text, emotion));
+        this._introduction.Add(new Dialogue(text));
     }
 
     public void AddDialogue(string text)
@@ -69,82 +53,40 @@ public class Character
             case 3: emotion = Emotion.Normal; break;
         }
 
-        this.possibleDialogue.Add(new Dialogue(text, emotion));
+        this._possibleDialogue.Add(new Dialogue(text, emotion));
     }
 
     public void AddIndication(string text)
     {
-        IndicationDialogue.Add(new TurnDialogue(text, Emotion.Normal));
-    }
-
-    public TurnDialogue getIndication()
-    {
-        TurnDialogue dialogue = null;
-        int k= Random.Range(0,IndicationDialogue.Count);
-        dialogue=IndicationDialogue[k];
-        return dialogue;
+        this._indicationDialogue.Add(new Dialogue(text, Emotion.Normal));
     }
 
     public void AddQuestion(string text, Emotion emotion, string[] options, int correct, string correctDialogue, string failDialogue)
     {
-        QuestionDialogue dialogue = new QuestionDialogue(text, emotion, options, correct, correctDialogue, failDialogue);
-        this.questionDialogue.Add(dialogue);
+        this._questionDialogue.Add(new Question(text, emotion, options, correct, correctDialogue, failDialogue));
     }
 
     public void AddFailDialogue(string text, Emotion emotion)
     {
-        Dialogue dialogue = new Dialogue(text,emotion);
-        this.failDirectionDialogue.Add(dialogue);
+        this._failDirectionDialogue.Add(new Dialogue(text,emotion));
     }
 
-    public Dialogue GetFailDialogue()
+    private T _Choose<T>(List<T> list)
     {
-        Dialogue dialogue = null;
-        int k = Random.Range(0, failDirectionDialogue.Count);
-        dialogue = failDirectionDialogue[k];
-        return dialogue;
+        return list[Random.Range(0, list.Count)];
     }
 
-    public Dialogue getIntroduction()
-    {
-        Dialogue dialogue = null;
-        int k= Random.Range(0,introduction.Count);
-        dialogue=introduction[k];
-        return dialogue;
-    }
+    public Dialogue GetIndication() => this._Choose(this._indicationDialogue);
 
-    public QuestionDialogue getRandomQuestionDialogue()
-    {
-        QuestionDialogue dialogue=null;
-        int k= Random.Range(0,questionDialogue.Count);
-        dialogue = questionDialogue[k];
-        return dialogue;
-    }
+    public Dialogue GetFailDialogue() => this._Choose(this._failDirectionDialogue);
 
-    public TurnDialogue getRandomTurnDialogue()
-    {
-        TurnDialogue turnDialogue = null;
-        int k = Random.Range(0,2);
-        switch (k) {
-            case 0: turnDialogue = this.GetTurnLeftDialogue();  break;
-            case 1: turnDialogue = this.GetTurnRightDialogue(); break;
-        }
-        Debug.Assert(turnDialogue != null, "Estas devolviendo un dialogo random nulo");
-        return turnDialogue;
-    }
+    public Dialogue GetIntroduction() => this._Choose(this._introduction);
 
-    public Dialogue GetPossibleDialogue()
-    {
-        return this.possibleDialogue[Random.Range(0, this.possibleDialogue.Count)];
-    }
+    public Dialogue GetPossibleDialogue() => this._Choose(this._possibleDialogue);
 
-    public TurnDialogue GetTurnLeftDialogue()
-    {
-        return this.turnLeftDialogue[Random.Range(0, this.turnLeftDialogue.Count)];
-    }
+    public Dialogue GetTurnLeftDialogue() => this._Choose(this._turnLeftDialogue);
 
-    public TurnDialogue GetTurnRightDialogue()
-    {
-        return this.turnRightDialogue[Random.Range(0, this.turnRightDialogue.Count)];
-    }
+    public Dialogue GetTurnRightDialogue() => this._Choose(this._turnRightDialogue);
+
+    public Question GetQuestionDialogue() => this._Choose(this._questionDialogue);
 }
