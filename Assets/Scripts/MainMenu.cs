@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace WaifuTaxi
+namespace WaifuDriver
 {
     public class MainMenu : MonoBehaviour
     {

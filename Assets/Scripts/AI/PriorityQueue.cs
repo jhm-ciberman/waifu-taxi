@@ -1,8 +1,7 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace WaifuTaxi
+namespace WaifuDriver
 {
     // From http://visualstudiomagazine.com/articles/2012/11/01/priority-queues-with-c.aspx
     public class PriorityQueue<T> : IEnumerable<T>

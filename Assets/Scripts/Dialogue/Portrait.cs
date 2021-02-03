@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace WaifuTaxi
+namespace WaifuDriver
 {
     [CreateAssetMenu(fileName = "Portrait", menuName = "WaifuTaxi/Portrait", order = 1)]
     public class Portrait : ScriptableObject

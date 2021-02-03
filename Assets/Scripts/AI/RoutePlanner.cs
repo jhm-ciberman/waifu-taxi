@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace WaifuTaxi
+namespace WaifuDriver
 {
     public class RoutePlanner
     {
@@ -122,6 +122,7 @@ namespace WaifuTaxi
             this._pathIndex = 0;
             if (path.Count > 1) {
                 this._path = path;
+                Debug.Log("Tiles: " + this._path.Count);
                 this.AdvanceToNextGoal();
             } else {
                 this._path = null; 

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace WaifuTaxi
+namespace WaifuDriver
 {
     public class CarPathfinder : Pathfinder
     {

@@ -1,7 +1,10 @@
-public enum Emotion
+namespace WaifuDriver
 {
-    Angry,
-    Asking,
-    Blush,
-    Normal
+    public enum Emotion
+    {
+        Angry,
+        Asking,
+        Blush,
+        Normal
+    }
 }

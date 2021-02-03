@@ -1,29 +1,32 @@
-﻿public class Question : Dialogue
+﻿namespace WaifuDriver
 {
-    private string[] options;
-    private int correct;
-    private string afterDialogue;
-    private string correctDialogue;
-    private string failDialogue;
-
-    public string[] Options => options;
-    public int Correct => correct;
-    public string AfterDialogue => afterDialogue;
-    public string CorrectDialogue => correctDialogue;
-    public string FailDialogue => failDialogue;
-
-    public Question(
-        string text, 
-        Emotion emotion, 
-        string[] options, 
-        int correct, 
-        string correctDialogue, 
-        string failDialogue
-    ) : base(text, emotion)
+    public class Question : Dialogue
     {
-        this.options = options;
-        this.correctDialogue = correctDialogue;
-        this.failDialogue = failDialogue;
-        this.correct = correct;
+        private string[] options;
+        private int correct;
+        private string afterDialogue;
+        private string correctDialogue;
+        private string failDialogue;
+
+        public string[] Options => options;
+        public int Correct => correct;
+        public string AfterDialogue => afterDialogue;
+        public string CorrectDialogue => correctDialogue;
+        public string FailDialogue => failDialogue;
+
+        public Question(
+            string text, 
+            Emotion emotion, 
+            string[] options, 
+            int correct, 
+            string correctDialogue, 
+            string failDialogue
+        ) : base(text, emotion)
+        {
+            this.options = options;
+            this.correctDialogue = correctDialogue;
+            this.failDialogue = failDialogue;
+            this.correct = correct;
+        }
     }
 }

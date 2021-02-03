@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace WaifuTaxi
+namespace WaifuDriver
 {
     public class WorldGenerator : MonoBehaviour
     {

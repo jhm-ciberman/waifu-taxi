@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace WaifuTaxi
+namespace WaifuDriver
 {
     [CreateAssetMenu(fileName = "WorldPrefabs", menuName = "WaifuTaxi/WorldPrefabs", order = 1)]
     public class WorldPrefabs : ScriptableObject

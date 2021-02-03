@@ -1,52 +1,53 @@
-﻿using WaifuTaxi;
-
-public class Dialogue
+﻿namespace WaifuDriver
 {
-    private readonly string _text;
-
-    public readonly Emotion emotion;
-
-    public Dialogue(string text, Emotion emotion)
+    public class Dialogue
     {
-        this._text = text;
-        this.emotion = emotion;
-    }
+        private readonly string _text;
 
-    public Dialogue(string text)
-    {
-        this._text = text;
-        this.emotion = Emotion.Normal;
-    }
+        public readonly Emotion emotion;
 
-    private string _IndicationToString(Indication indication)
-    {
-        string s = "...";
-        switch (indication) {
-            case Indication.TurnLeft: s = "left";  break;
-            case Indication.TurnRight: s = "right"; break;
-            case Indication.TurnU: s = "in u"; break;
+        public Dialogue(string text, Emotion emotion)
+        {
+            this._text = text;
+            this.emotion = emotion;
         }
-        return s;
-    }
 
-    private string _Replace(string str, Indication indication, string lowercaseToken, string uppercaseToken)
-    {
-        var currStringLower = this._IndicationToString(indication);
-        var currStringUpper = char.ToUpper(currStringLower[0]) + currStringLower.Substring(1);
-        str = str.Replace(lowercaseToken, currStringLower);
-        str = str.Replace(uppercaseToken, currStringUpper);
-        return str;
-    }
+        public Dialogue(string text)
+        {
+            this._text = text;
+            this.emotion = Emotion.Normal;
+        }
 
-    public string GetText(Indication currentIndication, Indication prevIndication)
-    {
-        return this._Replace(this.GetText(currentIndication), prevIndication, "[prev_dir]", "[Prev_dir]");
-    }
+        private string _IndicationToString(Indication indication)
+        {
+            string s = "...";
+            switch (indication) {
+                case Indication.TurnLeft: s = "left";  break;
+                case Indication.TurnRight: s = "right"; break;
+                case Indication.TurnU: s = "in u"; break;
+            }
+            return s;
+        }
 
-    public string GetText(Indication currentIndication)
-    {
-        return this._Replace(this._text, currentIndication, "[dir]", "[Dir]");
-    }
+        private string _Replace(string str, Indication indication, string lowercaseToken, string uppercaseToken)
+        {
+            var currStringLower = this._IndicationToString(indication);
+            var currStringUpper = char.ToUpper(currStringLower[0]) + currStringLower.Substring(1);
+            str = str.Replace(lowercaseToken, currStringLower);
+            str = str.Replace(uppercaseToken, currStringUpper);
+            return str;
+        }
 
-    public string GetText() => this._text;
+        public string GetText(Indication currentIndication, Indication prevIndication)
+        {
+            return this._Replace(this.GetText(currentIndication), prevIndication, "[prev_dir]", "[Prev_dir]");
+        }
+
+        public string GetText(Indication currentIndication)
+        {
+            return this._Replace(this._text, currentIndication, "[dir]", "[Dir]");
+        }
+
+        public string GetText() => this._text;
+    }
 }

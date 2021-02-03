@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
-namespace WaifuTaxi
+namespace WaifuDriver
 {
     public abstract class Pathfinder : IComparer<Vector2Int>
     {

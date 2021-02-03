@@ -1,4 +1,4 @@
-namespace WaifuTaxi
+namespace WaifuDriver
 {
     public enum Indication
     {
