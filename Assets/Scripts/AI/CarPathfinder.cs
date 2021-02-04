@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace WaifuDriver
 {
-    public class CarPathfinder : Pathfinder
+    public class CarPathfinder : PathfinderBase
     {
         private World _world;
 
@@ -11,7 +11,7 @@ namespace WaifuDriver
 
         private Vector2Int _startDir;
 
-        public CarPathfinder(World world, Vector2Int start, Vector2Int end, Vector2Int startingDir) : base(world.size, start, end)
+        public CarPathfinder(World world, Vector2Int start, Vector2Int end, Vector2Int startingDir) : base(start, end)
         {
             this._world = world;
             this._startCoord = start;
