@@ -5,11 +5,11 @@ namespace WaifuDriver
 {
     public class RoutePlanner
     {
-        private World _world;
+        private Pathfinder _pathfinder;
         
         private Entity _entity;
 
-        private List<Vector2Int> _path;
+        private IReadOnlyList<Vector2Int> _path;
 
         private int _pathIndex = 0;
 
@@ -26,9 +26,9 @@ namespace WaifuDriver
         
         private bool _pathWasRecentlyRestarted = false;
 
-        public RoutePlanner(World world, Entity entity)
+        public RoutePlanner(Pathfinder pathfinder, Entity entity)
         {
-            this._world = world;
+            this._pathfinder = pathfinder;
             this._entity = entity;
         }
 
@@ -92,7 +92,7 @@ namespace WaifuDriver
 
         public void StartNewPath()
         {
-            this._finalDestination = this._world.RandomDestination(this._entity.currentCoord);
+            this._finalDestination = this._pathfinder.RandomDestination(this._entity.currentCoord);
             this.RecalculatePath(); // No destination
         }
 
@@ -117,8 +117,7 @@ namespace WaifuDriver
             if (this._path != null) {
                 this._pathWasRecentlyRestarted = true;
             }
-            var pathfinder = new CarPathfinder(this._world, this._entity.currentCoord, this._finalDestination, this._entity.currentDirVector);
-            var path = pathfinder.Pathfind();
+            var path = this._pathfinder.Pathfind(this._entity.currentCoord, this._finalDestination, this._entity.currentDirVector);
             this._pathIndex = 0;
             if (path.Count > 1) {
                 this._path = path;
@@ -129,5 +128,7 @@ namespace WaifuDriver
                 Debug.Log("Invalid goal");
             }
         }
+
+        public IEnumerable<Vector2Int> path => this._path;
     }
 }

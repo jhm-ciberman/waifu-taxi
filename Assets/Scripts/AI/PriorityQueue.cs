@@ -24,7 +24,9 @@ namespace WaifuDriver
 
         public bool Contains(T item) => this._data.Contains(item);
 
-        public T Peek() => _data[0];
+        public void Clear() => this._data.Clear();
+
+        public T Peek() => this._data[0];
 
         public void Enqueue(T item) 
         {

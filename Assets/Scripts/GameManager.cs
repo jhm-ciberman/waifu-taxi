@@ -18,15 +18,17 @@ namespace WaifuDriver
 
         private int _livesCount = 5;
 
+
         public void Start()
         {
             var world = new World(new City());
 
-            var player = this._worldGenerator.GenerateWorld(world);
+            var pathfinder = new Pathfinder(world);
+            var player = this._worldGenerator.GenerateWorld(world, pathfinder);
+            this._planner = new RoutePlanner(pathfinder, player);
 
             this._cameraController.SetTarget(player.transform);
 
-            this._planner = new RoutePlanner(world, player);
 
             this._dialogueManager.onCharacterChanged += this._guiManager.ChangeCharacter;
             this._dialogueManager.onEmotionChanged += this._guiManager.SetExpression;
@@ -85,6 +87,13 @@ namespace WaifuDriver
             }
 
             this._guiManager.SetStarsCount(this._livesCount);
+        }
+
+
+        private void OnDrawGizmos()
+        {
+            if (this._planner?.path == null) return;
+            Path.DrawPathGizmos(this._planner.path);
         }
 
         private void Update()

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace WaifuDriver
 {
-    public abstract class PathfinderBase : IComparer<Vector2Int>
+    public class AStarPathfinder : IComparer<Vector2Int>
     {
         private Vector2Int _start;
 
@@ -16,10 +16,11 @@ namespace WaifuDriver
 
         private Dictionary<Vector2Int, Node> _nodes;
 
-        public PathfinderBase(Vector2Int start, Vector2Int end)
+        private INavigator _navigator;
+
+        public AStarPathfinder(INavigator navigator)
         {
-            this._start = start;
-            this._end = end;
+            this._navigator = navigator;
             this._closedSet = new HashSet<Vector2Int>();
             this._openSet = new PriorityQueue<Vector2Int>(this);
             this._nodes = new Dictionary<Vector2Int, Node>();
@@ -36,9 +37,11 @@ namespace WaifuDriver
             return Math.Sign(this._nodes[x].fScore - this._nodes[y].fScore);
         }
 
-        protected abstract float _HeuristicDistance(Vector2Int start, Vector2Int end);
-
-        protected abstract float _WeightFunction(Vector2Int fromCoord, Vector2Int toCoord, Vector2Int cameFromCoord);
+        public interface INavigator
+        {
+            float HeuristicDistance(Vector2Int start, Vector2Int end);
+            float WeightFunction(Vector2Int fromCoord, Vector2Int toCoord, Vector2Int cameFromCoord);
+        }
 
         protected List<Vector2Int> _ReconstructPath(Vector2Int current)
         {
@@ -81,9 +84,16 @@ namespace WaifuDriver
             }
         }
 
-        public List<Vector2Int> Pathfind()
+        public List<Vector2Int> Pathfind(Vector2Int start, Vector2Int end)
         {
-            float hCost = this._HeuristicDistance(this._start, this._end);
+            this._nodes.Clear();
+            this._closedSet.Clear();
+            this._openSet.Clear();
+            
+            this._start = start;
+            this._end = end;
+
+            float hCost = this._navigator.HeuristicDistance(this._start, this._end);
             this._nodes[this._start] = new Node(this._start, this._start, 0f, hCost);
             this._openSet.Enqueue(this._start);
 
@@ -111,17 +121,20 @@ namespace WaifuDriver
         {
             if (this._closedSet.Contains(neighbourCoord)) return;
 
-            float hCost = this._WeightFunction(currentNode.coord, neighbourCoord, currentNode.cameFrom);
-            float gScoreTentative = currentNode.gScore + hCost;
+            float dist = this._navigator.WeightFunction(currentNode.coord, neighbourCoord, currentNode.cameFrom);
+            float gScoreTentative = currentNode.gScore + dist;
 
             var neighbourGScore = this._GetNodeGScore(neighbourCoord);
 
-            if (gScoreTentative < neighbourGScore && ! this._closedSet.Contains(neighbourCoord)) {
+            if (gScoreTentative < neighbourGScore) {
                 // This path to neighbor is better than any previous one. Record it!
-                float h = this._HeuristicDistance(neighbourCoord, this._end);
+                float h = this._navigator.HeuristicDistance(neighbourCoord, this._end);
                 float f = gScoreTentative + h;
                 this._nodes[neighbourCoord] = new Node(neighbourCoord, currentNode.coord, gScoreTentative, f);
-                this._openSet.Enqueue(neighbourCoord);
+
+                if (! this._openSet.Contains(neighbourCoord)) {
+                    this._openSet.Enqueue(neighbourCoord);
+                }
             }
         }
     }

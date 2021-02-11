@@ -6,7 +6,7 @@ namespace WaifuDriver
     public static class PathRetracer
     {
         
-        public static List<Vector2> Retrace(List<Vector2Int> path, float roadSeparation)
+        public static List<Vector2> Retrace(IReadOnlyList<Vector2Int> path, float roadSeparation)
         {
             List<Vector2> list = new List<Vector2>();
 

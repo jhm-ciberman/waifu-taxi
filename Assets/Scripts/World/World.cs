@@ -84,18 +84,6 @@ namespace WaifuDriver
             return new Vector2Int(0, 0); // Error! 
         }
 
-        public Vector2Int RandomDestination(Vector2Int startCoord)
-        {
-            Vector2Int end;
-            int tries = 0;
-            do {
-                end = this.RandomRoad();
-                tries++;
-                if (tries > 1000) return end;
-            } while (end == startCoord);
-            return end;
-        }
-
         public RoadConnection GetRoadConnectionAt(Vector2Int pos)
         {
             if (! this.HasRoad(pos)) return RoadConnection.None;

@@ -4,7 +4,7 @@ namespace WaifuDriver
 {
     public class Player : Entity
     {
-        private float _speed = 0f;
+        public System.Action onCollision;
 
         public float globalMultiplier = 200f;
         public float maxSpeed = 0.7f;
@@ -13,17 +13,15 @@ namespace WaifuDriver
         public float deaceleration = 0.5f;
         public float turnSpeed = 35f;
         public float requiredRotationSpeed = 0.2f;
-
+        
+        private bool _maxSpeed = false;
+        private float _speed = 0f;
         private Rigidbody2D _rb;
 
         void Awake()
         {
             this._rb = this.GetComponent<Rigidbody2D>();
         }
-
-        public System.Action onCollision;
-
-        private bool _maxSpeed = false;
 
         void FixedUpdate()
         {

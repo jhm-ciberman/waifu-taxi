@@ -10,7 +10,7 @@ namespace WaifuDriver
         
         private System.Random _random = new System.Random();
 
-        public Player GenerateWorld(World world)
+        public Player GenerateWorld(World world, Pathfinder pathfinder)
         {
             for (int x = 0; x < world.size.x; x++) {
                 for (int y = 0; y < world.size.y; y++) {
@@ -26,27 +26,27 @@ namespace WaifuDriver
             var numberOfCars = (int) (world.roadCount * 0.5f);
             for (int i = 0; i < numberOfCars; i++) {
                 var pos = world.RandomRoad();
-                this.SpawnCar(world, pos);
+                this.SpawnCar(pos, pathfinder);
             }
 
             var playerPos = world.RandomRoad();
-            return this.SpawnPlayer(world, playerPos);
+            return this.SpawnPlayer(playerPos);
         }
 
-        public Player SpawnPlayer(World world, Vector2Int coords)
+        public Player SpawnPlayer(Vector2Int coords)
         {
             var playerPos = new Vector3(coords.x, coords.y, 0f);
             var player = Object.Instantiate(this.player, playerPos, Quaternion.identity);
             return player;
         }
 
-        public void SpawnCar(World world, Vector2Int coords)
+        public void SpawnCar(Vector2Int coords, Pathfinder pathfinder)
         {
             var playerPos = new Vector3(coords.x, coords.y, 0f);
             var prefab = this.RandomCarPrefab();
             var car = Object.Instantiate(prefab, playerPos, Quaternion.identity);
             car.SetDeltaSpeed(((float) this._random.NextDouble()) * 0.2f - 0.1f);
-            car.SetWorld(world);
+            car.SetPathfinder(pathfinder);
         }
 
         public void MakeRoad(Vector2Int pos, RoadConnection connection, World.TileType tileType)

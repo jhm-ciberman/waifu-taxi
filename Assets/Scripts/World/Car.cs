@@ -24,11 +24,12 @@ namespace WaifuDriver
 
         private State _state = State.Moving;
         private float _waitTimeout = 0f;
-        private World _world;
 
         private Rigidbody2D _rb;
 
         public System.Action onCollision;
+
+        private Pathfinder _pathfinder;
 
         public void Awake()
         {
@@ -37,9 +38,9 @@ namespace WaifuDriver
             this._rb = this.GetComponent<Rigidbody2D>();
         }
 
-        public void SetWorld(World world)
+        public void SetPathfinder(Pathfinder pathfinder)
         {
-            this._world = world;
+            this._pathfinder = pathfinder;
             this.StartNewRandomPath();
         }
 
@@ -51,11 +52,10 @@ namespace WaifuDriver
         public void StartNewRandomPath()
         {
             this._path = null;
-            if (this._world == null) return;
+            if (this._pathfinder == null) return;
 
-            var end = this._world.RandomDestination(this.currentCoord);
-            CarPathfinder pathfinder = new CarPathfinder(this._world, this.currentCoord, end, this.currentDirVector);
-            var path = pathfinder.Pathfind();
+            var end = this._pathfinder.RandomDestination(this.currentCoord);
+            var path = this._pathfinder.Pathfind(this.currentCoord, end, this.currentDirVector);
             if (path != null) {
                 var pathSoft = PathRetracer.Retrace(path, this.roadSeparation);
                 this.SetPath(pathSoft);
@@ -97,15 +97,7 @@ namespace WaifuDriver
             
         }
 
-        void OnCollisionEnter2D(Collision2D col)
-        {
-            //if (this._speed > 0.5f) {
-            //    this._state = State.Waiting;
-            //    this._path = null;
-            //    this._speed = 0f;
-            //    this._waitTimeout = Random.Range(0.5f, 5f);
-            //} 
-        }
+        public IEnumerable<Vector2> path => this._path;
 
         public void SetPath(IEnumerable<Vector2> path) 
         {
