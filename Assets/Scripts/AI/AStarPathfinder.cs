@@ -46,7 +46,7 @@ namespace WaifuDriver
         protected List<Vector2Int> _ReconstructPath(Vector2Int current)
         {
             var path = new List<Vector2Int>();
-
+            
             path.Add(current);
             do {
                 current = this._nodes[current].cameFrom;
@@ -108,16 +108,16 @@ namespace WaifuDriver
                 var node = this._nodes[coords];
 
                 // Expand tile
-                this._ExpandNode(node, new Vector2Int(coords.x - 1, coords.y));
-                this._ExpandNode(node, new Vector2Int(coords.x + 1, coords.y));
-                this._ExpandNode(node, new Vector2Int(coords.x, coords.y - 1));
-                this._ExpandNode(node, new Vector2Int(coords.x, coords.y + 1));
+                this._ExpandNode(ref node, new Vector2Int(coords.x - 1, coords.y));
+                this._ExpandNode(ref node, new Vector2Int(coords.x + 1, coords.y));
+                this._ExpandNode(ref node, new Vector2Int(coords.x, coords.y - 1));
+                this._ExpandNode(ref node, new Vector2Int(coords.x, coords.y + 1));
             }
 
             return null; // Failure! 
         }
 
-        private void _ExpandNode(Node currentNode, Vector2Int neighbourCoord)
+        private void _ExpandNode(ref Node currentNode, Vector2Int neighbourCoord)
         {
             if (this._closedSet.Contains(neighbourCoord)) return;
 

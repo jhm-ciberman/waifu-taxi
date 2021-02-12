@@ -9,9 +9,7 @@ namespace WaifuDriver
         
         private Entity _entity;
 
-        private IReadOnlyList<Vector2Int> _path;
-
-        private int _pathIndex = 0;
+        private Path _path;
 
         private Vector2Int _nextGoal;
 
@@ -98,11 +96,10 @@ namespace WaifuDriver
 
         private void AdvanceToNextGoal()
         {
-            this._pathIndex++; // Goal reached!
-            
-            if (this._pathIndex < this._path.Count) {
-                this._currentCoord = this._path[this._pathIndex - 1];
-                this._nextGoal = this._path[this._pathIndex];
+            this._currentCoord = this._path.currentTile;
+            this._path.Advance();
+            if (! this._path.targetReached) {
+                this._nextGoal = this._path.currentTile;
 
                 this.CalculateIndications();
                 this._pathWasRecentlyRestarted = false;
@@ -117,11 +114,10 @@ namespace WaifuDriver
             if (this._path != null) {
                 this._pathWasRecentlyRestarted = true;
             }
-            var path = this._pathfinder.Pathfind(this._entity.currentCoord, this._finalDestination, this._entity.currentDirVector);
-            this._pathIndex = 0;
-            if (path.Count > 1) {
+            var path = this._pathfinder.Pathfind(this._entity.currentCoord, this._finalDestination, this._entity.currentDirVector, 0f);
+            if (path != null) {
                 this._path = path;
-                Debug.Log("Tiles: " + this._path.Count);
+                Debug.Log("Tiles: " + this._path.length);
                 this.AdvanceToNextGoal();
             } else {
                 this._path = null; 
@@ -129,6 +125,6 @@ namespace WaifuDriver
             }
         }
 
-        public IEnumerable<Vector2Int> path => this._path;
+        public Path path => this._path;
     }
 }

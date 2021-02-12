@@ -89,11 +89,10 @@ namespace WaifuDriver
             this._guiManager.SetStarsCount(this._livesCount);
         }
 
-
         private void OnDrawGizmos()
         {
             if (this._planner?.path == null) return;
-            Path.DrawPathGizmos(this._planner.path);
+            PathGizmo.DrawPath(this._planner.path);
         }
 
         private void Update()

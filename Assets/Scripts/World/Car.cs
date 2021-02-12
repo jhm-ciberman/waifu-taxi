@@ -5,7 +5,7 @@ namespace WaifuDriver
 {
     public class Car : Entity
     {
-        private Queue<Vector2> _path = null;
+        private Path _path = null;
         
         private enum State
         {
@@ -55,10 +55,9 @@ namespace WaifuDriver
             if (this._pathfinder == null) return;
 
             var end = this._pathfinder.RandomDestination(this.currentCoord);
-            var path = this._pathfinder.Pathfind(this.currentCoord, end, this.currentDirVector);
+            var path = this._pathfinder.Pathfind(this.currentCoord, end, this.currentDirVector, this.roadSeparation);
             if (path != null) {
-                var pathSoft = PathRetracer.Retrace(path, this.roadSeparation);
-                this.SetPath(pathSoft);
+                this.SetPath(path);
             }
         }
 
@@ -85,10 +84,10 @@ namespace WaifuDriver
                     this._speed = this.maxSpeed;
                 }
                 this._rb.position += dirNormalized * Time.fixedDeltaTime * this._speed;
-            } else if (this._path.Count > 0) {
-                this._NextPoint();
-            } else {
+            } else if (this._path.targetReached) {
                 this.StartNewRandomPath();
+            } else {
+                this._NextPoint();
             }
 
             var dirVec = this.currentDirVector;
@@ -97,11 +96,9 @@ namespace WaifuDriver
             
         }
 
-        public IEnumerable<Vector2> path => this._path;
-
-        public void SetPath(IEnumerable<Vector2> path) 
+        public void SetPath(Path path) 
         {
-            this._path = new Queue<Vector2>(path);
+            this._path = path;
             this._NextPoint();
 
             if (this._prevPoint == this._currentPoint) {
@@ -109,10 +106,16 @@ namespace WaifuDriver
             }
         }
 
+        private void OnDrawGizmos()
+        {
+            PathGizmo.DrawPath(this._path);
+        }
+
         private void _NextPoint()
         {
             this._prevPoint = this._currentPoint;
-            this._currentPoint = this._path.Dequeue();
+            this._path.Advance();
+            this._currentPoint = this._path.currentPosition;
         }
 
     }

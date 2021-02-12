@@ -20,10 +20,15 @@ namespace WaifuDriver
             this._pathfinder = new AStarPathfinder(this);
         }
 
-        public IReadOnlyList<Vector2Int> Pathfind(Vector2Int start, Vector2Int end, Vector2Int startingDir)
+        public Path Pathfind(Vector2Int start, Vector2Int end, Vector2Int startingDir, float roadSeparation)
         {
             this._startDir = startingDir;
-            return this._pathfinder.Pathfind(start, end);
+            this._startCoord = start;
+            var points = this._pathfinder.Pathfind(start, end);
+            if (points.Count > 0) {
+                return new Path(points, roadSeparation);
+            }
+            return null; //Invalid goal!!
         }
 
         public Vector2Int RandomDestination(Vector2Int startCoord)
