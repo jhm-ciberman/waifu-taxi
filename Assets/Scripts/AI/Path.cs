@@ -1,77 +1,154 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using System;
 
 namespace WaifuDriver
 {
     public class Path
     {
-        private Vector2[] _points;
+        private PathPoint[] _points;
 
         public readonly float length = 0;
 
-        private int _currentPointIndex = 0;
-
         public Path(List<Vector2Int> points, float roadSeparation)
         {
-            this._points = new Vector2[points.Count];
+            this._points = new PathPoint[points.Count];
 
             Vector2Int prevPoint;
             Vector2Int currentPoint = points.FirstOrDefault();
-            this._points[0] = currentPoint;
-
+            this._points[0] = new PathPoint(currentPoint, 0f);
             for (int i = 1; i < points.Count; i++) {
                 prevPoint = currentPoint;
                 currentPoint = points[i];
                 var goalDir = (currentPoint - prevPoint);
                 var offsetWide   = new Vector2(goalDir.y, goalDir.x) * roadSeparation;
-                var offsetLenght = new Vector2(-goalDir.x, -goalDir.y) * roadSeparation;
-                this._points[i] = currentPoint + offsetWide + offsetLenght;
+                var offsetLength = new Vector2(-goalDir.x, -goalDir.y) * roadSeparation;
+                var position = currentPoint + offsetWide + offsetLength;
                 this.length += goalDir.magnitude;
-            }
-        }
-
-        public void Advance()
-        {
-            this._currentPointIndex++;
-            if (this.targetReached) {
-                this._currentPointIndex = this._points.Length;
+                this._points[i] = new PathPoint(position, this.length);
             }
         }
 
         public int pointsCount => this._points.Length;
 
-        public bool targetReached => (this._currentPointIndex >= this._points.Length);
-
-        public Vector2 currentPosition => this._GetPosition(this._currentPointIndex);
-
-        public Vector2Int currentTile => Path._ToTilePos(this.currentPosition);
-
-        public Vector2 targetPosition => this._GetPosition(this._points.Length - 1);
-
-        public Vector2Int targetTile => Path._ToTilePos(this.targetPosition);
-
-        public Vector2 PeekPosition(int index = 0) => this._GetPosition(this._currentPointIndex + index);
-        public Vector2Int PeekTile(int index = 0) => Path._ToTilePos(this._GetPosition(this._currentPointIndex + index));
-
-        private Vector2 _GetPosition(int index)
+        public Vector2 GetPositionAtIndex(int index)
         {
-            if (index >= this._points.Length) {
-                return this.targetPosition;
-            }
-            return this._points[index];
+            return this._points[index].position;
         }
 
-        private static Vector2Int _ToTilePos(Vector2 p) => new Vector2Int(Mathf.RoundToInt(p.x), Mathf.RoundToInt(p.y));
+        public Vector2 GetPosition(float length)
+        {
+            (var prevIndex, var nextIndex) = this.GetPointsIndicesBetween(length);
+            PathPoint prev = this._points[prevIndex];
+            PathPoint next = this._points[nextIndex];
+            float t = _InverseLerp(prev.length, next.length, length);
+            return Vector2.LerpUnclamped(prev.position, next.position, t);
+        }
 
-        public IEnumerable<Vector2> remainingPoints
+        private static float _InverseLerp(float a, float b, float value) 
+        {
+            // Faster than Mathf.InverseLerp because it does not clamp the value
+            return (a != b) ? (value - a) / (b - a) : 0f;
+        }
+
+        public (int prev, int next) GetPointsIndicesBetween(float length)
+        {
+            if (length <= 0f) {
+                return (0, 0);
+            }
+
+            if (length >= this.length) {
+                int index = this._points.Length - 1;
+                return (index, index);
+            }
+
+            // Linear search :( 
+            // O(n) is not good! 
+            // But I think for n < 10 points it's faster than a bin search
+
+            int i = 0;
+            while (i < this._points.Length) {
+                if (this._points[i++].length >= length) break;
+            }
+            i--;
+            int prevIndex = (i > 0) ? i - 1 : i;
+            return (prevIndex, i);
+        }
+
+        public IEnumerable<Vector2> points
         {
             get
             {
-                for (int i = this._currentPointIndex; i < this._points.Length; i++) {
-                    yield return this._points[i];
+                for (int i = 0; i < this._points.Length; i++) {
+                    yield return this._points[i].position;
                 }
             }
         }
+
+        public PathPoint ClosestPoint(Vector2 searchPoint) 
+        {
+            // Adapted from: https://bl.ocks.org/mbostock/8027637
+
+            var pathLength = this.length;
+
+            // linear scan for coarse approximation
+            Vector2 best;
+            float bestLength = 0f;
+            float bestDist = float.PositiveInfinity;
+            float precision = 1f;
+            for (float length = 0; length <= pathLength; length += precision) {
+                Vector2 scan = this.GetPosition(length);
+                float dist = (searchPoint - scan).sqrMagnitude;
+                if (dist < bestDist) {
+                    best = scan;
+                    bestLength = length;
+                    bestDist = dist;
+                }
+            }
+            // binary search for precise estimate
+            float currentPrecision = 1f;
+
+            Vector2 bestPoint = this.GetPosition(bestLength);
+            float bestDistance = (bestPoint - searchPoint).sqrMagnitude;
+
+            {
+                float length;
+                float dist;
+                Vector2 point;
+                float desiredPrecision = 0.025f;
+                while (currentPrecision > desiredPrecision) {
+
+                    length = bestLength - currentPrecision;
+                    if (length >= 0f) {
+                        point = this.GetPosition(length);
+                        dist = (point - searchPoint).sqrMagnitude;
+                        if (dist < bestDistance) {
+                            bestPoint = point;
+                            bestLength = length;
+                            bestDistance = dist;
+                            continue;
+                        } 
+                    }
+
+                    length = bestLength + currentPrecision;
+                    if (length <= this.length) {
+                        point = this.GetPosition(length);
+                        dist = (point - searchPoint).sqrMagnitude;
+                        if (dist < bestDistance) {
+                            bestPoint = point;
+                            bestLength = length;
+                            bestDistance = dist;
+                            continue;
+                        }
+                    }
+
+                    currentPrecision /= 2;
+                }
+            }
+
+            return new PathPoint(bestPoint, bestLength);
+        }
+
     }
 }

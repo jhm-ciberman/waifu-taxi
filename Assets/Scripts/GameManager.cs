@@ -50,6 +50,7 @@ namespace WaifuDriver
 
         private void OnIndication(IndicationEvent e)
         {
+            this._guiManager.SetDebugIndication(e.indication);
             if(e.pathWasRestarted) {
                 this.OnRouteFail(e.indication, e.prevIndication);
             } else {
@@ -91,8 +92,7 @@ namespace WaifuDriver
 
         private void OnDrawGizmos()
         {
-            if (this._planner?.path == null) return;
-            PathGizmo.DrawPath(this._planner.path);
+            this._planner?.OnDrawGizmos();
         }
 
         private void Update()

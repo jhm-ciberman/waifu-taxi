@@ -14,9 +14,6 @@ namespace WaifuDriver
             Crashed,
         }
 
-        private Vector2 _prevPoint;
-        private Vector2 _currentPoint;
-
         private float _speed = 0f;
         public float acceleration = 0.5f;
         public float maxSpeed = 0.5f;
@@ -33,8 +30,6 @@ namespace WaifuDriver
 
         public void Awake()
         {
-            this._prevPoint = this.currentCoord;
-            this._currentPoint = this.currentCoord;
             this._rb = this.GetComponent<Rigidbody2D>();
         }
 
@@ -57,7 +52,7 @@ namespace WaifuDriver
             var end = this._pathfinder.RandomDestination(this.currentCoord);
             var path = this._pathfinder.Pathfind(this.currentCoord, end, this.currentDirVector, this.roadSeparation);
             if (path != null) {
-                this.SetPath(path);
+                this._path = path;
             }
         }
 
@@ -71,12 +66,12 @@ namespace WaifuDriver
                 }
             };
 
-            var target = this._currentPoint;
-            var pos = new Vector2(this.transform.position.x, this.transform.position.y);
-            var dir = target - pos;
+            var p = this._path.ClosestPoint(this.currentPosition);
 
-            if (dir.magnitude >= 0.10f) {
+            if (p.length < this._path.length - 0.2f) {
                 // Stear torwards current point
+                var target = this.GetTarget(p.length);
+                var dir = target - this.currentPosition;
                 var dirNormalized = dir.normalized;
                 this._angle = Vector2.SignedAngle(Vector2.up, dirNormalized);
                 this._speed += this.acceleration * Time.fixedDeltaTime;
@@ -84,39 +79,42 @@ namespace WaifuDriver
                     this._speed = this.maxSpeed;
                 }
                 this._rb.position += dirNormalized * Time.fixedDeltaTime * this._speed;
-            } else if (this._path.targetReached) {
-                this.StartNewRandomPath();
             } else {
-                this._NextPoint();
+                this.StartNewRandomPath();
             }
 
             var dirVec = this.currentDirVector;
             this._rb.rotation = this._angle; //Quaternion.AngleAxis(, Vector3.forward);
-
-            
         }
 
-        public void SetPath(Path path) 
+        private Vector2 GetTarget(float currentLength)
         {
-            this._path = path;
-            this._NextPoint();
-
-            if (this._prevPoint == this._currentPoint) {
-                this._NextPoint();
-            }
+            var v0 = this._path.GetPosition(currentLength);
+            var v1 = this._path.GetPosition(currentLength + 0.3f);
+            return (v0 + v1) / 2f;
         }
 
+        /*
         private void OnDrawGizmos()
         {
-            PathGizmo.DrawPath(this._path);
-        }
+            RouteGizmo.DrawRoute(this._path);
 
-        private void _NextPoint()
-        {
-            this._prevPoint = this._currentPoint;
-            this._path.Advance();
-            this._currentPoint = this._path.currentPosition;
+            var currentPosition = new Vector2(this.transform.position.x, this.transform.position.y);
+            var p = this._path.ClosestPoint(currentPosition);
+            var v0 = this._path.GetPosition(p.length);
+            var v1 = this._path.GetPosition(p.length + 0.3f);
+            var target = (v0 + v1) / 2f;
+            
+            Gizmos.color = Color.magenta;
+            Gizmos.DrawSphere(new Vector3(v0.x, v0.y, 0.2f), 0.05f);
+            Gizmos.DrawSphere(new Vector3(v1.x, v1.y, 0.2f), 0.05f);
+            Gizmos.color = Color.green;
+            Gizmos.DrawSphere(new Vector3(target.x, target.y, 0.2f), 0.05f);
+
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawSphere(new Vector3(p.position.x, p.position.y, 0.2f), 0.05f);
         }
+        */
 
     }
 }

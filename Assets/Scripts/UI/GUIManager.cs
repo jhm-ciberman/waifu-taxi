@@ -7,6 +7,7 @@ namespace WaifuDriver
     {
         [SerializeField] private Image _characterSprite;
         [SerializeField] private StarsGUI _starsGUI;
+        [SerializeField] private TMPro.TextMeshProUGUI _debugIndicationText;
 
         private Character _character;
 
@@ -29,6 +30,11 @@ namespace WaifuDriver
         public void SetStarsCount(int count)
         {
             this._starsGUI.SetStarsCount(count);
+        }
+
+        public void SetDebugIndication(Indication indication)
+        {
+            this._debugIndicationText.text = indication.ToString();
         }
     }
 }

@@ -26,6 +26,8 @@ namespace WaifuDriver
             }
         }
 
+        public Vector2 currentPosition => this.transform.position;
+
         public Vector2Int currentCoord
         {
             get => new Vector2Int(Mathf.RoundToInt(this.transform.position.x), Mathf.RoundToInt(this.transform.position.y));

@@ -1,19 +1,18 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace WaifuDriver
 {
     public class RoutePlanner
     {
+        private const float RECALCULATE_PATH_DIST_SQR = 1.2f * 1.2f;
+
         private Pathfinder _pathfinder;
         
         private Entity _entity;
 
         private Path _path;
 
-        private Vector2Int _nextGoal;
-
-        private Vector2Int _currentCoord;
+        private PathPoint _currentPoint;
 
         private Vector2Int _finalDestination;
 
@@ -32,24 +31,56 @@ namespace WaifuDriver
 
         public void UpdatePath()
         {
-            var coord = this._entity.currentCoord;
-
             if (this._path == null) {
                 this.StartNewPath();
             }
 
-            if (coord == this._nextGoal) {
-                this.AdvanceToNextGoal(); // Goal reached
-            } else if (coord != this._currentCoord) {
-                this.RecalculatePath(); // Wrong path
+            var currentPos = this._entity.currentPosition;
+
+            this._currentPoint = this._path.ClosestPoint(currentPos);
+            (_, int targetIndex) = this._path.GetPointsIndicesBetween(this._currentPoint.length);
+            var nextGoal = this._path.GetPositionAtIndex(targetIndex);
+            float sqrDist = (nextGoal - currentPos).sqrMagnitude;
+            if (sqrDist > RECALCULATE_PATH_DIST_SQR) {
+                this._RecalculatePath(); // Wrong path
+            } else if (this._currentPoint.length > this._path.length - 0.5f) {
+                this._OnPathFinished();
             } else {
-                this.CalculateIndications();
+                this._CalculateIndications(targetIndex);
             }
         }
 
-        public void CalculateIndications()
+        public void OnDrawGizmos()
         {
-            var dirVector = this._nextGoal - this._currentCoord;
+            if (this._path == null) return;
+            RouteGizmo.DrawRoute(this._path);
+
+            var p = this._path.ClosestPoint(this._entity.currentPosition);
+            (int prev, int next) = this._path.GetPointsIndicesBetween(p.length);
+            var v0 = this._path.GetPositionAtIndex(prev);
+            var v1 = this._path.GetPositionAtIndex(next);
+            
+            Gizmos.color = Color.green;
+            Gizmos.DrawSphere(new Vector3(v0.x, v0.y, 0.2f), 0.05f);
+            Gizmos.DrawSphere(new Vector3(v1.x, v1.y, 0.2f), 0.05f);
+
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawSphere(new Vector3(p.position.x, p.position.y, 0.2f), 0.05f);
+        }
+
+        private void _OnPathFinished()
+        {
+            this.onPathFinished?.Invoke();
+            this.StartNewPath();
+        }
+
+        private void _CalculateIndications(int goalIndex)
+        {
+            var nextIndex = goalIndex < this._path.pointsCount - 1 ? goalIndex + 1 : this._path.pointsCount - 1;
+            var nextGoal = this._path.GetPositionAtIndex(goalIndex);
+            var nextFolowingGoal = this._path.GetPositionAtIndex(nextIndex);
+
+            var dirVector = nextFolowingGoal - nextGoal;
             var goalAngle = Vector2.SignedAngle(Vector2.up, dirVector);
             var indication = this._DirVectorToIndication(this._entity.angle, goalAngle);
             this._SetNewIndication(indication);
@@ -91,25 +122,10 @@ namespace WaifuDriver
         public void StartNewPath()
         {
             this._finalDestination = this._pathfinder.RandomDestination(this._entity.currentCoord);
-            this.RecalculatePath(); // No destination
+            this._RecalculatePath(); // No destination
         }
 
-        private void AdvanceToNextGoal()
-        {
-            this._currentCoord = this._path.currentTile;
-            this._path.Advance();
-            if (! this._path.targetReached) {
-                this._nextGoal = this._path.currentTile;
-
-                this.CalculateIndications();
-                this._pathWasRecentlyRestarted = false;
-            } else {
-                this.onPathFinished?.Invoke();
-                this.StartNewPath();
-            }
-        }
-
-        public void RecalculatePath()
+        private void _RecalculatePath()
         {
             if (this._path != null) {
                 this._pathWasRecentlyRestarted = true;
@@ -118,7 +134,6 @@ namespace WaifuDriver
             if (path != null) {
                 this._path = path;
                 Debug.Log("Tiles: " + this._path.length);
-                this.AdvanceToNextGoal();
             } else {
                 this._path = null; 
                 Debug.Log("Invalid goal");

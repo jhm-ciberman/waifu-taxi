@@ -20,7 +20,7 @@ namespace WaifuDriver
             for (int i = 0; i < delta; i++) {
                 var star = Object.Instantiate(this._starTemplate);
                 star.gameObject.SetActive(true);
-                star.transform.SetParent(this.transform);
+                star.transform.SetParent(this.transform, false);
                 this._stars.Add(star);
             }
         }
