@@ -1,10 +1,9 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace WaifuDriver
 {
-    public class Pathfinder : AStarPathfinder.INavigator
+    public class Pathfinder : INavigator<Vector2Int>
     {
         private World _world;
 
@@ -12,12 +11,12 @@ namespace WaifuDriver
 
         private Vector2Int _startDir;
 
-        private AStarPathfinder _pathfinder;
+        private AStarPathfinder<Vector2Int> _pathfinder;
 
         public Pathfinder(World world)
         {
             this._world = world;
-            this._pathfinder = new AStarPathfinder(this);
+            this._pathfinder = new AStarPathfinder<Vector2Int>(this);
         }
 
         public Path Pathfind(Vector2Int start, Vector2Int end, Vector2Int startingDir, float roadSeparation)
@@ -43,13 +42,13 @@ namespace WaifuDriver
             return end;
         }
 
-        float AStarPathfinder.INavigator.HeuristicDistance(Vector2Int start, Vector2Int end)
+        float INavigator<Vector2Int>.HeuristicDistance(Vector2Int start, Vector2Int end)
         {
             var d = (end - start);
             return Math.Abs(d.x) + Math.Abs(d.y); // Manhatan distance
         }
 
-        float AStarPathfinder.INavigator.WeightFunction(Vector2Int fromCoord, Vector2Int toCoord, Vector2Int cameFromCoord)
+        float INavigator<Vector2Int>.WeightFunction(Vector2Int fromCoord, Vector2Int toCoord, Vector2Int cameFromCoord)
         {
             if (! this._world.HasRoad(toCoord)) {
                 return float.PositiveInfinity;
@@ -64,6 +63,14 @@ namespace WaifuDriver
             }
 
             return 1f;
+        }
+
+        void INavigator<Vector2Int>.VisitNodeNeighbours(INodeVisitor<Vector2Int> nodeVisitor, Vector2Int node)
+        {
+            nodeVisitor.VisitNode(new Vector2Int(node.x - 1, node.y));
+            nodeVisitor.VisitNode(new Vector2Int(node.x + 1, node.y));
+            nodeVisitor.VisitNode(new Vector2Int(node.x, node.y - 1));
+            nodeVisitor.VisitNode(new Vector2Int(node.x, node.y + 1));
         }
     }
 }
