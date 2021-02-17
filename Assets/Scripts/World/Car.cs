@@ -94,9 +94,10 @@ namespace WaifuDriver
             return (v0 + v1) / 2f;
         }
 
-        /*
+        
         private void OnDrawGizmos()
         {
+            return;
             RouteGizmo.DrawRoute(this._path);
 
             var currentPosition = new Vector2(this.transform.position.x, this.transform.position.y);
@@ -114,7 +115,6 @@ namespace WaifuDriver
             Gizmos.color = Color.yellow;
             Gizmos.DrawSphere(new Vector3(p.position.x, p.position.y, 0.2f), 0.05f);
         }
-        */
 
     }
 }

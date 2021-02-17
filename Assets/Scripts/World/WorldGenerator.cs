@@ -23,7 +23,7 @@ namespace WaifuDriver
                 }
             }
 
-            var numberOfCars = (int) (world.roadCount * 0.5f);
+            var numberOfCars = 1; //(int) (world.roadCount * 0.5f);
             for (int i = 0; i < numberOfCars; i++) {
                 var pos = world.RandomRoad();
                 this.SpawnCar(pos, pathfinder);

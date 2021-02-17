@@ -18,10 +18,12 @@ namespace WaifuDriver
 
         private int _livesCount = 5;
 
+        private RoadGraph _roadGraph;
 
         public void Start()
         {
             var world = new World(new City());
+            this._roadGraph = new RoadGraph(world);
 
             var pathfinder = new Pathfinder(world);
             var player = this._worldGenerator.GenerateWorld(world, pathfinder);
@@ -92,12 +94,13 @@ namespace WaifuDriver
 
         private void OnDrawGizmos()
         {
-            this._planner?.OnDrawGizmos();
+            this._roadGraph?.OnDrawGizmos();
+            //this._planner?.OnDrawGizmos();
         }
 
         private void Update()
         {
-            this._planner.UpdatePath();
+            this._planner?.UpdatePath();
 
             if (Input.GetKeyDown(KeyCode.Space)) {
                 this._dialogueManager?.NextCharacter();

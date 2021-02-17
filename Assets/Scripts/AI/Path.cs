@@ -13,21 +13,31 @@ namespace WaifuDriver
 
         public Path(List<Vector2Int> points, float roadSeparation)
         {
-            this._points = new PathPoint[points.Count];
+            this._points = this._MakePathPoints(points, roadSeparation);
+            this.length = this._points[this._points.Length - 1].length;
+        }
 
-            Vector2Int prevPoint;
-            Vector2Int currentPoint = points.FirstOrDefault();
-            this._points[0] = new PathPoint(currentPoint, 0f);
+        private PathPoint[] _MakePathPoints(List<Vector2Int> points, float roadSeparation)
+        {
+            var list = new List<PathPoint>();
+
+            Vector2 prevPoint;
+            Vector2 currentPoint = points.FirstOrDefault();
+            list.Add(new PathPoint(currentPoint, 0f));
+            float length = 0f;
             for (int i = 1; i < points.Count; i++) {
                 prevPoint = currentPoint;
                 currentPoint = points[i];
-                var goalDir = (currentPoint - prevPoint);
+                var goalVec = (currentPoint - prevPoint);
+                var goalDir = goalVec.normalized;
                 var offsetWide   = new Vector2(goalDir.y, goalDir.x) * roadSeparation;
                 var offsetLength = new Vector2(-goalDir.x, -goalDir.y) * roadSeparation;
                 var position = currentPoint + offsetWide + offsetLength;
-                this.length += goalDir.magnitude;
-                this._points[i] = new PathPoint(position, this.length);
+                length += goalVec.magnitude;
+                list.Add(new PathPoint(position, length));
             }
+
+            return list.ToArray();
         }
 
         public int pointsCount => this._points.Length;

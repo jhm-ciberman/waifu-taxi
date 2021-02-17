@@ -54,8 +54,12 @@ namespace WaifuDriver
             return path;
         }
 
-
         public List<TNode> Pathfind(TNode start, TNode end)
+        {
+            return this.Pathfind(start, end, start);    
+        }
+
+        public List<TNode> Pathfind(TNode start, TNode end, TNode cameFrom)
         {
             this._nodes.Clear();
             this._closedSet.Clear();
@@ -65,7 +69,7 @@ namespace WaifuDriver
             this._end = end;
 
             float hCost = this._navigator.HeuristicDistance(this._start, this._end);
-            this._nodes[this._start] = new PathfinderNode(this._start, this._start, 0f, hCost);
+            this._nodes[this._start] = new PathfinderNode(this._start, cameFrom, 0f, hCost);
             this._openSet.Enqueue(this._start);
 
             while (this._openSet.Count > 0) {
