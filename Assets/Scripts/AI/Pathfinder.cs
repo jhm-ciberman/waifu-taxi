@@ -1,10 +1,13 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace WaifuDriver
 {
-    public class Pathfinder : INavigator<Vector2Int>
+    public class Pathfinder : INavigator<Intersection>
     {
+        private RoadGraph _roadGraph;
+
         private World _world;
 
         private Vector2Int _startCoord;
@@ -13,12 +16,13 @@ namespace WaifuDriver
 
         private Vector2Int _startDir;
 
-        private AStarPathfinder<Vector2Int> _pathfinder;
+        private AStarPathfinder<Intersection> _pathfinder;
 
-        public Pathfinder(World world)
+        public Pathfinder(RoadGraph roadGraph)
         {
-            this._world = world;
-            this._pathfinder = new AStarPathfinder<Vector2Int>(this);
+            this._roadGraph = roadGraph;
+            this._world = roadGraph.world;
+            this._pathfinder = new AStarPathfinder<Intersection>(this);
         }
 
         public Path Pathfind(Vector2Int start, Vector2Int end, Vector2Int startingDir, float roadSeparation)
@@ -26,12 +30,29 @@ namespace WaifuDriver
             this._startDir = startingDir;
             this._startCoord = start;
             this._endCoord = end;
-            var cameFrom = start - startingDir;
-            var points = this._pathfinder.Pathfind(start, end);
-            if (points.Count > 0) {
-                return new Path(points, roadSeparation);
+            var cameFrom = start - startingDir;      
+
+            var nodeStart = this._roadGraph.CreateStart(start, startingDir);
+            if (nodeStart == null) {
+                Debug.LogWarning($"Cannot create starting node at {start} (startingDir = {startingDir})");
+                return null;
             }
-            return null; //Invalid goal!!
+
+            var nodeEnd = this._roadGraph.CreateEnd(end);
+            if (nodeEnd == null) {
+                Debug.LogWarning($"Cannot create ending node at {end}");
+                return null;
+            }
+
+            var points = this._pathfinder.Pathfind(nodeStart, nodeEnd);
+
+            this._roadGraph.RemoveTemporaryRoads();
+
+            if (points == null || points.Count == 0) {
+                return null; //Invalid goal!!
+            }
+
+            return new Path(points, roadSeparation);
         }
 
         public Vector2Int RandomDestination(Vector2Int startCoord)
@@ -43,58 +64,44 @@ namespace WaifuDriver
                 end = this._world.RandomRoad();
                 tries++;
                 if (tries > 1000) return end;
-            } while (end == startCoord && ManhatanDistance(startCoord, end) < minDistance);
+            } while (end == startCoord && Vector2.Distance(startCoord, end) < minDistance);
             return end;
         }
 
-        private static float ManhatanDistance(Vector2Int start, Vector2Int end)
+        float INavigator<Intersection>.HeuristicDistance(Intersection start, Intersection end)
         {
-            var d = (end - start);
-            return Math.Abs(d.x) + Math.Abs(d.y); // Manhatan distance
+            return Vector2.Distance(start.position, end.position);
         }
 
-        float INavigator<Vector2Int>.HeuristicDistance(Vector2Int start, Vector2Int end)
+        float INavigator<Intersection>.WeightFunction(Intersection from, Intersection to, Intersection cameFrom)
         {
-            return ManhatanDistance(start, end);
+            return Vector2.Distance(from.position, to.position);
         }
 
-        float INavigator<Vector2Int>.WeightFunction(Vector2Int fromCoord, Vector2Int toCoord, Vector2Int cameFromCoord)
-        {
-            // Penalize non mandatory U turns
-            var currentDir = (toCoord - fromCoord);
-            currentDir.Clamp(-Vector2Int.one, Vector2Int.one);
+        /*
+        // Penalize non mandatory U turns
+        var currentDir = (to.start.coord - from.);
+        currentDir.Clamp(-Vector2Int.one, Vector2Int.one);
 
-            var previousDir = fromCoord - cameFromCoord;
-            previousDir.Clamp(-Vector2Int.one, Vector2Int.one);
+        var previousDir = fromCoord - cameFromCoord;
+        previousDir.Clamp(-Vector2Int.one, Vector2Int.one);
 
-            if (previousDir == -currentDir) {
-                if (! this._HasMandatoryUTurn(fromCoord)) {
-                    Debug.Log("PENALIZED: " + fromCoord + " to " + toCoord);
-                    return 1000f;
-                } else {
-                    Debug.Log("MANDATORY U TURN: " + fromCoord + " to " + toCoord);
-                }
+        if (previousDir == -currentDir) {
+            if (! this._HasMandatoryUTurn(fromCoord)) {
+                Debug.Log("PENALIZED: " + fromCoord + " to " + toCoord);
+                return 1000f;
+            } else {
+                Debug.Log("MANDATORY U TURN: " + fromCoord + " to " + toCoord);
             }
-
-            return ManhatanDistance(fromCoord, toCoord);
         }
+        */
 
-        private bool _HasMandatoryUTurn(Vector2Int coord)
+        void INavigator<Intersection>.VisitNodeNeighbours(INodeVisitor<Intersection> nodeVisitor, Intersection intersection)
         {
-            var connection = this._world.GetRoadConnectionAt(coord);
-            return (connection == RoadConnection.Top 
-                || connection == RoadConnection.Bottom
-                || connection == RoadConnection.Left 
-                || connection == RoadConnection.Right 
-            );
-        }
-
-        void INavigator<Vector2Int>.VisitNodeNeighbours(INodeVisitor<Vector2Int> nodeVisitor, Vector2Int coord)
-        {
-            this._VisitNextIntersection(nodeVisitor, coord, Vector2Int.left);
-            this._VisitNextIntersection(nodeVisitor, coord, Vector2Int.right);
-            this._VisitNextIntersection(nodeVisitor, coord, Vector2Int.up);
-            this._VisitNextIntersection(nodeVisitor, coord, Vector2Int.down);
+            var roads = intersection.roads;
+            for (int i = 0; i < roads.Count; i++) {
+                nodeVisitor.VisitNode(roads[i].end);
+            }
         }
 
         private void _VisitNextIntersection(INodeVisitor<Vector2Int> nodeVisitor, Vector2Int startCoord, Vector2Int searchDir)

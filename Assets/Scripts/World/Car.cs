@@ -97,7 +97,6 @@ namespace WaifuDriver
         
         private void OnDrawGizmos()
         {
-            return;
             RouteGizmo.DrawRoute(this._path);
 
             var currentPosition = new Vector2(this.transform.position.x, this.transform.position.y);

@@ -4,7 +4,7 @@ using UnityEngine;
 namespace WaifuDriver
 {
     public class Road
-    {
+    {        
         public readonly Intersection start;
 
         public readonly Intersection end;
@@ -17,7 +17,7 @@ namespace WaifuDriver
         {
             this.start = start;
             this.end = end;
-            Vector2 vector = (start.coord - end.coord);
+            Vector2 vector = (start.position - end.position);
             this.direction = Vector2.Angle(Vector2.up, vector);
             this.length = vector.magnitude;
         }

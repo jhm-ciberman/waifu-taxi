@@ -20,5 +20,40 @@ namespace WaifuDriver
                 Gizmos.DrawSphere(current, radius);
             }
         }
+
+        public static void DrawRoadGraph(RoadGraph graph)
+        {            
+            foreach (var intersection in graph.intersections) {
+                var size = 0.1f;
+                var pos = new Vector3(intersection.position.x, intersection.position.y, 0f);
+                Gizmos.color = RouteGizmo._GetColor(intersection.dir);
+                if (intersection.type == Intersection.Type.Enter) {
+                    Gizmos.DrawCube(pos, size * Vector3.one);
+                } else {
+                    Gizmos.DrawSphere(pos, size / 2f);
+                }
+            }
+
+            foreach (var intersection in graph.intersections) {
+                foreach (var road in intersection.roads) {
+                    Gizmos.color = Color.white;
+                    var start = new Vector3(road.start.position.x, road.start.position.y, -.5f);
+                    var end = new Vector3(road.end.position.x, road.end.position.y, -.5f);
+                    Gizmos.DrawLine(start, end);
+                }
+            }
+        }
+
+        private static Color _GetColor(Vector2Int dir)
+        {
+            if (dir == Vector2Int.up)    return Color.blue;
+            if (dir == Vector2Int.down)  return Color.yellow;
+            if (dir == Vector2Int.left)  return Color.green;
+            if (dir == Vector2Int.right) return Color.magenta;
+
+            return Color.black;
+        }
+
+
     }
 }

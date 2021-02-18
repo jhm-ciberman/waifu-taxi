@@ -23,11 +23,12 @@ namespace WaifuDriver
         public void Start()
         {
             var world = new World(new City());
-            this._roadGraph = new RoadGraph(world);
+            var graphGenerator = new RoadGraphGenerator(world);
+            this._roadGraph = graphGenerator.Generate();
 
-            var pathfinder = new Pathfinder(world);
+            var pathfinder = new Pathfinder(this._roadGraph);
             var player = this._worldGenerator.GenerateWorld(world, pathfinder);
-            this._planner = new RoutePlanner(pathfinder, player);
+            //this._planner = new RoutePlanner(pathfinder, player);
 
             this._cameraController.SetTarget(player.transform);
 
@@ -43,9 +44,9 @@ namespace WaifuDriver
                 AudioManager.Instance.PlayMusic("music_loop", true);
             });
 
-            this._planner.onIndication += this.OnIndication;
-            this._planner.onPathFinished += this._dialogueManager.NextCharacter;
-            this._planner.UpdatePath();
+            //this._planner.onIndication += this.OnIndication;
+            //this._planner.onPathFinished += this._dialogueManager.NextCharacter;
+            //this._planner.UpdatePath();
 
             this._guiManager.SetStarsCount(this._livesCount);
         }
@@ -94,7 +95,7 @@ namespace WaifuDriver
 
         private void OnDrawGizmos()
         {
-            this._roadGraph?.OnDrawGizmos();
+            //if (this._roadGraph != null) RouteGizmo.DrawRoadGraph(this._roadGraph);
             //this._planner?.OnDrawGizmos();
         }
 

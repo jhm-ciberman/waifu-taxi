@@ -1,78 +1,140 @@
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
-using static WaifuDriver.World;
 
 namespace WaifuDriver
 {
     public class RoadGraph
     {
+        private static Vector2Int[] _dirs = new Vector2Int[] { 
+            Vector2Int.left, 
+            Vector2Int.right, 
+            Vector2Int.up, 
+            Vector2Int.down
+        };
+
+        public readonly struct CoordDir
+        {
+            public readonly Vector2Int coord;
+            public readonly Vector2Int dir;
+
+            public CoordDir(Vector2Int coord, Vector2Int dir)
+            {
+                this.coord = coord;
+                this.dir = dir;
+            }
+        }
+
         private World _world;
         
-        private Dictionary<Vector2Int, Intersection> _intersections = new Dictionary<Vector2Int, Intersection>();
+        private Dictionary<CoordDir, Intersection> _intersectionsLeave = new Dictionary<CoordDir, Intersection>();
+        private Dictionary<CoordDir, Intersection> _intersectionsEnter = new Dictionary<CoordDir, Intersection>();
+        private List<Intersection> _intersectionsList = new List<Intersection>();
+
+        private List<Road> _temporaryRoads = new List<Road>();
 
         public RoadGraph(World world)
         {
             this._world = world;
 
-            for (int x = 0; x < this._world.size.x; x++) {
-                for (int y = 0; y < this._world.size.y; y++) {
-                    Vector2Int coord = new Vector2Int(x, y);
-                    if (! this._world.HasRoad(coord)) continue;
-
-                    if (this._world.HasIntersection(coord)) {
-                        var intersection = new Intersection(coord);
-                        this._intersections.Add(coord, intersection);
-
-                        this._AddRoad(intersection, Vector2Int.left);
-                        this._AddRoad(intersection, Vector2Int.right);
-                        this._AddRoad(intersection, Vector2Int.up);
-                        this._AddRoad(intersection, Vector2Int.down);
-                    }
-                }
-            }
         }
 
-        public Intersection FindIntersection(Vector2Int coord)
+        public World world => this._world;
+
+        public Intersection FindIntersectionEnter(Vector2Int coord, Vector2Int cameDir)
         {
-            this._intersections.TryGetValue(coord, out Intersection intersection);
+            this._intersectionsEnter.TryGetValue(new CoordDir(coord, cameDir), out Intersection intersection);
             return intersection;
         }
 
-        private void _AddRoad(Intersection startIntersection, Vector2Int searchDir)
+        public Intersection FindIntersectionLeave(Vector2Int coord, Vector2Int exitDir)
         {
-            Vector2Int coord = startIntersection.coord;
+            this._intersectionsLeave.TryGetValue(new CoordDir(coord, exitDir), out Intersection intersection);
+            return intersection;
+        }
+
+        public Intersection CreateStart(Vector2Int start, Vector2Int startingDir)
+        {
+            var node = new Intersection(Intersection.Type.Enter, start, Vector2Int.zero, start);
+            var end = this.FindNextIntersectionEnter(start, startingDir);
+            if (end != null) {
+                var road = node.AddRoadTo(end);
+                this._temporaryRoads.Add(road);
+            } else {
+                foreach (var dir in RoadGraph._dirs) {
+                    var road = this.FindNextIntersectionEnter(start, dir)?.AddRoadFrom(node);
+                    if (road != null) {
+                        this._temporaryRoads.Add(road);
+                    }
+                }
+            }
+            return node;
+        }
+
+        public Intersection CreateEnd(Vector2Int end)
+        {
+            var node = new Intersection(Intersection.Type.Leave, end, Vector2Int.zero, end);
+            foreach (var dir in RoadGraph._dirs) {
+                var road = this.FindNextIntersectionLeave(end, dir)?.AddRoadTo(node);
+                if (road != null) this._temporaryRoads.Add(road);
+            }
+
+            return node;
+        }
+
+        public void RemoveTemporaryRoads()
+        {
+            foreach (var road in this._temporaryRoads) {
+                road.start.RemoveRoad(road);
+            }
+            this._temporaryRoads.Clear();
+        }
+
+        public Intersection AddIntersectionEnter(Vector2Int coord, Vector2Int enterDir, Vector2 position)
+        {
+            var intersection = new Intersection(Intersection.Type.Enter, coord, enterDir, position);
+            this._intersectionsEnter.Add(new CoordDir(coord, enterDir), intersection);
+            this._intersectionsList.Add(intersection);
+            return intersection;
+        }
+
+        public Intersection AddIntersectionLeave(Vector2Int coord, Vector2Int leaveDir, Vector2 position)
+        {
+            var intersection = new Intersection(Intersection.Type.Leave, coord, leaveDir, position);
+            this._intersectionsLeave.Add(new CoordDir(coord, leaveDir), intersection);
+            this._intersectionsList.Add(intersection);
+            return intersection;
+        }
+
+        public Intersection FindNextIntersectionEnter(Vector2Int startCoord, Vector2Int searchDir)
+        {
+            Vector2Int coord = startCoord;
             while (this._world.HasRoad(coord)) {
+                var intersection = this.FindIntersectionEnter(coord, searchDir);
+                if (intersection != null) {
+                    return intersection;
+                }
                 coord += searchDir;
-                var endIntersection = this.FindIntersection(coord);
-                if (endIntersection != null) {
-                    startIntersection.AddRoadTo(endIntersection);
-                    endIntersection.AddRoadTo(startIntersection);
-                    return;
-                }
             }
+            return null;
         }
 
-        public void OnDrawGizmos()
+        public Intersection FindNextIntersectionLeave(Vector2Int startCoord, Vector2Int searchDir)
         {
-            if (this._intersections == null) return;
-            
-            foreach (var intersection in this._intersections.Values) {
-                var size = 0.4f;
-                var pos = new Vector3(intersection.coord.x, intersection.coord.y, 0f);
-                Gizmos.color = Color.red;
-                Gizmos.DrawCube(pos, size * Vector3.one);
-
-                foreach (var road in intersection.roads) {
-                    Gizmos.color = Color.blue;
-                    var start = new Vector3(road.start.coord.x, road.start.coord.y, 0f);
-                    var end = new Vector3(road.end.coord.x, road.end.coord.y, 0f);
-
-                    var goalDir = (end - start).normalized;
-                    var offset  = new Vector3(goalDir.y, goalDir.x, 0f) * 0.18f;
-
-                    Gizmos.DrawLine(start, end + offset);
+            Vector2Int coord = startCoord;
+            while (this._world.HasRoad(coord)) {
+                var intersection = this.FindIntersectionLeave(coord, -searchDir);
+                if (intersection != null) {
+                    return intersection;
                 }
+                coord += searchDir;
             }
+            return null;
         }
+
+        public IEnumerable<Intersection> intersections => this._intersectionsList;
+        public IEnumerable<Intersection> intersectionsEnter => this._intersectionsEnter.Values;
+        public IEnumerable<Intersection> intersectionsLeave => this._intersectionsLeave.Values;
+
     }
 }
