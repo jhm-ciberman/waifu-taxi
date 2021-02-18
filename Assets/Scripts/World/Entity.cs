@@ -22,7 +22,7 @@ namespace WaifuDriver
                     case 2: return new Vector2Int(-1, 0);
                     case 3: return new Vector2Int(0, -1);
                 }
-                return Vector2Int.zero; // error!
+                return new Vector2Int(1, 0);
             }
         }
 

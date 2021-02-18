@@ -109,7 +109,7 @@ namespace WaifuDriver
         public Intersection FindNextIntersectionEnter(Vector2Int startCoord, Vector2Int searchDir)
         {
             Vector2Int coord = startCoord;
-            while (this._world.HasRoad(coord)) {
+            while (this._world.HasRoad(coord) && this._world.IsInside(coord)) {
                 var intersection = this.FindIntersectionEnter(coord, searchDir);
                 if (intersection != null) {
                     return intersection;
@@ -122,7 +122,7 @@ namespace WaifuDriver
         public Intersection FindNextIntersectionLeave(Vector2Int startCoord, Vector2Int searchDir)
         {
             Vector2Int coord = startCoord;
-            while (this._world.HasRoad(coord)) {
+            while (this._world.HasRoad(coord) && this._world.IsInside(coord)) {
                 var intersection = this.FindIntersectionLeave(coord, -searchDir);
                 if (intersection != null) {
                     return intersection;

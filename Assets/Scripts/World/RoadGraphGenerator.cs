@@ -13,11 +13,12 @@ namespace WaifuDriver
 
         private World _world;
 
-        private float _roadSeparation = 0.22f;
+        private float _roadSeparation;
 
-        public RoadGraphGenerator(World world)
+        public RoadGraphGenerator(World world, float roadSeparation)
         {
             this._world = world;
+            this._roadSeparation = roadSeparation;
         }
 
         public RoadGraph Generate()

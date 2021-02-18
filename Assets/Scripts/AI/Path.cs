@@ -90,67 +90,31 @@ namespace WaifuDriver
             }
         }
 
-        public PathPoint ClosestPoint(Vector2 searchPoint) 
+        public PathPoint ClosestPoint(Vector2 searchPoint)
+        {
+            return this.ClosestPoint(searchPoint, 0f, this.length, 0.05f);
+        }
+
+        public PathPoint ClosestPoint(Vector2 searchPoint, float startSearchLength, float maxSearchLength, float precision = 0.05f) 
         {
             // Adapted from: https://bl.ocks.org/mbostock/8027637
-
-            var pathLength = this.length;
-
             // linear scan for coarse approximation
-            Vector2 best;
-            float bestLength = 0f;
-            float bestDist = float.PositiveInfinity;
-            float precision = 1f;
-            for (float length = 0; length <= pathLength; length += precision) {
+
+            var maxLength = Math.Min(this.length, startSearchLength + maxSearchLength);
+
+            float bestLength = startSearchLength;
+            Vector2 bestPoint = this.GetPosition(bestLength);
+            float bestDist = (searchPoint - bestPoint).sqrMagnitude;
+            
+            for (float length = startSearchLength + precision; length <= maxLength; length += precision) {
                 Vector2 scan = this.GetPosition(length);
                 float dist = (searchPoint - scan).sqrMagnitude;
                 if (dist < bestDist) {
-                    best = scan;
+                    bestPoint = scan;
                     bestLength = length;
                     bestDist = dist;
                 }
             }
-            // binary search for precise estimate
-            float currentPrecision = 1f;
-
-            Vector2 bestPoint = this.GetPosition(bestLength);
-            float bestDistance = (bestPoint - searchPoint).sqrMagnitude;
-
-            {
-                float length;
-                float dist;
-                Vector2 point;
-                float desiredPrecision = 0.025f;
-                while (currentPrecision > desiredPrecision) {
-
-                    length = bestLength - currentPrecision;
-                    if (length >= 0f) {
-                        point = this.GetPosition(length);
-                        dist = (point - searchPoint).sqrMagnitude;
-                        if (dist < bestDistance) {
-                            bestPoint = point;
-                            bestLength = length;
-                            bestDistance = dist;
-                            continue;
-                        } 
-                    }
-
-                    length = bestLength + currentPrecision;
-                    if (length <= this.length) {
-                        point = this.GetPosition(length);
-                        dist = (point - searchPoint).sqrMagnitude;
-                        if (dist < bestDistance) {
-                            bestPoint = point;
-                            bestLength = length;
-                            bestDistance = dist;
-                            continue;
-                        }
-                    }
-
-                    currentPrecision /= 2;
-                }
-            }
-
             return new PathPoint(bestPoint, bestLength);
         }
 

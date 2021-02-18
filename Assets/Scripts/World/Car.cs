@@ -22,6 +22,8 @@ namespace WaifuDriver
         private State _state = State.Moving;
         private float _waitTimeout = 0f;
 
+        private float _currentPathLength = 0f;
+
         private Rigidbody2D _rb;
 
         public System.Action onCollision;
@@ -53,6 +55,7 @@ namespace WaifuDriver
             var path = this._pathfinder.Pathfind(this.currentCoord, end, this.currentDirVector, this.roadSeparation);
             if (path != null) {
                 this._path = path;
+                this._currentPathLength = 0f;
             }
         }
 
@@ -66,7 +69,8 @@ namespace WaifuDriver
                 }
             };
 
-            var p = this._path.ClosestPoint(this.currentPosition);
+            var p = this._path.ClosestPoint(this.currentPosition, this._currentPathLength, 1f);
+            this._currentPathLength = p.length;
 
             if (p.length < this._path.length - 0.2f) {
                 // Stear torwards current point
@@ -78,6 +82,7 @@ namespace WaifuDriver
                 if (this._speed > this.maxSpeed) {
                     this._speed = this.maxSpeed;
                 }
+
                 this._rb.position += dirNormalized * Time.fixedDeltaTime * this._speed;
             } else {
                 this.StartNewRandomPath();
@@ -94,13 +99,13 @@ namespace WaifuDriver
             return (v0 + v1) / 2f;
         }
 
-        
+        /*
         private void OnDrawGizmos()
         {
             RouteGizmo.DrawRoute(this._path);
 
             var currentPosition = new Vector2(this.transform.position.x, this.transform.position.y);
-            var p = this._path.ClosestPoint(currentPosition);
+            var p = this._path.ClosestPoint(currentPosition, this._currentPathLength, 1f);
             var v0 = this._path.GetPosition(p.length);
             var v1 = this._path.GetPosition(p.length + 0.3f);
             var target = (v0 + v1) / 2f;
@@ -114,6 +119,6 @@ namespace WaifuDriver
             Gizmos.color = Color.yellow;
             Gizmos.DrawSphere(new Vector3(p.position.x, p.position.y, 0.2f), 0.05f);
         }
-
+        */
     }
 }

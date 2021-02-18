@@ -51,18 +51,6 @@ namespace WaifuDriver
                 }
             }
 
-
-
-            //for (int x = 1; x < this.size.x - 1; x++) {
-            //    for (int y = 1; y < this.size.y - 1; y++) {
-            //        if (x % 3 == 0 || y % 3 == 0) {
-            //            this._road[new Vector2Int(x, y)] = true;
-            //        }
-            //    }
-            //}
-
-
-
             foreach (var type in this._road.Values) {
                 if (type == TileType.Road) this.roadCount++;
             }

@@ -23,7 +23,7 @@ namespace WaifuDriver
         public void Start()
         {
             var world = new World(new City());
-            var graphGenerator = new RoadGraphGenerator(world);
+            var graphGenerator = new RoadGraphGenerator(world, 0.24f);
             this._roadGraph = graphGenerator.Generate();
 
             var pathfinder = new Pathfinder(this._roadGraph);

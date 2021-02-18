@@ -103,17 +103,5 @@ namespace WaifuDriver
                 nodeVisitor.VisitNode(roads[i].end);
             }
         }
-
-        private void _VisitNextIntersection(INodeVisitor<Vector2Int> nodeVisitor, Vector2Int startCoord, Vector2Int searchDir)
-        {
-            Vector2Int coord = startCoord + searchDir;
-            while (this._world.HasRoad(coord)) {
-                if (this._world.HasIntersection(coord) || coord == this._endCoord) {
-                    nodeVisitor.VisitNode(coord);
-                    return;
-                }
-                coord += searchDir;
-            }
-        }
     }
 }
