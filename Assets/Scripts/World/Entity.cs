@@ -6,8 +6,8 @@ namespace WaifuDriver
     {
         protected float _angle = 0f;
 
-        public float angle => this._angle;
-        
+        public float angle => this.transform.eulerAngles.z;
+
         public Vector2Int currentDirVector
         {
             get

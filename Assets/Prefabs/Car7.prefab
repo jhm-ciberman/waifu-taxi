@@ -96,9 +96,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b833749eba40524d9926ebe9589a646, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  acceleration: 0.5
+  acceleration: 60
   maxSpeed: 0.4
-  roadSeparation: 0.15
+  maxAngleRotation: 20
+  requiredRotationSpeed: 1
 --- !u!61 &5628942702689797476
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -116,7 +117,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 38.399998, y: 38.399998}
+    oldSize: {x: 1, y: 1}
     newSize: {x: 0.16, y: 0.16}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -137,9 +138,9 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
+  m_Mass: 1500
+  m_LinearDrag: 8
+  m_AngularDrag: 6.07
   m_GravityScale: 0
   m_Material: {fileID: 0}
   m_Interpolate: 0

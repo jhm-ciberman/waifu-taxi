@@ -25,7 +25,7 @@ namespace WaifuDriver
             this._pathfinder = new AStarPathfinder<Intersection>(this);
         }
 
-        public Path Pathfind(Vector2Int start, Vector2Int end, Vector2Int startingDir, float roadSeparation)
+        public Path Pathfind(Vector2Int start, Vector2Int end, Vector2Int startingDir)
         {
             this._startDir = startingDir;
             this._startCoord = start;
@@ -52,7 +52,7 @@ namespace WaifuDriver
                 return null; //Invalid goal!!
             }
 
-            return new Path(points, roadSeparation);
+            return new Path(points);
         }
 
         public Vector2Int RandomDestination(Vector2Int startCoord)

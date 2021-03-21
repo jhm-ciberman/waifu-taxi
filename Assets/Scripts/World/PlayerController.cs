@@ -2,29 +2,25 @@ using UnityEngine;
 
 namespace WaifuDriver
 {
-    public class Player : Entity
+    public class PlayerController : Entity
     {
         public System.Action onCollision;
-
-        public float globalMultiplier = 200f;
-        public float maxSpeed = 0.7f;
-        public float friction = 0.2f;
-        public float aceleration = 0.6f;
-        public float deaceleration = 0.5f;
-        public float turnSpeed = 35f;
-        public float requiredRotationSpeed = 0.2f;
         
-        private bool _maxSpeed = false;
+        //private bool _maxSpeed = false;
         private float _speed = 0f;
         private Rigidbody2D _rb;
 
+        private Car _car;
+
         void Awake()
         {
+            this._car = this.GetComponent<Car>();
             this._rb = this.GetComponent<Rigidbody2D>();
         }
 
         void FixedUpdate()
         {
+            /*
             if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)) {
                 this._speed += this.aceleration * Time.deltaTime;
                 if (this._speed >= this.maxSpeed) {
@@ -61,8 +57,26 @@ namespace WaifuDriver
             
             var radians = -this._angle * Mathf.Deg2Rad;
             var rot = new Vector2(Mathf.Sin(radians), Mathf.Cos(radians));
-            this._rb.rotation = this._angle;
+            this._rb.MoveRotation(this._angle);
             this._rb.position += rot * this._speed / this.globalMultiplier;
+            */
+
+            if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)) {
+                this._car.Throttle(1f);
+            }
+
+            if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) {
+                this._car.Throttle(-1f);
+            }
+
+            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) {
+                this._car.Rotate(-1f);
+            }
+
+            if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) {
+                this._car.Rotate(1f);
+            }
+
         }
 
         void OnCollisionEnter2D(Collision2D collision)

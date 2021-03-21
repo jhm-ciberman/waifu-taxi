@@ -1,124 +1,180 @@
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 namespace WaifuDriver
 {
     public class Car : Entity
     {
-        private Path _path = null;
-        
-        private enum State
-        {
-            Moving,
-            Waiting,
-            Crashed,
-        }
+        // See: https://asawicki.info/Mirror/Car%20Physics%20for%20Games/Car%20Physics%20for%20Games.html
 
-        private float _speed = 0f;
-        public float acceleration = 0.5f;
-        public float maxSpeed = 0.5f;
-        public float roadSeparation = 0.15f;
+        [SerializeField] private float _engineForce = 10f;
+        [SerializeField] private float _dragCoeficient = 0.4257f;
+        [SerializeField] private float _rollingResistanceCoeficient = 12.8f; 
 
-        private State _state = State.Moving;
-        private float _waitTimeout = 0f;
+        public float engineForce                 { get => this._engineForce;                 set { this._engineForce = value; this._UpdateMaxSpeed(); }}
+        public float dragCoeficient              { get => this._dragCoeficient;              set { this._dragCoeficient = value; this._UpdateMaxSpeed(); }}
+        public float rollingResistanceCoeficient { get => this._rollingResistanceCoeficient; set { this._rollingResistanceCoeficient = value; this._UpdateMaxSpeed(); }}
 
-        private float _currentPathLength = 0f;
+        public float wheelsStearingSpeed = 60f;
+        public float maxStearAngle = 45f;
+
+        public Transform leftWheel = null;
+        public Transform rightWheel = null;
 
         private Rigidbody2D _rb;
 
+        private Collider2D _collider;
+
         public System.Action onCollision;
 
-        private Pathfinder _pathfinder;
+        private ContactFilter2D _contactFilter;
+
+        private RaycastHit2D[] _raycastResults = new RaycastHit2D[2];
+
+        private float _steerAngle = 0f;
+
+        private float _throttle = 0f;
+
+        private float _wheelsCurrentDeltaAngle = 0f;
+
+        private Vector2 _wheelsForwardVector;
+
+        private float _axlesDistance;
+
+
 
         public void Awake()
         {
             this._rb = this.GetComponent<Rigidbody2D>();
-        }
-
-        public void SetPathfinder(Pathfinder pathfinder)
-        {
-            this._pathfinder = pathfinder;
-            this.StartNewRandomPath();
-        }
-
-        public void SetDeltaSpeed(float deltaSpeed)
-        {
-            this._speed += deltaSpeed;
-        }
-
-        public void StartNewRandomPath()
-        {
-            this._path = null;
-            if (this._pathfinder == null) return;
-
-            var end = this._pathfinder.RandomDestination(this.currentCoord);
-            var path = this._pathfinder.Pathfind(this.currentCoord, end, this.currentDirVector, this.roadSeparation);
-            if (path != null) {
-                this._path = path;
-                this._currentPathLength = 0f;
-            }
-        }
-
-        public void FixedUpdate()
-        {
-            if (this._path == null) return;
-            if (this._state == State.Waiting) {
-                this._waitTimeout -= Time.deltaTime;
-                if (this._waitTimeout < 0f) {
-                    this._state = State.Moving;
-                }
-            };
-
-            var p = this._path.ClosestPoint(this.currentPosition, this._currentPathLength, 1f);
-            this._currentPathLength = p.length;
-
-            if (p.length < this._path.length - 0.2f) {
-                // Stear torwards current point
-                var target = this.GetTarget(p.length);
-                var dir = target - this.currentPosition;
-                var dirNormalized = dir.normalized;
-                this._angle = Vector2.SignedAngle(Vector2.up, dirNormalized);
-                this._speed += this.acceleration * Time.fixedDeltaTime;
-                if (this._speed > this.maxSpeed) {
-                    this._speed = this.maxSpeed;
-                }
-
-                this._rb.position += dirNormalized * Time.fixedDeltaTime * this._speed;
+            this._collider = this.GetComponent<BoxCollider2D>();
+            if (this.leftWheel != null) {
+                this._axlesDistance = this.leftWheel.localPosition.y;
             } else {
-                this.StartNewRandomPath();
+                this._axlesDistance = this._collider.bounds.size.y / 2f;
             }
 
-            var dirVec = this.currentDirVector;
-            this._rb.rotation = this._angle; //Quaternion.AngleAxis(, Vector3.forward);
+            this._UpdateMaxSpeed();
         }
 
-        private Vector2 GetTarget(float currentLength)
+        public new Collider2D collider => this._collider;
+
+        public float speed => this._rb.velocity.magnitude;
+
+        public float maxSpeed { get; private set; }
+        public float maxAcceleration { get; private set; }
+
+        public void Throttle(float speed = 1f)
         {
-            var v0 = this._path.GetPosition(currentLength);
-            var v1 = this._path.GetPosition(currentLength + 0.3f);
-            return (v0 + v1) / 2f;
+            this._throttle = Mathf.Clamp(speed, -1f, 1f);
         }
 
-        /*
-        private void OnDrawGizmos()
+        public void Rotate(float dir)
         {
-            RouteGizmo.DrawRoute(this._path);
+            this._steerAngle = Mathf.Clamp(dir, -1f, 1f);
+        }
 
-            var currentPosition = new Vector2(this.transform.position.x, this.transform.position.y);
-            var p = this._path.ClosestPoint(currentPosition, this._currentPathLength, 1f);
-            var v0 = this._path.GetPosition(p.length);
-            var v1 = this._path.GetPosition(p.length + 0.3f);
-            var target = (v0 + v1) / 2f;
+        void FixedUpdate()
+        {
+            this._UpdateWheelsDirection(this._steerAngle);
+            this._steerAngle = 0f;
+
+            this._UpdateVisualWheelAngle(this._wheelsCurrentDeltaAngle);
+
+
+            Vector2 headingVector = this._GetHeadingVector();
             
-            Gizmos.color = Color.magenta;
-            Gizmos.DrawSphere(new Vector3(v0.x, v0.y, 0.2f), 0.05f);
-            Gizmos.DrawSphere(new Vector3(v1.x, v1.y, 0.2f), 0.05f);
-            Gizmos.color = Color.green;
-            Gizmos.DrawSphere(new Vector3(target.x, target.y, 0.2f), 0.05f);
+            var longitudinalForce = this._GetLongitudinalForce(this._throttle);
+            this._rb.AddForce(longitudinalForce);
+            //var speed = this._rb.velocity.magnitude + longitudinalForce.magnitude * Mathf.Sign(this._throttle) * Time.fixedDeltaTime;
+            //this._rb.velocity = headingVector * speed;
+            this._throttle = 0f;
 
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawSphere(new Vector3(p.position.x, p.position.y, 0.2f), 0.05f);
+            this._UpdateRotation(this._wheelsCurrentDeltaAngle);
         }
-        */
+
+        private Vector2 _GetHeadingVector()
+        {
+            var rad = -(this._rb.rotation + this._wheelsCurrentDeltaAngle) * Mathf.Deg2Rad;
+            return new Vector2(Mathf.Sin(rad), Mathf.Cos(rad));
+        }
+
+        private void _UpdateWheelsDirection(float wheelsMoveDeltaDir)
+        {
+            var maxRotation = this.wheelsStearingSpeed * Time.fixedDeltaTime;
+            if (wheelsMoveDeltaDir != 0) {
+                var angle = this._wheelsCurrentDeltaAngle - wheelsMoveDeltaDir * maxRotation;
+                this._wheelsCurrentDeltaAngle = Mathf.Clamp(angle, -this.maxStearAngle, this.maxStearAngle);
+            } else {
+                this._wheelsCurrentDeltaAngle -= Mathf.Clamp(this._wheelsCurrentDeltaAngle, -maxRotation, maxRotation);
+            }
+        }
+
+        private Vector2 _GetLongitudinalForce(float forwardDelta)
+        {
+            Vector2 headingVector = this._rb.transform.up;
+            float speed = this._rb.velocity.magnitude;
+            Vector2 tractionForce = headingVector * this._engineForce * forwardDelta;
+            //Vector2 dragForce = -this._dragCoeficient * speed * this._rb.velocity; 
+            Vector2 rollingResistanceForce = -this._rollingResistanceCoeficient * this._rb.velocity;
+            return tractionForce + rollingResistanceForce;
+        }
+
+        private void _UpdateMaxSpeed() 
+        {
+            // Solves the quadratic equation for speed
+            var a = this._rb.drag;
+            var b = this._rollingResistanceCoeficient;
+            var c = -this._engineForce;
+            float preRoot = b * b - 4f * a * c;
+            this.maxSpeed = (preRoot < 0)
+                ? 0f
+                : (Mathf.Sqrt(preRoot) - b) / (2.0f * a);
+
+            // Update max acceleration (A = F / M)
+            float v = this.maxSpeed;
+            float netForce = this._engineForce - this._rb.drag * v * v - this._rollingResistanceCoeficient * v;
+            this.maxAcceleration = netForce / this._rb.mass;
+        }
+
+        private void _UpdateRotation(float deltaAngle)
+        {
+            //if (deltaAngle == 0f) return;
+            //var rotationRadius = this._axlesDistance / deltaAngle;
+            //var angularVelocity =  / rotationRadius;
+
+            this._rb.AddTorque(this.speed);
+            //this._rb.MoveRotation(this._rb.rotation + angularVelocity * Time.fixedDeltaTime);
+        }
+
+        private void _UpdateVisualWheelAngle(float deltaAngle)
+        {
+            var wheelAngle = Quaternion.AngleAxis(deltaAngle, Vector3.forward);
+            if (this.leftWheel != null)  this.leftWheel.localRotation = wheelAngle;
+            if (this.rightWheel != null) this.rightWheel.localRotation = wheelAngle;
+        }
+
+        public void OnDrawGizmos()
+        {
+            if (this._rb == null) return;
+            //Gizmos.DrawLine(this._rb.position, this._rb.position + this._wheelsForwardVector);
+
+            var rad = -(this._rb.rotation + this._wheelsCurrentDeltaAngle) * Mathf.Deg2Rad;
+            Vector2 headingVector = new Vector2(Mathf.Sin(rad), Mathf.Cos(rad));
+            Gizmos.DrawLine(this._rb.position, this._rb.position + headingVector);
+        }
+
+        public bool RaycastAhead(float aheadDist)
+        {
+            var resultsCount = Physics2D.Raycast(this.currentPosition, this.transform.up, this._contactFilter, this._raycastResults, aheadDist);
+            for (int i = 0; i < resultsCount; i++) {
+                var hit = this._raycastResults[i];
+                if (hit.collider != this._collider) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        
     }
 }

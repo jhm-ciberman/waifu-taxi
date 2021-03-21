@@ -130,7 +130,7 @@ namespace WaifuDriver
             if (this._path != null) {
                 this._pathWasRecentlyRestarted = true;
             }
-            var path = this._pathfinder.Pathfind(this._entity.currentCoord, this._finalDestination, this._entity.currentDirVector, 0f);
+            var path = this._pathfinder.Pathfind(this._entity.currentCoord, this._finalDestination, this._entity.currentDirVector);
             if (path != null) {
                 this._path = path;
                 Debug.Log("Tiles: " + this._path.length);

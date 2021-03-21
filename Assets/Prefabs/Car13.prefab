@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 3929788383977162558}
   - component: {fileID: 5200558999387849038}
   m_Layer: 0
-  m_Name: Car12
+  m_Name: Car13
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -96,9 +96,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b833749eba40524d9926ebe9589a646, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  acceleration: 0.5
+  acceleration: 60
   maxSpeed: 0.3
-  roadSeparation: 0.15
+  maxAngleRotation: 20
+  requiredRotationSpeed: 1
 --- !u!50 &3929788383977162558
 Rigidbody2D:
   serializedVersion: 4
@@ -111,9 +112,9 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
+  m_Mass: 2500
+  m_LinearDrag: 8
+  m_AngularDrag: 6.07
   m_GravityScale: 0
   m_Material: {fileID: 0}
   m_Interpolate: 0

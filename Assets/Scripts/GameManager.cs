@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace WaifuDriver
@@ -23,11 +24,17 @@ namespace WaifuDriver
         public void Start()
         {
             var world = new World(new City());
-            var graphGenerator = new RoadGraphGenerator(world, 0.24f);
+            var graphGenerator = new RoadGraphGenerator(world, 0.26f);
             this._roadGraph = graphGenerator.Generate();
 
             var pathfinder = new Pathfinder(this._roadGraph);
             var player = this._worldGenerator.GenerateWorld(world, pathfinder);
+
+            foreach (var car in this._worldGenerator.cars) {
+                CarAI ai = car.gameObject.AddComponent<CarAI>();
+                ai.SetPathfinder(pathfinder);
+            }
+
             //this._planner = new RoutePlanner(pathfinder, player);
 
             this._cameraController.SetTarget(player.transform);

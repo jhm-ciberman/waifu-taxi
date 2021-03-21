@@ -1,16 +1,19 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace WaifuDriver
 {
     public class WorldGenerator : MonoBehaviour
     {
-        public Player player;
+        public PlayerController player;
+
+        private List<Car> _cars = new List<Car>();
 
         public WorldPrefabs prefabs;
         
         private System.Random _random = new System.Random();
 
-        public Player GenerateWorld(World world, Pathfinder pathfinder)
+        public PlayerController GenerateWorld(World world, Pathfinder pathfinder)
         {
             for (int x = 0; x < world.size.x; x++) {
                 for (int y = 0; y < world.size.y; y++) {
@@ -23,7 +26,7 @@ namespace WaifuDriver
                 }
             }
 
-            var numberOfCars = (int) (world.roadCount * 0.5f);
+            var numberOfCars = 0; //(int) (world.roadCount * 0.5f);
             for (int i = 0; i < numberOfCars; i++) {
                 var pos = world.RandomRoad();
                 this.SpawnCar(pos, pathfinder);
@@ -33,7 +36,7 @@ namespace WaifuDriver
             return this.SpawnPlayer(playerPos);
         }
 
-        public Player SpawnPlayer(Vector2Int coords)
+        public PlayerController SpawnPlayer(Vector2Int coords)
         {
             var playerPos = new Vector3(coords.x, coords.y, 0f);
             var player = Object.Instantiate(this.player, playerPos, Quaternion.identity);
@@ -45,9 +48,10 @@ namespace WaifuDriver
             var playerPos = new Vector3(coords.x, coords.y, 0f);
             var prefab = this.RandomCarPrefab();
             var car = Object.Instantiate(prefab, playerPos, Quaternion.identity);
-            car.SetDeltaSpeed(((float) this._random.NextDouble()) * 0.2f - 0.1f);
-            car.SetPathfinder(pathfinder);
+            this._cars.Add(car);
         }
+
+        public IEnumerable<Car> cars => this._cars;
 
         public void MakeRoad(Vector2Int pos, RoadConnection connection, World.TileType tileType)
         {

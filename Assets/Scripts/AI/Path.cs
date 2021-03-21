@@ -11,13 +11,13 @@ namespace WaifuDriver
 
         public readonly float length = 0;
 
-        public Path(List<Intersection> points, float roadSeparation)
+        public Path(List<Intersection> points)
         {
-            this._points = this._MakePathPoints(points, roadSeparation);
+            this._points = this._MakePathPoints(points);
             this.length = this._points[this._points.Length - 1].length;
         }
 
-        private PathPoint[] _MakePathPoints(List<Intersection> points, float roadSeparation)
+        private PathPoint[] _MakePathPoints(List<Intersection> points)
         {
             var list = new List<PathPoint>();
 
@@ -97,8 +97,7 @@ namespace WaifuDriver
 
         public PathPoint ClosestPoint(Vector2 searchPoint, float startSearchLength, float maxSearchLength, float precision = 0.05f) 
         {
-            // Adapted from: https://bl.ocks.org/mbostock/8027637
-            // linear scan for coarse approximation
+            // linear search
 
             var maxLength = Math.Min(this.length, startSearchLength + maxSearchLength);
 
